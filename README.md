@@ -1,6 +1,6 @@
 # Angular 2 Mentions
 
-Simple Angular2 mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
+Simple Angular 2 mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
 
 [Click here for a Demo](http://dmacfarlane.github.io/ng2-mentions/)
 
@@ -33,6 +33,7 @@ Where `items` is a string array of the items to suggest. For example:
 
 - Remove debug (always)
 - Fix line-feed issue in content editable
+- Iframe based (TinyMCE)
 - Styled menu items
 - Load items via http (config for number of chars before search)
 - Configurable prefix
