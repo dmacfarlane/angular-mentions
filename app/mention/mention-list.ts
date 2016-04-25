@@ -1,8 +1,14 @@
 import {Component, ElementRef, Output, EventEmitter} from 'angular2/core';
-import {isInputOrTextArea, getSelectionCoords} from './mention-utils';
+import {isInputOrTextAreaElement, getContentEditableCaretCoords} from './mention-utils';
 
 declare var getCaretCoordinates:any;
 
+/**
+ * Angular 2 Mentions.
+ * https://github.com/dmacfarlane/ng2-mentions
+ *
+ * Copyright (c) 2016 Dan MacFarlane
+ */
 @Component({
     selector: 'mention-list',
     styles: [`
@@ -31,23 +37,19 @@ export class MentionList {
   hidden = false;
   @Output() itemClick = new EventEmitter();
   constructor(private _element: ElementRef) {}
-  position(nativeParentElement) {
+  position(nativeParentElement, iframe=null) {
     var coords = {top:0,left:0};
-    if (isInputOrTextArea(nativeParentElement)) {
+    if (isInputOrTextAreaElement(nativeParentElement)) {
       coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-      coords.top = nativeParentElement.offsetTop + coords.top;
+      coords.top = nativeParentElement.offsetTop + coords.top + 16;
       coords.left = nativeParentElement.offsetLeft + coords.left;
     }
     else {
-      var doc = document.documentElement;
-      var scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-      var scrollTop  = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-      var position = getSelectionCoords(window);
-      coords = {top:position.y+scrollTop, left:position.x+scrollLeft};
+      coords = getContentEditableCaretCoords(nativeParentElement, iframe);
     }
     this._element.nativeElement.style.position = "absolute";
     this._element.nativeElement.style.left = coords.left + 'px';
-    this._element.nativeElement.style.top  = coords.top+16 + 'px';
+    this._element.nativeElement.style.top  = coords.top + 'px';
   }
   get activeItem() {
     return this.items[this.activeIndex];

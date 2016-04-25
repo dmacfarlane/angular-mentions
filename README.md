@@ -32,10 +32,9 @@ Where `items` is a string array of the items to suggest. For example:
 #### TODO:
 
 - Remove debug (always)
-- Fix line-feed issue in content editable
-- Iframe based (TinyMCE)
-- Styled menu items
-- Load items via http (config for number of chars before search)
+- Menu clicks not working in content editable
 - Configurable prefix
 - Configurable limit on number of items shown via config
+- Load items via http (config for number of chars before search)
+- Styled menu items
 - Tests...

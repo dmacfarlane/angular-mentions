@@ -16,6 +16,12 @@ const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
 const KEY_2 = 50;
 
+/**
+ * Angular 2 Mentions.
+ * https://github.com/dmacfarlane/ng2-mentions
+ *
+ * Copyright (c) 2016 Dan MacFarlane
+ */
 @Component({
   selector: '[mention]',
   template: '',
@@ -28,10 +34,15 @@ export class Mention {
   mentionStart:number;
   searchList: MentionList;
   escapePressed:boolean;
+  iframe:any; // optional
   constructor(private _element: ElementRef, private _dcl: DynamicComponentLoader) {}
 
   @Input() set mention(items:string []){
     this.items = items.sort();
+  }
+
+  setIframe(iframe) {
+    this.iframe = iframe;
   }
 
   stopEvent(event) {
@@ -40,9 +51,9 @@ export class Mention {
       event.stopImmediatePropagation();
   }
 
-  keyHandler(event) {
-    let val = getValue(this._element.nativeElement);
-    let pos = getCaretPosition(this._element.nativeElement);
+  keyHandler(event, nativeElement=this._element.nativeElement) {
+    let val = getValue(nativeElement);
+    let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
@@ -58,85 +69,86 @@ export class Mention {
         charPressed = String.fromCharCode(event.which || event.keyCode);
       }
     }
-    //console.log(pos, val, event, charPressed);
+    console.log("keyHandler", this.mentionStart, pos, val, charPressed, event);
     if (charPressed=="@") {
       this.mentionStart = pos;
       this.escapePressed = false;
-      this.showSeachList();
+      this.showSearchList(nativeElement);
     }
     else if (this.mentionStart>=0 && !this.escapePressed) {
       if (event.keyCode!=KEY_SHIFT && pos>this.mentionStart) {
         if (event.keyCode === KEY_SPACE) {
           this.mentionStart = -1;
         }
-        else if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
-          this.stopEvent(event);
-          this.searchList.hidden = true;
-          insertValue(this._element.nativeElement,
-            this.mentionStart, pos, "@"+this.searchList.activeItem+" ");
-          this.mentionStart = -1;
-          return false;
-        }
-        else if (event.keyCode === KEY_ESCAPE) {
-          this.stopEvent(event);
-          this.searchList.hidden = true;
-          this.escapePressed = true;
-          return false;
-        }
-        else if (event.keyCode === KEY_DOWN) {
-          this.stopEvent(event);
-          this.searchList.activateNextItem();
-          return false;
-        }
-        else if (event.keyCode === KEY_UP) {
-          this.stopEvent(event);
-          this.searchList.activatePreviousItem();
-          return false;
-        }
         else if (event.keyCode === KEY_BACKSPACE && pos>0) {
           this.searchList.hidden = this.escapePressed;
           pos--;
         }
-
-        if (!this.searchList.hidden) {
-          if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+        else if (!this.searchList.hidden) {
+          if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
+            this.searchList.hidden = true;
+            insertValue(nativeElement,
+              this.mentionStart, pos, "@"+this.searchList.activeItem+" ", this.iframe);
+            this.mentionStart = -1;
             return false;
           }
-          else {
-            // update search
-            let mention = val.substring(this.mentionStart, pos);
-            if (event.keyCode !== KEY_BACKSPACE) {
-              mention += charPressed;
-            }
-            let regEx = new RegExp("^"+mention.substring(1),"i");
-            let matches = this.items.filter(e=>e.match(regEx)!=null);
-            this.searchList.items = matches;
-            this.searchList.hidden = matches.length==0 || pos<=this.mentionStart;
+          else if (event.keyCode === KEY_ESCAPE) {
+            this.stopEvent(event);
+            this.searchList.hidden = true;
+            this.escapePressed = true;
+            return false;
           }
+          else if (event.keyCode === KEY_DOWN) {
+            this.stopEvent(event);
+            this.searchList.activateNextItem();
+            return false;
+          }
+          else if (event.keyCode === KEY_UP) {
+            this.stopEvent(event);
+            this.searchList.activatePreviousItem();
+            return false;
+          }
+        }
+
+        if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+          this.stopEvent(event);
+          return false;
+        }
+        else {
+          // update search
+          let mention = val.substring(this.mentionStart, pos);
+          if (event.keyCode !== KEY_BACKSPACE) {
+            mention += charPressed;
+          }
+          let regEx = new RegExp("^"+mention.substring(1),"i");
+          let matches = this.items.filter(e=>e.match(regEx)!=null);
+          this.searchList.items = matches;
+          this.searchList.hidden = matches.length==0 || pos<=this.mentionStart;
         }
       }
     }
   }
 
-  showSeachList() {
+  showSearchList(nativeElement) {
     if (this.searchList==null) {
       this._dcl.loadNextToLocation(MentionList, this._element)
         .then((containerRef: ComponentRef) => {
           this.searchList = containerRef.instance;
-          this.searchList.items = this.items; //matches;
+          this.searchList.items = this.items;
           this.searchList.hidden = false;
-          this.searchList.position(this._element.nativeElement);
+          this.searchList.position(nativeElement, this.iframe);
           containerRef.instance['itemClick'].subscribe(ev => {
               let fakeKeydown = new KeyboardEvent('keydown', <KeyboardEventInit>{"keyCode":KEY_ENTER});
-              this.keyHandler(fakeKeydown);
+              this.keyHandler(fakeKeydown, nativeElement);
           });
       });
     }
     else {
+      this.searchList.activeIndex = 0;
       this.searchList.items = this.items;
       this.searchList.hidden = false;
-      this.searchList.position(this._element.nativeElement);
+      this.searchList.position(nativeElement, this.iframe);
     }
   }
 }
