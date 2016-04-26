@@ -20,10 +20,9 @@ Copy the mention folder into your own application, or install the package as a d
 
     npm install --save ng2-mentions
 
-Add the CSS and JS dependencies your index.html:
+Add the CSS to your index.html:
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="ext/textarea-caret-position.js"></script>
 
 Add the `[mention]` directive to your input element:
 

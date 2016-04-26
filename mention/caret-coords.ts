@@ -1,8 +1,6 @@
 /* From: https://github.com/component/textarea-caret-position */
 /* jshint browser: true */
 
-(function () {
-
 // The properties that we copy into a mirrored div.
 // Note that some browsers, such as Firefox,
 // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
@@ -50,9 +48,9 @@ var properties = [
 ];
 
 var isBrowser = (typeof window !== 'undefined');
-var isFirefox = (isBrowser && window.mozInnerScreenX != null);
+var isFirefox = (isBrowser && (<any>window).mozInnerScreenX != null);
 
-function getCaretCoordinates(element, position, options) {
+export function getCaretCoordinates(element, position, options=null) {
   if(!isBrowser) {
     throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');
   }
@@ -122,10 +120,8 @@ function getCaretCoordinates(element, position, options) {
   return coordinates;
 }
 
-if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
-  module.exports = getCaretCoordinates;
-} else if(isBrowser){
-  window.getCaretCoordinates = getCaretCoordinates;
-}
-
-}());
+// if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
+//   module.exports = getCaretCoordinates;
+// } else if(isBrowser){
+//   window.getCaretCoordinates = getCaretCoordinates;
+// }

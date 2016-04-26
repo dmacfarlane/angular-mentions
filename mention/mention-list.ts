@@ -1,7 +1,6 @@
 import {Component, ElementRef, Output, EventEmitter} from 'angular2/core';
 import {isInputOrTextAreaElement, getContentEditableCaretCoords} from './mention-utils';
-
-declare var getCaretCoordinates:any;
+import {getCaretCoordinates} from './caret-coords';
 
 /**
  * Angular 2 Mentions.
