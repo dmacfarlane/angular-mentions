@@ -9,14 +9,18 @@ and content editable fields. Not fully browser tested and comes without warranty
 
 To install and start the demo application:
 
+    git clone https://github.com/dmacfarlane/ng2-mentions.git
+    cd ng2-mentions
     npm install
     npm start
 
 ### Usage
 
-Copy the mention folder into your own application.
+Copy the mention folder into your own application, or install the package as a dependency using:
 
-Add the dependancies to your index.html:
+    npm install --save ng2-mentions
+
+Add the CSS and JS dependencies your index.html:
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="ext/textarea-caret-position.js"></script>
@@ -32,7 +36,8 @@ Where `items` is a string array of the items to suggest. For example:
 #### TODO:
 
 - Remove debug (always)
-- Menu clicks not working in content editable
+- Improve NPM package structure
+- Fix menu clicks not working in content editable
 - Configurable prefix
 - Configurable limit on number of items shown via config
 - Load items via http (config for number of chars before search)
