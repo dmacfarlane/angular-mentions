@@ -88,8 +88,14 @@ export class Mention {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
             this.searchList.hidden = true;
-            insertValue(nativeElement,
-              this.mentionStart, pos, "@"+this.searchList.activeItem+" ", this.iframe);
+            insertValue(nativeElement, this.mentionStart, pos,
+                        "@"+this.searchList.activeItem+" ", this.iframe);
+            // fire input event so angular bindings are updated
+            if ("createEvent" in document) {
+              var evt = document.createEvent("HTMLEvents");
+              evt.initEvent("input", false, true);
+              nativeElement.dispatchEvent(evt);
+            }
             this.mentionStart = -1;
             return false;
           }

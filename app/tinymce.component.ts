@@ -25,10 +25,7 @@ export class TinyMCE {
   @Input() htmlContent;
   @ViewChild(Mention) mention: Mention;
   protected items:string [] = COMMON_NAMES;
-  private zone:NgZone;
-  constructor(private _elementRef: ElementRef) {
-    this.zone = new NgZone({enableLongStackTrace: false});
-  }
+  constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
   ngAfterViewInit()
   {
     tinymce.init({
@@ -52,7 +49,7 @@ export class TinyMCE {
     ed.on('keydown', function(e) {
       let frame = <any>window.frames[ed.iframeElement.id];
       let contentEditable = frame.contentDocument.getElementById('tinymce');
-      comp.zone.run(() => {
+      comp._zone.run(() => {
         comp.mention.keyHandler(e, contentEditable);
       });
     });
