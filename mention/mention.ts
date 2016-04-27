@@ -1,4 +1,5 @@
-import {Component, ElementRef, Input} from "angular2/core";
+import {Directive, ElementRef, Input} from "angular2/core";
+import {Output, EventEmitter} from "angular2/core";
 import {DynamicComponentLoader, ComponentRef} from "angular2/core";
 import {MentionList} from './mention-list';
 import {getValue, insertValue} from './mention-utils';
@@ -22,9 +23,8 @@ const KEY_2 = 50;
  *
  * Copyright (c) 2016 Dan MacFarlane
  */
-@Component({
+@Directive({
   selector: '[mention]',
-  template: '',
   host: {
     '(keydown)': 'keyHandler($event)',
   },

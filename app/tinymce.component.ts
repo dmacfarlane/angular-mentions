@@ -14,7 +14,7 @@ declare var tinymce: any;
     selector: 'tinymce',
     template: `
     <div class="form-group" style="position:relative">
-      <div [mention]="items" #mention></div>
+      <div [mention]="items"></div>
       <div>
         <textarea class="hidden" cols="60" rows="4" id="tmce">{{htmlContent}}</textarea>
       </div>
@@ -23,7 +23,7 @@ declare var tinymce: any;
 })
 export class TinyMCE {
   @Input() htmlContent;
-  @ViewChild('mention') mention;
+  @ViewChild(Mention) mention: Mention;
   protected items:string [] = COMMON_NAMES;
   private zone:NgZone;
   constructor(private _elementRef: ElementRef) {
