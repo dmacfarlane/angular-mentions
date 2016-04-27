@@ -69,7 +69,7 @@ export class Mention {
         charPressed = String.fromCharCode(event.which || event.keyCode);
       }
     }
-    console.log("keyHandler", this.mentionStart, pos, val, charPressed, event);
+    //console.log("keyHandler", this.mentionStart, pos, val, charPressed, event);
     if (charPressed=="@") {
       this.mentionStart = pos;
       this.escapePressed = false;

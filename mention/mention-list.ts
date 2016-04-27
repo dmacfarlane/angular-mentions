@@ -43,8 +43,24 @@ export class MentionList {
       coords.top = nativeParentElement.offsetTop + coords.top + 16;
       coords.left = nativeParentElement.offsetLeft + coords.left;
     }
+    else if (iframe) {
+      let context = {iframe:iframe,parent:iframe.offsetParent};
+      coords = getContentEditableCaretCoords(context);
+    }
     else {
-      coords = getContentEditableCaretCoords(nativeParentElement, iframe);
+      // lots of confusion here between relative coordinates and containers
+      var doc = document.documentElement;
+      var scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+      var scrollTop  = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+
+      // bounding rectables are relative to view, offsets are relative to container?
+      let caretRelativeToView = getContentEditableCaretCoords({iframe:iframe});
+      let parentRelativeToContainer = nativeParentElement.getBoundingClientRect();
+
+      coords.top = caretRelativeToView.top - parentRelativeToContainer.y +
+                   nativeParentElement.offsetTop - scrollTop;
+      coords.left = caretRelativeToView.left - parentRelativeToContainer.x +
+                    nativeParentElement.offsetLeft - scrollLeft;
     }
     this._element.nativeElement.style.position = "absolute";
     this._element.nativeElement.style.left = coords.left + 'px';

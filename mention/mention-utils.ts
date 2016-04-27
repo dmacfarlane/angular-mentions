@@ -70,11 +70,6 @@ export function getCaretPosition(el, iframe=null) {
   }
 }
 
-export function getContentEditableCaretCoords(nativeParentElement, iframe) {
-  let ctx = iframe ? { iframe: iframe } : null;
-  return getContentEditableCaretPositionMentIo(ctx);
-}
-
 // Based on ment.io functions...
 //
 
@@ -94,7 +89,7 @@ function getWindowSelection(iframe) {
     }
 }
 
-function getContentEditableCaretPositionMentIo(ctx/*, selectedNodePosition*/) {
+export function getContentEditableCaretCoords(ctx) {
     var markerTextChar = '\ufeff';
     var markerId = 'sel_' + new Date().getTime() + '_' + Math.random().toString().substr(2);
     var doc = getDocument(ctx?ctx.iframe:null);
@@ -121,16 +116,19 @@ function getContentEditableCaretPositionMentIo(ctx/*, selectedNodePosition*/) {
         top: markerEl.offsetHeight
     };
 
-    localToGlobalCoordinates(ctx, markerEl, coordinates);
+    localToRelativeCoordinates(ctx, markerEl, coordinates);
 
     markerEl.parentNode.removeChild(markerEl);
     return coordinates;
 }
 
-function localToGlobalCoordinates(ctx, element, coordinates) {
+function localToRelativeCoordinates(ctx, element, coordinates) {
     var obj = element;
     var iframe = ctx ? ctx.iframe : null;
     while(obj) {
+        if (ctx.parent!=null&&ctx.parent==obj) {
+          break;
+        }
         coordinates.left += obj.offsetLeft + obj.clientLeft;
         coordinates.top += obj.offsetTop + obj.clientTop;
         obj = obj.offsetParent;
@@ -142,6 +140,9 @@ function localToGlobalCoordinates(ctx, element, coordinates) {
     obj = element;
     iframe = ctx ? ctx.iframe : null;
     while(obj !== getDocument(null).body && obj!=null) {
+        if (ctx.parent!=null&&ctx.parent==obj) {
+          break;
+        }
         if (obj.scrollTop && obj.scrollTop > 0) {
             coordinates.top -= obj.scrollTop;
         }
