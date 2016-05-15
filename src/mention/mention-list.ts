@@ -1,6 +1,7 @@
-import {Component, ElementRef, Output, EventEmitter} from 'angular2/core';
-import {isInputOrTextAreaElement, getContentEditableCaretCoords} from './mention-utils';
-import {getCaretCoordinates} from './caret-coords';
+import { Component, ElementRef, Output, EventEmitter } from '@angular/core';
+
+import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
+import { getCaretCoordinates } from './caret-coords';
 
 /**
  * Angular 2 Mentions.
@@ -24,7 +25,7 @@ import {getCaretCoordinates} from './caret-coords';
     `],
     template: `
     <ul class="dropdown-menu scrollable-menu" [hidden]="hidden">
-        <li *ngFor="#item of items; #i = index" [class.active]="activeIndex==i">
+        <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
             <a class="text-primary" (click)="activeIndex=i;itemClick.emit()">{{item}}</a>
         </li>
     </ul>

@@ -2,7 +2,7 @@
 //
 
 function setValue(el, value) {
-  //console.log("setValue", el.nodeName, value);
+  //console.log("setValue", el.nodeName, "["+value+"]");
   if (isInputOrTextAreaElement(el))
   {
     el.value = value;
@@ -17,7 +17,7 @@ export function getValue(el) {
 }
 
 export function insertValue(el, start, end, text, iframe, noRecursion=false) {
-  //console.log("insertValue", el.nodeName, start, end, text, el);
+  //console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
   if (isTextElement(el)) {
     var val = getValue(el);
     setValue(el, val.substring(0, start) + text + val.substring(end, val.length));
@@ -28,6 +28,9 @@ export function insertValue(el, start, end, text, iframe, noRecursion=false) {
     var selRange = selObj.getRangeAt(0);
     var position = selRange.startOffset;
     var anchorNode = selObj.anchorNode;
+    if (text.endsWith(' ')) {
+      text = text.substring(0, text.length-1) + '\xA0';
+    }
     insertValue(anchorNode, position-(end-start), position, text, iframe, true);
   }
 }

@@ -12,7 +12,7 @@ To install and start the demo application:
     git clone https://github.com/dmacfarlane/ng2-mentions.git
     cd ng2-mentions
     npm install
-    npm start
+    ng serve
 
 ### Usage
 
@@ -40,4 +40,3 @@ Where `items` is a string array of the items to suggest. For example:
 - Configurable limit on number of items shown via config
 - Load items via http (config number of chars before search)
 - Styled menu items
-- Tests...

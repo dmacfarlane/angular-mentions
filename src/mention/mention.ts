@@ -1,8 +1,9 @@
-import {Directive, ElementRef, Input} from "angular2/core";
-import {DynamicComponentLoader, ComponentRef} from "angular2/core";
-import {MentionList} from './mention-list';
-import {getValue, insertValue} from './mention-utils';
-import {getCaretPosition, setCaretPosition} from './mention-utils';
+import { Directive, ElementRef, Input } from "@angular/core";
+import { DynamicComponentLoader, ComponentRef, ViewContainerRef } from "@angular/core";
+
+import { MentionList } from './mention-list';
+import { getValue, insertValue } from './mention-utils';
+import { getCaretPosition, setCaretPosition } from './mention-utils';
 
 const KEY_BACKSPACE = 8;
 const KEY_TAB = 9;
@@ -35,7 +36,11 @@ export class Mention {
   searchList: MentionList;
   escapePressed:boolean;
   iframe:any; // optional
-  constructor(private _element: ElementRef, private _dcl: DynamicComponentLoader) {}
+  constructor(
+    private _element: ElementRef, 
+    private _dcl: DynamicComponentLoader,
+    private _viewContainerRef: ViewContainerRef
+  ) {}
 
   @Input() set mention(items:string []){
     this.items = items.sort();
@@ -144,8 +149,8 @@ export class Mention {
 
   showSearchList(nativeElement) {
     if (this.searchList==null) {
-      this._dcl.loadNextToLocation(MentionList, this._element)
-        .then((containerRef: ComponentRef) => {
+      this._dcl.loadNextToLocation(MentionList, this._viewContainerRef)
+        .then((containerRef: ComponentRef<MentionList>) => {
           this.searchList = containerRef.instance;
           this.searchList.items = this.items;
           this.searchList.hidden = false;
