@@ -1,10 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": true,
+    "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "mapRoot": "",
+    "mapRoot": "/",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,

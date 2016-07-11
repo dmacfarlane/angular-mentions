@@ -4,6 +4,6 @@ export class Ng2MentionsPage {
   }
 
   getHeadingText() {
-    return element(by.css('ng2-mentions-app h1')).getText();
+    return element(by.css('app-root h1')).getText();
   }
 }

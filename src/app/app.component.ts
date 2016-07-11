@@ -6,11 +6,11 @@ import { TinyMCE } from './tinymce.component';
 
 @Component({
     moduleId: module.id,
-    selector: 'ng2-mentions-app',
-    templateUrl: 'ng2-mentions.component.html',
-    //styleUrls: ['ng2-mentions.component.css'],
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    //styleUrls: ['app.component.css'],
     directives: [Mention, TinyMCE]
 })
-export class Ng2MentionsAppComponent {
+export class AppComponent {
   items:string [] = COMMON_NAMES;
 }
