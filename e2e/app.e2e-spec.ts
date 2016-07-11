@@ -8,35 +8,37 @@ describe('ng2-mentions App', function() {
     page = new Ng2MentionsPage();
   })
 
-  it('two mentions text field', () => {
+  let elements = 
+
+  it('test mentions text field', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
     let el = element(by.css('input'));
-    testTwoMentions(el);
+    testMentions(el);
   });
 
-  it('two mentions text area', () => {
+  it('test mentions text area', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
     let el = element.all(by.css('textarea')).first();
-    testTwoMentions(el);
+    testMentions(el);
   });
 
-  it('two mentions div', () => {
+  it('test mentions div', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
     let el = element.all(by.css('div')).first();
-    testTwoMentions(el);
+    testMentions(el);
   });
 
-  it('two mentions iframe', () => {
+  it('test mentions iframe', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
     let el = element.all(by.id('tmce_ifr'));
-    testTwoMentions(el);
+    testMentions(el);
   });
 
-  function testTwoMentions(el){
+  function testMentions(el){
     el.getTagName().then(function(tagName){
       let menu = element(by.css('.dropdown-menu'));      
       el.click();
@@ -48,8 +50,10 @@ describe('ng2-mentions App', function() {
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @');
             
-      // select menion
-      el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
+      // select mention using arrow keys and pressing enter
+      //el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
+      // select mention by clicking mouse on second item in menu
+      element(by.css('.dropdown-menu li:nth-child(2) a')).click();
       browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron ');

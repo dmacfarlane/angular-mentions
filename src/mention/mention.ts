@@ -51,12 +51,14 @@ export class Mention {
   }
 
   stopEvent(event) {
+    if (!event.wasClick) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+    }
   }
 
-  keyHandler(event, nativeElement=this._element.nativeElement, wasClick=false) {
+  keyHandler(event, nativeElement=this._element.nativeElement) {
     let val = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
@@ -74,7 +76,7 @@ export class Mention {
         charPressed = String.fromCharCode(event.which || event.keyCode);
       }
     }
-    if (event.keyCode==13 && wasClick && pos<this.startPos) {
+    if (event.keyCode==13 && event.wasClick && pos<this.startPos) {
       // put caret back in position prior to contenteditable menu click
       pos = this.startNode.length;
       setCaretPosition(this.startNode, pos, this.iframe);
@@ -157,8 +159,8 @@ export class Mention {
           this.searchList.position(nativeElement, this.iframe);
           containerRef.instance['itemClick'].subscribe(ev => {
             nativeElement.focus();
-              let fakeKeydown = new KeyboardEvent('keydown', <KeyboardEventInit>{"keyCode":KEY_ENTER});
-              this.keyHandler(fakeKeydown, nativeElement, true);
+            let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
+            this.keyHandler(fakeKeydown, nativeElement);            
           });
       });
     }
