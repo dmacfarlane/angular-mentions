@@ -25,13 +25,15 @@ export function insertValue(el, start, end, text, iframe, noRecursion=false) {
   }
   else if (!noRecursion) {
     var selObj = getWindowSelection(iframe);
-    var selRange = selObj.getRangeAt(0);
-    var position = selRange.startOffset;
-    var anchorNode = selObj.anchorNode;
-    if (text.endsWith(' ')) {
-      text = text.substring(0, text.length-1) + '\xA0';
+    if (selObj && selObj.rangeCount>0) {
+      var selRange = selObj.getRangeAt(0);
+      var position = selRange.startOffset;
+      var anchorNode = selObj.anchorNode;
+      // if (text.endsWith(' ')) {
+      //   text = text.substring(0, text.length-1) + '\xA0';
+      // }
+      insertValue(anchorNode, position-(end-start), position, text, iframe, true);
     }
-    insertValue(anchorNode, position-(end-start), position, text, iframe, true);
   }
 }
 
