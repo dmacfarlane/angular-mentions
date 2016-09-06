@@ -12,36 +12,34 @@ declare var tinymce: any;
  * Example usage with TinyMCE.
  */
 @Component({
-    selector: 'tinymce',
-    template: `
+  selector: 'tinymce',
+  template: `
     <div class="form-group" style="position:relative">
       <div [mention]="items"></div>
       <div>
         <textarea class="hidden" cols="60" rows="4" id="tmce">{{htmlContent}}</textarea>
       </div>
-    </div>`,
-    directives: [Mention]
+    </div>`
 })
 export class TinyMCE {
   @Input() htmlContent;
   @ViewChild(Mention) mention: Mention;
-  protected items:string [] = COMMON_NAMES;
+  protected items:string[] = COMMON_NAMES;
   constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
-  ngAfterViewInit()
-  {
+  ngAfterViewInit() {
     tinymce.init({
-        mode: 'exact',
-        height: 100,
-        theme: 'modern',
-        plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table contextmenu paste code'
-        ],
-        toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-        elements: "tmce",
-        setup: this.tinySetup.bind(this)
-      }
+      mode: 'exact',
+      height: 100,
+      theme: 'modern',
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table contextmenu paste code'
+      ],
+      toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+      elements: "tmce",
+      setup: this.tinySetup.bind(this)
+    }
     );
   }
   tinySetup(ed) {

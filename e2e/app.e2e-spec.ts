@@ -56,16 +56,16 @@ describe('ng2-mentions App', function() {
       element(by.css('.dropdown-menu li:nth-child(2) a')).click();
       browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
-      expect(getValue(el, tagName)).toEqual('Hello @Aaron ');
+      expect(getValue(el, tagName)).toEqual('Hello @Aaron');
       
       // select another mention
-      el.sendKeys('and @gav', protractor.Key.ENTER);
+      el.sendKeys(' and @gav', protractor.Key.ENTER);
       browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
-      expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin ');
+      expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin');
       
       // start another mention
-      el.sendKeys('and @e');
+      el.sendKeys(' and @e');
       browser.sleep(500);
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
@@ -83,7 +83,7 @@ describe('ng2-mentions App', function() {
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and !!');
       
       // and insert another mention
-      el.sendKeys('@he', protractor.Key.ENTER, protractor.Key.BACK_SPACE);
+      el.sendKeys('@he', protractor.Key.ENTER);
       browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @Henry!!');

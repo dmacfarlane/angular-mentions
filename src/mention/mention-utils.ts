@@ -1,10 +1,9 @@
 // DOM element manipulation functions...
 //
 
-function setValue(el, value) {
+function setValue(el: HTMLInputElement, value: any) {
   //console.log("setValue", el.nodeName, "["+value+"]");
-  if (isInputOrTextAreaElement(el))
-  {
+  if (isInputOrTextAreaElement(el)) {
     el.value = value;
   }
   else {
@@ -12,42 +11,49 @@ function setValue(el, value) {
   }
 }
 
-export function getValue(el) {
+export function getValue(el: HTMLInputElement) {
   return isInputOrTextAreaElement(el) ? el.value : el.textContent;
 }
 
-export function insertValue(el, start, end, text, iframe, noRecursion=false) {
+export function insertValue(
+  el: HTMLInputElement,
+  start: number,
+  end: number,
+  text: string,
+  iframe: HTMLIFrameElement,
+  noRecursion: boolean = false
+) {
   //console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
   if (isTextElement(el)) {
-    var val = getValue(el);
+    let val = getValue(el);
     setValue(el, val.substring(0, start) + text + val.substring(end, val.length));
-    setCaretPosition(el, start+text.length, iframe);
+    setCaretPosition(el, start + text.length, iframe);
   }
   else if (!noRecursion) {
-    var selObj = getWindowSelection(iframe);
-    if (selObj && selObj.rangeCount>0) {
+    let selObj: Selection = getWindowSelection(iframe);
+    if (selObj && selObj.rangeCount > 0) {
       var selRange = selObj.getRangeAt(0);
       var position = selRange.startOffset;
       var anchorNode = selObj.anchorNode;
       // if (text.endsWith(' ')) {
       //   text = text.substring(0, text.length-1) + '\xA0';
       // }
-      insertValue(anchorNode, position-(end-start), position, text, iframe, true);
+      insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, text, iframe, true);
     }
   }
 }
 
-export function isInputOrTextAreaElement(el) {
-  return el!=null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA');
+export function isInputOrTextAreaElement(el: HTMLElement): boolean {
+  return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA');
 };
 
-export function isTextElement(el) {
-  return el!=null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA' || el.nodeName=='#text');
+export function isTextElement(el: HTMLElement): boolean {
+  return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA' || el.nodeName == '#text');
 };
 
-export function setCaretPosition(el, pos, iframe=null) {
+export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTMLIFrameElement = null) {
   //console.log("setCaretPosition", pos, el, iframe==null);
-  if(isInputOrTextAreaElement(el) && el.selectionStart) {
+  if (isInputOrTextAreaElement(el) && el.selectionStart) {
     el.focus();
     el.setSelectionRange(pos, pos);
   }
@@ -61,7 +67,7 @@ export function setCaretPosition(el, pos, iframe=null) {
   }
 }
 
-export function getCaretPosition(el, iframe=null) {
+export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement = null) {
   //console.log("getCaretPosition", el);
   if (isInputOrTextAreaElement(el)) {
     var val = el.value;
@@ -78,86 +84,90 @@ export function getCaretPosition(el, iframe=null) {
 // Based on ment.io functions...
 //
 
-function getDocument(iframe) {
-    if (!iframe) {
-        return document;
-    } else {
-        return iframe.contentWindow.document;
-    }
+function getDocument(iframe: HTMLIFrameElement) {
+  if (!iframe) {
+    return document;
+  } else {
+    return iframe.contentWindow.document;
+  }
 }
 
-function getWindowSelection(iframe) {
-    if (!iframe) {
-        return window.getSelection();
-    } else {
-        return iframe.contentWindow.getSelection();
-    }
+function getWindowSelection(iframe: HTMLIFrameElement): Selection {
+  if (!iframe) {
+    return window.getSelection();
+  } else {
+    return iframe.contentWindow.getSelection();
+  }
 }
 
-export function getContentEditableCaretCoords(ctx) {
-    var markerTextChar = '\ufeff';
-    var markerId = 'sel_' + new Date().getTime() + '_' + Math.random().toString().substr(2);
-    var doc = getDocument(ctx?ctx.iframe:null);
-    var sel = getWindowSelection(ctx?ctx.iframe:null);
-    var prevRange = sel.getRangeAt(0);
+export function getContentEditableCaretCoords(ctx: { iframe: HTMLIFrameElement, parent?: Element }) {
+  let markerTextChar = '\ufeff';
+  let markerId = 'sel_' + new Date().getTime() + '_' + Math.random().toString().substr(2);
+  let doc = getDocument(ctx ? ctx.iframe : null);
+  let sel = getWindowSelection(ctx ? ctx.iframe : null);
+  let prevRange = sel.getRangeAt(0);
 
-    // create new range and set postion using prevRange
-    var range = doc.createRange();
-    range.setStart(sel.anchorNode, prevRange.startOffset);
-    range.setEnd(sel.anchorNode, prevRange.startOffset);
-    range.collapse(false);
+  // create new range and set postion using prevRange
+  let range = doc.createRange();
+  range.setStart(sel.anchorNode, prevRange.startOffset);
+  range.setEnd(sel.anchorNode, prevRange.startOffset);
+  range.collapse(false);
 
-    // Create the marker element containing a single invisible character
-    // using DOM methods and insert it at the position in the range
-    var markerEl = doc.createElement('span');
-    markerEl.id = markerId;
-    markerEl.appendChild(doc.createTextNode(markerTextChar));
-    range.insertNode(markerEl);
-    sel.removeAllRanges();
-    sel.addRange(prevRange);
+  // Create the marker element containing a single invisible character
+  // using DOM methods and insert it at the position in the range
+  let markerEl = doc.createElement('span');
+  markerEl.id = markerId;
+  markerEl.appendChild(doc.createTextNode(markerTextChar));
+  range.insertNode(markerEl);
+  sel.removeAllRanges();
+  sel.addRange(prevRange);
 
-    var coordinates = {
-        left: 0,
-        top: markerEl.offsetHeight
-    };
+  let coordinates = {
+    left: 0,
+    top: markerEl.offsetHeight
+  };
 
-    localToRelativeCoordinates(ctx, markerEl, coordinates);
+  localToRelativeCoordinates(ctx, markerEl, coordinates);
 
-    markerEl.parentNode.removeChild(markerEl);
-    return coordinates;
+  markerEl.parentNode.removeChild(markerEl);
+  return coordinates;
 }
 
-function localToRelativeCoordinates(ctx, element, coordinates) {
-    var obj = element;
-    var iframe = ctx ? ctx.iframe : null;
-    while(obj) {
-        if (ctx.parent!=null&&ctx.parent==obj) {
-          break;
-        }
-        coordinates.left += obj.offsetLeft + obj.clientLeft;
-        coordinates.top += obj.offsetTop + obj.clientTop;
-        obj = obj.offsetParent;
-        if (!obj && iframe) {
-            obj = iframe;
-            iframe = null;
-        }
+function localToRelativeCoordinates(
+  ctx: { iframe: HTMLIFrameElement, parent?: Element }, 
+  element: Element, 
+  coordinates: { top: number; left: number }
+) {
+  let obj = <HTMLElement>element;
+  let iframe = ctx ? ctx.iframe : null;
+  while (obj) {
+    if (ctx.parent != null && ctx.parent == obj) {
+      break;
     }
-    obj = element;
-    iframe = ctx ? ctx.iframe : null;
-    while(obj !== getDocument(null).body && obj!=null) {
-        if (ctx.parent!=null&&ctx.parent==obj) {
-          break;
-        }
-        if (obj.scrollTop && obj.scrollTop > 0) {
-            coordinates.top -= obj.scrollTop;
-        }
-        if (obj.scrollLeft && obj.scrollLeft > 0) {
-            coordinates.left -= obj.scrollLeft;
-        }
-        obj = obj.parentNode;
-        if (!obj && iframe) {
-            obj = iframe;
-            iframe = null;
-        }
+    coordinates.left += obj.offsetLeft + obj.clientLeft;
+    coordinates.top += obj.offsetTop + obj.clientTop;
+    obj = <HTMLElement>obj.offsetParent;
+    if (!obj && iframe) {
+      obj = iframe;
+      iframe = null;
     }
- }
+  }
+  obj = <HTMLElement>element;
+  iframe = ctx ? ctx.iframe : null;
+  while (obj !== getDocument(null).body && obj != null) {
+    if (ctx.parent != null && ctx.parent == obj) {
+      break;
+    }
+    if (obj.scrollTop && obj.scrollTop > 0) {
+      coordinates.top -= obj.scrollTop;
+    }
+    if (obj.scrollLeft && obj.scrollLeft > 0) {
+      coordinates.left -= obj.scrollLeft;
+    }
+    obj = <HTMLElement>obj.parentNode;
+    if (!obj && iframe) {
+      obj = iframe;
+      iframe = null;
+    }
+  }
+}

@@ -5,12 +5,10 @@ import { COMMON_NAMES } from './common-names';
 import { TinyMCE } from './tinymce.component';
 
 @Component({
-    moduleId: module.id,
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    //styleUrls: ['app.component.css'],
-    directives: [Mention, TinyMCE]
+  selector: 'app-root',
+  templateUrl: 'app/app.component.html',
+  //styleUrls: ['app/app.component.css'],
 })
 export class AppComponent {
-  items:string [] = COMMON_NAMES;
+  items: string[] = COMMON_NAMES;
 }

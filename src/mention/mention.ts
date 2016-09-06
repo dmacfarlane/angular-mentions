@@ -1,9 +1,7 @@
-import { Directive, ElementRef, Input } from "@angular/core";
-import { DynamicComponentLoader, ComponentRef, ViewContainerRef } from "@angular/core";
+import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
 
 import { MentionList } from './mention-list';
-import { getValue, insertValue } from './mention-utils';
-import { getCaretPosition, setCaretPosition } from './mention-utils';
+import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
 
 const KEY_BACKSPACE = 8;
 const KEY_TAB = 9;
@@ -27,7 +25,7 @@ const KEY_2 = 50;
   selector: '[mention]',
   host: {
     '(keydown)': 'keyHandler($event)',
-  },
+  }
 })
 export class Mention {
   items: string [];
@@ -37,29 +35,32 @@ export class Mention {
   escapePressed:boolean;
   iframe:any; // optional
   constructor(
-    private _element: ElementRef, 
-    private _dcl: DynamicComponentLoader,
+    private _element: ElementRef,
+    private _componentResolver: ComponentFactoryResolver,
     private _viewContainerRef: ViewContainerRef
   ) {}
+
+  @Input() triggerChar: string = "@";
 
   @Input() set mention(items:string []){
     this.items = items.sort();
   }
 
-  setIframe(iframe) {
+  setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
   }
 
-  stopEvent(event) {
-    if (!event.wasClick) {
+  stopEvent(event: any) {
+    //if (event instanceof KeyboardEvent) { // does not work for iframe
+    if (!event.wasClick) {  
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
     }
   }
 
-  keyHandler(event, nativeElement=this._element.nativeElement) {
-    let val = getValue(nativeElement);
+  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
     if (!charPressed) {
@@ -68,7 +69,7 @@ export class Mention {
         charPressed = String.fromCharCode(charCode + 32);
       }
       else if (event.shiftKey && charCode === KEY_2) {
-        charPressed = "@";
+        charPressed = this.triggerChar;
       }
       else {
         // TODO (dmacfarlane) fix this for non-alpha keys
@@ -76,24 +77,24 @@ export class Mention {
         charPressed = String.fromCharCode(event.which || event.keyCode);
       }
     }
-    if (event.keyCode==13 && event.wasClick && pos<this.startPos) {
+    if (event.keyCode == 13 && event.wasClick && pos < this.startPos) {
       // put caret back in position prior to contenteditable menu click
       pos = this.startNode.length;
       setCaretPosition(this.startNode, pos, this.iframe);
     }
     //console.log("keyHandler", this.startPos, pos, val, charPressed, event);
-    if (charPressed=="@") {
+    if (charPressed == this.triggerChar) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.escapePressed = false;
       this.showSearchList(nativeElement);
     }
-    else if (this.startPos>=0 && !this.escapePressed) {
-      if (event.keyCode!=KEY_SHIFT && pos>this.startPos) {
+    else if (this.startPos >= 0 && !this.escapePressed) {
+      if (event.keyCode != KEY_SHIFT && pos > this.startPos) {
         if (event.keyCode === KEY_SPACE) {
           this.startPos = -1;
         }
-        else if (event.keyCode === KEY_BACKSPACE && pos>0) {
+        else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
           this.searchList.hidden = this.escapePressed;
           pos--;
         }
@@ -101,8 +102,10 @@ export class Mention {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
             this.searchList.hidden = true;
+            // value is inserted without a trailing space for consistency
+            // between element types (div and iframe do not preserve the space)
             insertValue(nativeElement, this.startPos, pos,
-                        "@"+this.searchList.activeItem+" ", this.iframe);
+              this.triggerChar + this.searchList.activeItem, this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
@@ -140,28 +143,27 @@ export class Mention {
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
           }
-          let regEx = new RegExp("^"+mention.substring(1),"i");
-          let matches = this.items.filter(e=>e.match(regEx)!=null);
+          let regEx = new RegExp("^" + mention.substring(1), "i");
+          let matches = this.items.filter(e => e.match(regEx) != null);
           this.searchList.items = matches;
-          this.searchList.hidden = matches.length==0 || pos<=this.startPos;
+          this.searchList.hidden = matches.length == 0 || pos <= this.startPos;
         }
       }
     }
   }
 
-  showSearchList(nativeElement) {
-    if (this.searchList==null) {
-      this._dcl.loadNextToLocation(MentionList, this._viewContainerRef)
-        .then((containerRef: ComponentRef<MentionList>) => {
-          this.searchList = containerRef.instance;
-          this.searchList.items = this.items;
-          this.searchList.hidden = false;
-          this.searchList.position(nativeElement, this.iframe);
-          containerRef.instance['itemClick'].subscribe(ev => {
-            nativeElement.focus();
-            let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
-            this.keyHandler(fakeKeydown, nativeElement);            
-          });
+  showSearchList(nativeElement: HTMLInputElement) {
+    if (this.searchList == null) {
+      let componentFactory = this._componentResolver.resolveComponentFactory(MentionList);
+      let componentRef = this._viewContainerRef.createComponent(componentFactory);
+      this.searchList = componentRef.instance
+      this.searchList.items = this.items;
+      this.searchList.hidden = false;
+      this.searchList.position(nativeElement, this.iframe);
+      componentRef.instance['itemClick'].subscribe(() => {
+        nativeElement.focus();
+        let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
+        this.keyHandler(fakeKeydown, nativeElement);
       });
     }
     else {

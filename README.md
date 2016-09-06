@@ -36,7 +36,7 @@ Where `items` is a string array of the items to suggest. For example:
 
 - Remove debug (always)
 - Improve NPM package structure
-- Configurable prefix
+- Document configurable prefix
 - Configurable limit on number of items shown via config
 - Load items via http (config number of chars before search)
 - Styled menu items

@@ -50,15 +50,15 @@ var properties = [
 var isBrowser = (typeof window !== 'undefined');
 var isFirefox = (isBrowser && (<any>window).mozInnerScreenX != null);
 
-export function getCaretCoordinates(element, position, options=null) {
-  if(!isBrowser) {
+export function getCaretCoordinates(element, position, options = null) {
+  if (!isBrowser) {
     throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');
   }
 
   var debug = options && options.debug || false;
   if (debug) {
     var el = document.querySelector('#input-textarea-caret-position-mirror-div');
-    if ( el ) { el.parentNode.removeChild(el); }
+    if (el) { el.parentNode.removeChild(el); }
   }
 
   // mirrored div
@@ -67,7 +67,7 @@ export function getCaretCoordinates(element, position, options=null) {
   document.body.appendChild(div);
 
   var style = div.style;
-  var computed = window.getComputedStyle? getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
+  var computed = window.getComputedStyle ? getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
 
   // default textarea styles
   style.whiteSpace = 'pre-wrap';
