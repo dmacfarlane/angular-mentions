@@ -1,3 +1,5 @@
+import { browser, element, by, protractor } from 'protractor/globals';
+
 import { Ng2MentionsPage } from './app.po';
 
 describe('ng2-mentions App', function() {
@@ -95,7 +97,8 @@ describe('ng2-mentions App', function() {
       return el.getAttribute('value');
     }
     else if (tagName.length>0 && tagName[0]=='iframe') {
-      return browser.switchTo().frame('tmce_ifr').then( () => {
+      let iframe = browser.findElement(by.tagName("iframe"));
+      return browser.switchTo().frame(iframe).then( () => {
         let el = browser.driver.findElement(by.id('tinymce'));
         let text = el.getText();
         browser.switchTo().defaultContent();

@@ -16,13 +16,22 @@ To install and start the demo application:
 
 ### Usage
 
-Copy the mention folder into your own application, or install the package as a dependency using:
+Install the package as a dependency using:
 
     npm install --save ng2-mentions
 
 Add the CSS to your index.html:
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+Add the module to your module imports:
+
+    import { MentionModule } from 'ng2-mentions/mention/mention.module';
+
+    @NgModule({
+        imports: [ MentionModule ],
+        ...
+    })
 
 Add the `[mention]` directive to your input element:
 
