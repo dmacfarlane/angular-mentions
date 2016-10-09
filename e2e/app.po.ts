@@ -1,6 +1,6 @@
-import { browser, element, by } from 'protractor/globals';
+import { browser, element, by } from 'protractor';
 
-export class Ng2MentionsPage {
+export class Angular2MentionsPage {
   navigateTo() {
     return browser.get('/');
   }

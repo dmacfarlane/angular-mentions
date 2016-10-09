@@ -1,7 +1,7 @@
 {
   "project": {
-    "version": "1.0.0-beta.11-webpack.9-4",
-    "name": "ng2-mentions"
+    "version": "1.0.0-beta.17",
+    "name": "angular2-mentions"
   },
   "apps": [
     {

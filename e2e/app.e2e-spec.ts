@@ -1,13 +1,13 @@
-import { browser, element, by, protractor } from 'protractor/globals';
+import { browser, element, by, protractor } from 'protractor';
 
-import { Ng2MentionsPage } from './app.po';
+import { Angular2MentionsPage } from './app.po';
 
 describe('ng2-mentions App', function() {
   var EC = protractor.ExpectedConditions;
-  let page: Ng2MentionsPage;
+  let page: Angular2MentionsPage;
 
   beforeEach(() => {
-    page = new Ng2MentionsPage();
+    page = new Angular2MentionsPage();
   })
 
   let elements = 
