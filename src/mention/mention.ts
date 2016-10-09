@@ -17,7 +17,7 @@ const KEY_2 = 50;
 
 /**
  * Angular 2 Mentions.
- * https://github.com/dmacfarlane/ng2-mentions
+ * https://github.com/dmacfarlane/angular2-mentions
  *
  * Copyright (c) 2016 Dan MacFarlane
  */

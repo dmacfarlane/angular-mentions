@@ -10,7 +10,7 @@ and content editable fields. Not fully browser tested and comes without warranty
 To install and start the demo application:
 
     git clone https://github.com/dmacfarlane/angular2-mentions.git
-    cd ng2-mentions
+    cd angular2-mentions
     npm install
     ng serve
 

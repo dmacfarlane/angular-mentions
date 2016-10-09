@@ -2,7 +2,7 @@ import { browser, element, by, protractor } from 'protractor';
 
 import { Angular2MentionsPage } from './app.po';
 
-describe('ng2-mentions App', function() {
+describe('angular2-mentions App', function() {
   var EC = protractor.ExpectedConditions;
   let page: Angular2MentionsPage;
 

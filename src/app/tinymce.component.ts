@@ -7,7 +7,7 @@ declare var tinymce: any;
 
 /**
  * Angular 2 Mentions.
- * https://github.com/dmacfarlane/ng2-mentions
+ * https://github.com/dmacfarlane/angular2-mentions
  *
  * Example usage with TinyMCE.
  */
