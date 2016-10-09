@@ -18,7 +18,7 @@ To install and start the demo application:
 
 Install the package as a dependency using:
 
-    npm install --save ng2-mentions
+    npm install --save angular2-mentions
 
 Add the CSS to your index.html:
 
@@ -26,7 +26,7 @@ Add the CSS to your index.html:
 
 Add the module to your module imports:
 
-    import { MentionModule } from 'ng2-mentions/mention/mention.module';
+    import { MentionModule } from 'angular2-mentions/mention/mention.module';
 
     @NgModule({
         imports: [ MentionModule ],
