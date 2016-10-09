@@ -2,14 +2,14 @@
 
 Simple Angular 2 mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
 
-[Click here for a Demo](http://dmacfarlane.github.io/ng2-mentions/)
+[Click here for a Demo](http://dmacfarlane.github.io/angular2-mentions/)
 
 Provides auto-complete for mentions in text input fields, text areas,
 and content editable fields. Not fully browser tested and comes without warranty!
 
 To install and start the demo application:
 
-    git clone https://github.com/dmacfarlane/ng2-mentions.git
+    git clone https://github.com/dmacfarlane/angular2-mentions.git
     cd ng2-mentions
     npm install
     ng serve
