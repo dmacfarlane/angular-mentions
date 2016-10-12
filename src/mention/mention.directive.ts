@@ -90,7 +90,12 @@ export class MentionDirective {
       this.showSearchList(nativeElement);
     }
     else if (this.startPos >= 0 && !this.escapePressed) {
-      if (event.keyCode != KEY_SHIFT && pos > this.startPos) {
+      if (!event.shiftKey &&
+          !event.metaKey &&
+          !event.altKey &&
+          !event.ctrlKey &&
+          pos > this.startPos
+      ) {
         if (event.keyCode === KEY_SPACE) {
           this.startPos = -1;
         }
