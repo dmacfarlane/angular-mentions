@@ -56,6 +56,6 @@
     "typescript": "2.0.2"
   },
   "files": [
-    "src/mention"
+    "mention"
   ]
 }

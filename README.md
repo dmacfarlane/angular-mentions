@@ -26,7 +26,7 @@ Add the CSS to your index.html:
 
 Add the module to your module imports:
 
-    import { MentionModule } from 'angular2-mentions';
+    import { MentionModule } from 'angular2-mentions/mention/mention.module';
 
     @NgModule({
         imports: [ MentionModule ],
@@ -47,6 +47,7 @@ Where `items` is a string array of the items to suggest. For example:
 
 #### TODO:
 
+- Improve npm package structure
 - Improve menu positioning
 - Configurable limit on number of items shown
 - Load items via http service (configureable number of chars before search, and debounce requests)
