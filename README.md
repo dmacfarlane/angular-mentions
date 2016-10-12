@@ -41,11 +41,12 @@ Where `items` is a string array of the items to suggest. For example:
 
     var items:string [] = = ["Noah","Liam","Mason","Jacob",...
 
+#### Options
+
+- `[triggerChar]="@"` to specify the trigger char
+
 #### TODO:
 
-- Remove debug (always)
-- Improve NPM package structure
-- Document configurable prefix
-- Configurable limit on number of items shown via config
-- Load items via http (config number of chars before search)
-- Styled menu items
+- Improve menu positioning
+- Configurable limit on number of items shown
+- Load items via http service (configureable number of chars before search, and debounce requests)
