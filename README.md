@@ -26,7 +26,7 @@ Add the CSS to your index.html:
 
 Add the module to your module imports:
 
-    import { MentionModule } from 'angular2-mentions/mention/mention.module';
+    import { MentionModule } from 'angular2-mentions';
 
     @NgModule({
         imports: [ MentionModule ],
