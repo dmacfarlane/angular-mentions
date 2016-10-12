@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
-
-import { Mention } from '../mention/mention';
 import { COMMON_NAMES } from './common-names';
-import { TinyMCE } from './tinymce.component';
 
 @Component({
   selector: 'app-root',

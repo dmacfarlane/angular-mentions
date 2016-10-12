@@ -21,7 +21,7 @@ import { getCaretCoordinates } from './caret-coords';
     `,`
       [hidden] {
         display: none;
-      }      
+      }
     `],
   template: `
     <ul class="dropdown-menu scrollable-menu" [hidden]="hidden">
@@ -31,7 +31,7 @@ import { getCaretCoordinates } from './caret-coords';
     </ul>
     `
 })
-export class MentionList {
+export class MentionListComponent {
   items = [];
   activeIndex:number = 0;
   hidden = false;

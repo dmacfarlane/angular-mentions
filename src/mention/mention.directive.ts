@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
 
-import { MentionList } from './mention-list';
+import { MentionListComponent } from './mention-list.component';
 import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
 
 const KEY_BACKSPACE = 8;
@@ -27,11 +27,11 @@ const KEY_2 = 50;
     '(keydown)': 'keyHandler($event)',
   }
 })
-export class Mention {
+export class MentionDirective {
   items: string [];
   startPos:number;
   startNode;
-  searchList: MentionList;
+  searchList: MentionListComponent;
   escapePressed:boolean;
   iframe:any; // optional
   constructor(
@@ -52,7 +52,7 @@ export class Mention {
 
   stopEvent(event: any) {
     //if (event instanceof KeyboardEvent) { // does not work for iframe
-    if (!event.wasClick) {  
+    if (!event.wasClick) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -154,7 +154,7 @@ export class Mention {
 
   showSearchList(nativeElement: HTMLInputElement) {
     if (this.searchList == null) {
-      let componentFactory = this._componentResolver.resolveComponentFactory(MentionList);
+      let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance
       this.searchList.items = this.items;

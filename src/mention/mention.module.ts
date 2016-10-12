@@ -1,23 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
-import { Mention } from './mention';
-import { MentionList } from './mention-list';
+import { MentionDirective } from './mention.directive';
+import { MentionListComponent } from './mention-list.component';
 
 @NgModule({
     imports: [
         CommonModule
     ],
     exports: [
-        Mention,
-        MentionList
+        MentionDirective,
+        MentionListComponent
     ],
     entryComponents: [
-        MentionList
+        MentionListComponent
     ],
     declarations: [
-        Mention,
-        MentionList
+        MentionDirective,
+        MentionListComponent
     ]
 })
 export class MentionModule {

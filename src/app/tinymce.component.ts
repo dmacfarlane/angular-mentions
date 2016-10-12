@@ -1,6 +1,6 @@
 import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
 
-import { Mention } from '../mention/mention';
+import { MentionDirective } from '../mention/mention.directive';
 import { COMMON_NAMES } from './common-names';
 
 declare var tinymce: any;
@@ -23,7 +23,7 @@ declare var tinymce: any;
 })
 export class TinyMCE {
   @Input() htmlContent;
-  @ViewChild(Mention) mention: Mention;
+  @ViewChild(MentionDirective) mention: MentionDirective;
   protected items:string[] = COMMON_NAMES;
   constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
   ngAfterViewInit() {
