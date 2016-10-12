@@ -1,5 +1,5 @@
 export * from './caret-coords';
 export * from './mention-utils';
-export * from './mention-list';
-export * from './mention';
+export * from './mention-list.component';
+export * from './mention.directive';
 export * from './mention.module';
