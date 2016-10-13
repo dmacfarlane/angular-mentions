@@ -25,6 +25,7 @@ const KEY_2 = 50;
   selector: '[mention]',
   host: {
     '(keydown)': 'keyHandler($event)',
+    '(blur)': 'blurHandler()'
   }
 })
 export class MentionDirective {
@@ -155,6 +156,12 @@ export class MentionDirective {
         }
       }
     }
+  }
+
+  blurHandler() {
+    this.stopEvent(event);
+    this.searchList.hidden = true;
+    this.escapePressed = true;
   }
 
   showSearchList(nativeElement: HTMLInputElement) {
