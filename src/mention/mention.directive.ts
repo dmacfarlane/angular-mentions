@@ -150,7 +150,7 @@ export class MentionDirective {
           }
           const mentionWithoutTrigger = mention.substring(1);
           let matches = this.items.filter(
-              e => e.indexOf(mentionWithoutTrigger) !== -1 &&
+              e => e.indexOf(mentionWithoutTrigger) !== -1 ||
                    e.indexOf(mentionWithoutTrigger.toLowerCase()) !== -1
           );
           this.searchList.items = matches;
