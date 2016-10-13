@@ -43,7 +43,7 @@ export class MentionDirective {
   @Input() triggerChar: string = "@";
 
   /**
-   * If true, add the trigger char won't be added to the input field.
+   * If true, the trigger char won't be added to the input field.
    */
   @Input() removeTriggerChar: boolean = false;
 
