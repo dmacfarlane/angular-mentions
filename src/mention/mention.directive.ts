@@ -25,15 +25,16 @@ const KEY_2 = 50;
   selector: '[mention]',
   host: {
     '(keydown)': 'keyHandler($event)',
+    '(blur)': 'blurHandler($event)'
   }
 })
 export class MentionDirective {
-  items: string [];
-  startPos:number;
+  items: string[];
+  startPos: number;
   startNode;
   searchList: MentionListComponent;
-  escapePressed:boolean;
-  iframe:any; // optional
+  stopSearch: boolean;
+  iframe: any; // optional
   constructor(
     private _element: ElementRef,
     private _componentResolver: ComponentFactoryResolver,
@@ -59,6 +60,12 @@ export class MentionDirective {
     }
   }
 
+  blurHandler(event: any) {
+    this.stopEvent(event);
+    this.stopSearch = true;
+    this.searchList.hidden = true;
+  }  
+
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
@@ -77,7 +84,7 @@ export class MentionDirective {
         charPressed = String.fromCharCode(event.which || event.keyCode);
       }
     }
-    if (event.keyCode == 13 && event.wasClick && pos < this.startPos) {
+    if (event.keyCode == KEY_ENTER && event.wasClick && pos < this.startPos) {
       // put caret back in position prior to contenteditable menu click
       pos = this.startNode.length;
       setCaretPosition(this.startNode, pos, this.iframe);
@@ -86,10 +93,10 @@ export class MentionDirective {
     if (charPressed == this.triggerChar) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
-      this.escapePressed = false;
+      this.stopSearch = false;
       this.showSearchList(nativeElement);
     }
-    else if (this.startPos >= 0 && !this.escapePressed) {
+    else if (this.startPos >= 0 && !this.stopSearch) {
       if (!event.shiftKey &&
           !event.metaKey &&
           !event.altKey &&
@@ -100,7 +107,7 @@ export class MentionDirective {
           this.startPos = -1;
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
-          this.searchList.hidden = this.escapePressed;
+          this.searchList.hidden = this.stopSearch;
           pos--;
         }
         else if (!this.searchList.hidden) {
@@ -123,7 +130,7 @@ export class MentionDirective {
           else if (event.keyCode === KEY_ESCAPE) {
             this.stopEvent(event);
             this.searchList.hidden = true;
-            this.escapePressed = true;
+            this.stopSearch = true;
             return false;
           }
           else if (event.keyCode === KEY_DOWN) {
