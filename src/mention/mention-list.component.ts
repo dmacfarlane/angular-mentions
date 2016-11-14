@@ -1,4 +1,4 @@
-import { Component, ElementRef, Output, EventEmitter } from '@angular/core';
+import {Component, ElementRef, Output, EventEmitter, ViewChild} from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
@@ -24,7 +24,7 @@ import { getCaretCoordinates } from './caret-coords';
       }
     `],
   template: `
-    <ul class="dropdown-menu scrollable-menu" [hidden]="hidden">
+    <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
         <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
             <a class="text-primary" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
         </li>
@@ -33,8 +33,9 @@ import { getCaretCoordinates } from './caret-coords';
 })
 export class MentionListComponent {
   items = [];
-  activeIndex: number = 0;
+  activeIndex:number = 0;
   hidden: boolean = false;
+  @ViewChild('list') list : ElementRef;
   @Output() itemClick = new EventEmitter();
   constructor(private _element: ElementRef) {}
 
@@ -79,8 +80,19 @@ export class MentionListComponent {
   }
   activateNextItem() {
     this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);
+    this.list.nativeElement.scrollTop += this.getFirstLiOffset();
   }
   activatePreviousItem() {
     this.activeIndex = Math.max(Math.min(this.activeIndex - 1, this.items.length - 1), 0);
+    this.list.nativeElement.scrollTop -= this.getFirstLiOffset();
+  }
+
+  getFirstLiOffset(): number {
+    var firstLi: HTMLLIElement = this.list.nativeElement.getElementsByTagName('li').item(0);
+    return !firstLi ? 0 : firstLi.offsetHeight;
+  }
+
+  resetScroll() {
+    this.list.nativeElement.scrollTop = 0;
   }
 }
