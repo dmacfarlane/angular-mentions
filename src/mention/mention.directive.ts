@@ -64,7 +64,7 @@ export class MentionDirective {
     this.stopEvent(event);
     this.stopSearch = true;
     this.searchList.hidden = true;
-  }  
+  }
 
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
@@ -183,6 +183,7 @@ export class MentionDirective {
       this.searchList.items = this.items;
       this.searchList.hidden = false;
       this.searchList.position(nativeElement, this.iframe);
+      window.setTimeout(() => this.searchList.resetScroll());
     }
   }
 }
