@@ -47,6 +47,8 @@ export class MentionDirective {
     this.items = items.sort();
   }
 
+  @Input() mentionSelect: (selection: string) => (string) = (selection: string) => selection;
+
   setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
   }
@@ -64,7 +66,7 @@ export class MentionDirective {
     this.stopEvent(event);
     this.stopSearch = true;
     this.searchList.hidden = true;
-  }  
+  }
 
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
@@ -117,7 +119,7 @@ export class MentionDirective {
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
             insertValue(nativeElement, this.startPos, pos,
-              this.triggerChar + this.searchList.activeItem, this.iframe);
+              this.mentionSelect(this.triggerChar + this.searchList.activeItem), this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
