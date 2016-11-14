@@ -93,10 +93,10 @@
       "check-type"
     ],
 
-    "directive-selector-prefix": [true, "app"],
-    "component-selector-prefix": [true, "app"],
+    "directive-selector-prefix": [false, "app"],
+    "component-selector-prefix": [false, "app"],
     "directive-selector-name": [true, "camelCase"],
-    "component-selector-name": [true, "kebab-case"],
+    "component-selector-name": [false, "kebab-case"],
     "directive-selector-type": [true, "attribute"],
     "component-selector-type": [true, "element"],
     "use-input-property-decorator": true,

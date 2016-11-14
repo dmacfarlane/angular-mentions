@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { MentionModule } from '../mention/mention.module';
-import { TinyMCE } from './tinymce.component';
+import { TinyMCEComponent } from './tinymce.component';
 
 @NgModule({
   imports: [
@@ -12,7 +12,7 @@ import { TinyMCE } from './tinymce.component';
   ],
   declarations: [
     AppComponent,
-    TinyMCE
+    TinyMCEComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

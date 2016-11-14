@@ -18,7 +18,7 @@ import { getCaretCoordinates } from './caret-coords';
         max-height: 300px;
         overflow: auto;
       }
-    `,`
+    `, `
       [hidden] {
         display: none;
       }
@@ -52,12 +52,10 @@ export class MentionListComponent {
 
       coords.top = carret.top + parentRelativeToContainer.y + scrollTop + 16;
       coords.left = carret.left + parentRelativeToContainer.x + scrollLeft;
-    }
-    else if (iframe) {
+    } else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
       coords = getContentEditableCaretCoords(context);
-    }
-    else {
+    } else {
       let doc = document.documentElement;
       let scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
       let scrollTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
@@ -70,7 +68,7 @@ export class MentionListComponent {
       coords.left = caretRelativeToView.left - parentRelativeToContainer.x + nativeParentElement.offsetLeft - scrollLeft;
     }
     let el: HTMLElement = this._element.nativeElement;
-    el.style.position = "absolute";
+    el.style.position = 'absolute';
     el.style.left = coords.left + 'px';
     el.style.top = coords.top + 'px';
   }

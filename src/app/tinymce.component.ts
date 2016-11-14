@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
+import {Component, NgZone, Input, ViewChild, AfterViewInit} from '@angular/core';
 
 import { MentionDirective } from '../mention/mention.directive';
 import { COMMON_NAMES } from './common-names';
@@ -21,11 +21,11 @@ declare var tinymce: any;
       </div>
     </div>`
 })
-export class TinyMCE {
+export class TinyMCEComponent implements AfterViewInit {
   @Input() htmlContent;
   @ViewChild(MentionDirective) mention: MentionDirective;
-  protected items:string[] = COMMON_NAMES;
-  constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
+  protected items: string[] = COMMON_NAMES;
+  constructor(private _zone: NgZone) {}
   ngAfterViewInit() {
     tinymce.init({
       mode: 'exact',
@@ -36,8 +36,9 @@ export class TinyMCE {
         'searchreplace visualblocks code fullscreen',
         'insertdatetime media table contextmenu paste code'
       ],
-      toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-      elements: "tmce",
+      toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify |' +
+      ' bullist numlist outdent indent | link image',
+      elements: 'tmce',
       setup: this.tinySetup.bind(this)
     }
     );
