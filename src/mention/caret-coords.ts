@@ -5,7 +5,7 @@
 // Note that some browsers, such as Firefox,
 // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
 // so we have to do every single property specifically.
-var properties = [
+let properties = [
   'direction',  // RTL support
   'boxSizing',
   'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
@@ -47,37 +47,39 @@ var properties = [
 
 ];
 
-var isBrowser = (typeof window !== 'undefined');
-var isFirefox = (isBrowser && (<any>window).mozInnerScreenX != null);
+let isBrowser = (typeof window !== 'undefined');
+let isFirefox = (isBrowser && (<any>window).mozInnerScreenX != null);
 
 export function getCaretCoordinates(element, position, options = null) {
   if (!isBrowser) {
     throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');
   }
 
-  var debug = options && options.debug || false;
+  let debug = options && options.debug || false;
   if (debug) {
-    var el = document.querySelector('#input-textarea-caret-position-mirror-div');
+    let el = document.querySelector('#input-textarea-caret-position-mirror-div');
     if (el) { el.parentNode.removeChild(el); }
   }
 
   // mirrored div
-  var div = document.createElement('div');
+  let div = document.createElement('div');
   div.id = 'input-textarea-caret-position-mirror-div';
   document.body.appendChild(div);
 
-  var style = div.style;
-  var computed = window.getComputedStyle ? getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
+  let style = div.style;
+  let computed = window.getComputedStyle ? getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
 
   // default textarea styles
   style.whiteSpace = 'pre-wrap';
-  if (element.nodeName !== 'INPUT')
+  if (element.nodeName !== 'INPUT') {
     style.wordWrap = 'break-word';  // only for textarea-s
+  }
 
   // position off-screen
   style.position = 'absolute';  // required to return coordinates properly
-  if (!debug)
+  if (!debug) {
     style.visibility = 'hidden';  // not 'display: none' because we want rendering
+  }
 
   // transfer the element's properties to the div
   properties.forEach(function (prop) {
@@ -86,18 +88,21 @@ export function getCaretCoordinates(element, position, options = null) {
 
   if (isFirefox) {
     // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
-    if (element.scrollHeight > parseInt(computed.height))
+    if (element.scrollHeight > parseInt(computed.height, 10)) {
       style.overflowY = 'scroll';
+    }
   } else {
     style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
   }
 
   div.textContent = element.value.substring(0, position);
-  // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
-  if (element.nodeName === 'INPUT')
+  // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces
+  // http://stackoverflow.com/a/13402035/1269037
+  if (element.nodeName === 'INPUT') {
     div.textContent = div.textContent.replace(/\s/g, '\u00a0');
+  }
 
-  var span = document.createElement('span');
+  let span = document.createElement('span');
   // Wrapping must be replicated *exactly*, including when a long word gets
   // onto the next line, with whitespace at the end of the line before (#7).
   // The  *only* reliable way to do that is to copy the *entire* rest of the
@@ -106,9 +111,9 @@ export function getCaretCoordinates(element, position, options = null) {
   span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
   div.appendChild(span);
 
-  var coordinates = {
-    top: span.offsetTop + parseInt(computed['borderTopWidth']),
-    left: span.offsetLeft + parseInt(computed['borderLeftWidth'])
+  let coordinates = {
+    top: span.offsetTop + parseInt(computed['borderTopWidth'], 10),
+    left: span.offsetLeft + parseInt(computed['borderLeftWidth'], 10)
   };
 
   if (debug) {

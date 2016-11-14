@@ -2,11 +2,10 @@
 //
 
 function setValue(el: HTMLInputElement, value: any) {
-  //console.log("setValue", el.nodeName, "["+value+"]");
+  // console.log("setValue", el.nodeName, "["+value+"]");
   if (isInputOrTextAreaElement(el)) {
     el.value = value;
-  }
-  else {
+  } else {
     el.textContent = value;
   }
 }
@@ -21,20 +20,19 @@ export function insertValue(
   end: number,
   text: string,
   iframe: HTMLIFrameElement,
-  noRecursion: boolean = false
+  noRecursion = false
 ) {
-  //console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
+  // console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
   if (isTextElement(el)) {
     let val = getValue(el);
     setValue(el, val.substring(0, start) + text + val.substring(end, val.length));
     setCaretPosition(el, start + text.length, iframe);
-  }
-  else if (!noRecursion) {
+  } else if (!noRecursion) {
     let selObj: Selection = getWindowSelection(iframe);
     if (selObj && selObj.rangeCount > 0) {
-      var selRange = selObj.getRangeAt(0);
-      var position = selRange.startOffset;
-      var anchorNode = selObj.anchorNode;
+      let selRange = selObj.getRangeAt(0);
+      let position = selRange.startOffset;
+      let anchorNode = selObj.anchorNode;
       // if (text.endsWith(' ')) {
       //   text = text.substring(0, text.length-1) + '\xA0';
       // }
@@ -44,20 +42,19 @@ export function insertValue(
 }
 
 export function isInputOrTextAreaElement(el: HTMLElement): boolean {
-  return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA');
-};
+  return el != null && (el.nodeName === 'INPUT' || el.nodeName === 'TEXTAREA');
+}
 
 export function isTextElement(el: HTMLElement): boolean {
-  return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA' || el.nodeName == '#text');
-};
+  return el != null && (el.nodeName === 'INPUT' || el.nodeName === 'TEXTAREA' || el.nodeName === '#text');
+}
 
 export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTMLIFrameElement = null) {
-  //console.log("setCaretPosition", pos, el, iframe==null);
+  // console.log("setCaretPosition", pos, el, iframe==null);
   if (isInputOrTextAreaElement(el) && el.selectionStart) {
     el.focus();
     el.setSelectionRange(pos, pos);
-  }
-  else {
+  } else {
     let range = getDocument(iframe).createRange();
     range.setStart(el, pos);
     range.collapse(true);
@@ -68,17 +65,14 @@ export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTML
 }
 
 export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement = null) {
-  //console.log("getCaretPosition", el);
+  // console.log("getCaretPosition", el);
   if (isInputOrTextAreaElement(el)) {
-    var val = el.value;
-    return val.slice(0, el.selectionStart).length;
-  }
-  else {
-    var selObj = getWindowSelection(iframe); //window.getSelection();
-    if (selObj.rangeCount>0) {
-      var selRange = selObj.getRangeAt(0);
-      var position = selRange.startOffset;
-      return position;
+    return el.value.slice(0, el.selectionStart).length;
+  } else {
+    let selObj = getWindowSelection(iframe); // window.getSelection();
+    if (selObj.rangeCount > 0) {
+      let selRange = selObj.getRangeAt(0);
+      return selRange.startOffset;
     }
   }
 }
@@ -136,14 +130,14 @@ export function getContentEditableCaretCoords(ctx: { iframe: HTMLIFrameElement, 
 }
 
 function localToRelativeCoordinates(
-  ctx: { iframe: HTMLIFrameElement, parent?: Element }, 
-  element: Element, 
+  ctx: { iframe: HTMLIFrameElement, parent?: Element },
+  element: Element,
   coordinates: { top: number; left: number }
 ) {
   let obj = <HTMLElement>element;
   let iframe = ctx ? ctx.iframe : null;
   while (obj) {
-    if (ctx.parent != null && ctx.parent == obj) {
+    if (!!ctx.parent && ctx.parent === obj) {
       break;
     }
     coordinates.left += obj.offsetLeft + obj.clientLeft;
@@ -156,8 +150,8 @@ function localToRelativeCoordinates(
   }
   obj = <HTMLElement>element;
   iframe = ctx ? ctx.iframe : null;
-  while (obj !== getDocument(null).body && obj != null) {
-    if (ctx.parent != null && ctx.parent == obj) {
+  while (obj !== getDocument(null).body && !!obj) {
+    if (!!ctx.parent && ctx.parent === obj) {
       break;
     }
     if (obj.scrollTop && obj.scrollTop > 0) {
