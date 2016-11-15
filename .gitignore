@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /tmp
+/aot
 # module dist
 /mention
 
