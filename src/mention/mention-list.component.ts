@@ -1,4 +1,4 @@
-import { Component, ElementRef, Output, EventEmitter } from '@angular/core';
+import {Component, ElementRef, Output, EventEmitter, ViewChild} from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
@@ -24,7 +24,7 @@ import { getCaretCoordinates } from './caret-coords';
       }
     `],
   template: `
-    <ul class="dropdown-menu scrollable-menu" [hidden]="hidden">
+    <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
         <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
             <a class="text-primary" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
         </li>
@@ -35,6 +35,7 @@ export class MentionListComponent {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
+  @ViewChild('list') list : ElementRef;
   @Output() itemClick = new EventEmitter();
   constructor(private _element: ElementRef) {}
 
@@ -74,13 +75,46 @@ export class MentionListComponent {
     el.style.left = coords.left + 'px';
     el.style.top = coords.top + 'px';
   }
+
   get activeItem() {
     return this.items[this.activeIndex];
   }
+
   activateNextItem() {
-    this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);
+    // adjust scrollable-menu offset if the next item is out of view
+    let listEl: HTMLElement = this.list.nativeElement;
+    let activeEl = listEl.getElementsByClassName('active').item(0);
+    if (activeEl) {
+      let nextLiEl: HTMLElement = <HTMLElement> activeEl.nextSibling;
+      if (nextLiEl && nextLiEl.nodeName == "LI") {
+        let nextLiRect: ClientRect = nextLiEl.getBoundingClientRect();
+        if (nextLiRect.bottom > listEl.getBoundingClientRect().bottom) {
+          listEl.scrollTop = nextLiEl.offsetTop + nextLiRect.height - listEl.clientHeight;
+        }
+      }
+    }
+    // select the next item
+    this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);    
   }
+
   activatePreviousItem() {
+    // adjust the scrollable-menu offset if the previous item is out of view
+    let listEl: HTMLElement = this.list.nativeElement;
+    let activeEl = listEl.getElementsByClassName('active').item(0);
+    if (activeEl) {
+      let prevLiEl: HTMLElement = <HTMLElement> activeEl.previousSibling;
+      if (prevLiEl && prevLiEl.nodeName == "LI") {
+        let prevLiRect: ClientRect = prevLiEl.getBoundingClientRect();
+        if (prevLiRect.top < listEl.getBoundingClientRect().top) {
+          listEl.scrollTop = prevLiEl.offsetTop;
+        }
+      }
+    }
+    // select the previous item
     this.activeIndex = Math.max(Math.min(this.activeIndex - 1, this.items.length - 1), 0);
+  }
+  
+  resetScroll() {
+    this.list.nativeElement.scrollTop = 0;
   }
 }
