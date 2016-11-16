@@ -43,6 +43,11 @@ export class MentionDirective {
 
   @Input() triggerChar: string = "@";
 
+  /**
+   * If true, the trigger char won't be added to the input field.
+   */
+  @Input() removeTriggerChar: boolean = false;
+
   @Input() set mention(items:string []){
     this.items = items.sort();
   }
@@ -116,8 +121,14 @@ export class MentionDirective {
             this.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-            insertValue(nativeElement, this.startPos, pos,
-              this.triggerChar + this.searchList.activeItem, this.iframe);
+            insertValue(
+              nativeElement,
+              this.startPos,
+              pos,
+              (!this.removeTriggerChar ? this.triggerChar : '')
+                  + this.searchList.activeItem,
+              this.iframe
+            );
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
@@ -155,7 +166,10 @@ export class MentionDirective {
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
           }
-          let regEx = new RegExp("^" + mention.substring(1), "i");
+          let regEx = new RegExp(
+              "^" + this.removeTriggerChar ? mention : mention.substring(1),
+              "i"
+          );
           let matches = this.items.filter(e => e.match(regEx) != null);
           this.searchList.items = matches;
           this.searchList.hidden = matches.length == 0 || pos <= this.startPos;
