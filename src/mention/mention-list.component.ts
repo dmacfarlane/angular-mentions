@@ -43,11 +43,6 @@ export class MentionListComponent {
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
-
-// -      coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-// -      coords.top = nativeParentElement.offsetTop + coords.top + 16;
-// -      coords.left = nativeParentElement.offsetLeft + coords.left;
-
       let doc = document.documentElement;
       let scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
       let scrollTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
