@@ -43,16 +43,21 @@ export class MentionListComponent {
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
+
+// -      coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
+// -      coords.top = nativeParentElement.offsetTop + coords.top + 16;
+// -      coords.left = nativeParentElement.offsetLeft + coords.left;
+
       let doc = document.documentElement;
       let scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
       let scrollTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 
       // bounding rectangles are relative to view, offsets are relative to container?
       let carret = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-      let parentRelativeToContainer: any = nativeParentElement.getBoundingClientRect();
+      let parentRelativeToContainer: ClientRect = nativeParentElement.getBoundingClientRect();
 
-      coords.top = carret.top + parentRelativeToContainer.y + scrollTop + 16;
-      coords.left = carret.left + parentRelativeToContainer.x + scrollLeft;
+      coords.top = carret.top + parentRelativeToContainer.top + scrollTop + 16;
+      coords.left = carret.left + parentRelativeToContainer.left + scrollLeft;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
@@ -65,10 +70,10 @@ export class MentionListComponent {
 
       // bounding rectangles are relative to view, offsets are relative to container?
       let caretRelativeToView = getContentEditableCaretCoords({ iframe: iframe });
-      let parentRelativeToContainer: any = nativeParentElement.getBoundingClientRect();
+      let parentRelativeToContainer: ClientRect = nativeParentElement.getBoundingClientRect();
 
-      coords.top = caretRelativeToView.top - parentRelativeToContainer.y + nativeParentElement.offsetTop - scrollTop;
-      coords.left = caretRelativeToView.left - parentRelativeToContainer.x + nativeParentElement.offsetLeft - scrollLeft;
+      coords.top = caretRelativeToView.top - parentRelativeToContainer.top + nativeParentElement.offsetTop - scrollTop;
+      coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
     let el: HTMLElement = this._element.nativeElement;
     el.style.position = "absolute";
