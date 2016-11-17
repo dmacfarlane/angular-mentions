@@ -65,7 +65,9 @@ export class MentionDirective {
   blurHandler(event: any) {
     this.stopEvent(event);
     this.stopSearch = true;
-    this.searchList.hidden = true;
+    if (this.searchList) {
+      this.searchList.hidden = true;
+    }
   }
 
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
