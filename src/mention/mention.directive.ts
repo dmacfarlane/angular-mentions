@@ -172,7 +172,7 @@ export class MentionDirective {
     if (this.searchList == null) {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
-      this.searchList = componentRef.instance
+      this.searchList = componentRef.instance;
       this.searchList.items = this.items;
       this.searchList.hidden = false;
       this.searchList.position(nativeElement, this.iframe);

@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
+    "sourceMap": false,
     "declaration": true,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "../../mention",
-    "sourceMap": false,
     "target": "es5",
+    "lib": ["es2016", "dom"],
+    "module": "commonjs",
+    "outDir": "../../mention",
     "typeRoots": [
       "../../node_modules/@types"
     ]

@@ -1,4 +1,4 @@
-import {Component, ElementRef, Output, EventEmitter, ViewChild} from '@angular/core';
+import { Component, ElementRef, Output, EventEmitter, ViewChild } from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';

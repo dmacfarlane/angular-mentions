@@ -37,17 +37,23 @@ describe('angular2-mentions App', function() {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
     let el = element.all(by.id('tmce_ifr'));
+    // iframe testing workaround - sendKeys is not working unless menu is opened first
+    // this wasn't needed in previous versions of angular/protractor
+    el.click();
+    el.sendKeys('@');
+    el.sendKeys(protractor.Key.BACK_SPACE);
+    // end iframe testing workaround
     testMentions(el);
   });
 
   function testMentions(el){
     el.getTagName().then(function(tagName){
-      let menu = element(by.css('.dropdown-menu'));      
+      let menu = element(by.css('.dropdown-menu'));
       el.click();
-            
+      expect(getValue(el, tagName)).toEqual('');
+
       // popup menu
       el.sendKeys('Hello @');
-      browser.sleep(500);
       //browser.wait(EC.textToBePresentInElementValue(el, 'Hello @'), 1000);
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @');
@@ -56,37 +62,31 @@ describe('angular2-mentions App', function() {
       //el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
       // select mention by clicking mouse on second item in menu
       element(by.css('.dropdown-menu li:nth-child(2) a')).click();
-      browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron');
       
       // select another mention
       el.sendKeys(' and @gav', protractor.Key.ENTER);
-      browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin');
       
       // start another mention
       el.sendKeys(' and @e');
-      browser.sleep(500);
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
       
       // but press escape instead
       el.sendKeys(protractor.Key.ESCAPE);
-      browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
       
       // remove the escaped entry
       el.sendKeys('!!', protractor.Key.ARROW_LEFT, protractor.Key.ARROW_LEFT);
       el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
-      browser.sleep(500);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and !!');
       
       // and insert another mention
       el.sendKeys('@he', protractor.Key.ENTER);
-      browser.sleep(500);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @Henry!!');
     });  
@@ -101,9 +101,9 @@ describe('angular2-mentions App', function() {
       return browser.switchTo().frame(iframe).then( () => {
         let el = browser.driver.findElement(by.id('tinymce'));
         let text = el.getText();
-        browser.switchTo().defaultContent();
-        browser.waitForAngular();
-        return text;
+        return browser.switchTo().defaultContent().then(()=>{
+          return browser.waitForAngular().then(()=>{return text});
+        });
       });              
     }
     else {
