@@ -44,7 +44,7 @@ Where `items` is a string array of the items to suggest. For example:
 
 #### Options
 
-- `[mentionSelect]="formatter"` to specify a function to call when the user has picked an item in the menu.
+- `[mentionSelect]="formatter"` to specify a optional function to format the selected item before inserting the text.
 - `[triggerChar]="@"` to specify the character that should trigger the menu behavior. The default value is '@'.
 
 
