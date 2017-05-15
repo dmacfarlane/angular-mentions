@@ -159,8 +159,11 @@ export class MentionDirective {
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
           }
-          let regEx = new RegExp("^" + mention.substring(1), "i");
-          let matches = this.items.filter(e => e.match(regEx) != null);
+          const mentionWithoutTrigger = mention.substring(1);
+          let matches = this.items.filter(
+              e => e.indexOf(mentionWithoutTrigger) !== -1 ||
+                   e.indexOf(mentionWithoutTrigger.toLowerCase()) !== -1
+          );
           this.searchList.items = matches;
           this.searchList.hidden = matches.length == 0 || pos <= this.startPos;
         }
