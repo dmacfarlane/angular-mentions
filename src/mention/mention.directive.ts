@@ -101,7 +101,8 @@ export class MentionDirective {
       this.showSearchList(nativeElement);
     }
     else if (this.startPos >= 0 && !this.stopSearch) {
-      if (!event.shiftKey &&
+      // ignore shift when pressed alone, but not when used with another key
+      if (event.keyCode !== KEY_SHIFT &&
           !event.metaKey &&
           !event.altKey &&
           !event.ctrlKey &&

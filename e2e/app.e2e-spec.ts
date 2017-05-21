@@ -86,7 +86,7 @@ describe('angular2-mentions App', function() {
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and !!');
       
       // and insert another mention
-      el.sendKeys('@he', protractor.Key.ENTER);
+      el.sendKeys('@HE', protractor.Key.ENTER);
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @Henry!!');
     });  
