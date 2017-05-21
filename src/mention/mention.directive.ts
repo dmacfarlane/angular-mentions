@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
+import { EventEmitter, Output } from "@angular/core";
 
 import { MentionListComponent } from './mention-list.component';
 import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
@@ -19,7 +20,7 @@ const KEY_2 = 50;
  * Angular 2 Mentions.
  * https://github.com/dmacfarlane/angular2-mentions
  *
- * Copyright (c) 2016 Dan MacFarlane
+ * Copyright (c) 2017 Dan MacFarlane
  */
 @Directive({
   selector: '[mention]',
@@ -29,8 +30,9 @@ const KEY_2 = 50;
   }
 })
 export class MentionDirective {
-  items: string[];
+  searchString: string;
   startPos: number;
+  items: any[];
   startNode;
   searchList: MentionListComponent;
   stopSearch: boolean;
@@ -43,11 +45,41 @@ export class MentionDirective {
 
   @Input() triggerChar: string = "@";
 
-  @Input() set mention(items:string []){
-    this.items = items.sort();
+  @Input() set mention(items:any[]){
+    if (items && items.length>0) {
+      if (typeof items[0] == 'string') {
+        // convert strings to objects
+        const me = this;
+        this.items = items.map(function(label){ 
+          let object = {};
+          object[me.labelKey] = label;
+          return object;
+        });
+      }
+      else {
+        this.items = items;
+      }
+      // remove items without an objectKey (label)
+      this.items = this.items.filter(e => e[this.labelKey]);
+      this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
+      this.updateSearchList();
+    }
   }
 
   @Input() mentionSelect: (selection: string) => (string) = (selection: string) => selection;
+
+  // option to specify the field in the objects to be used as the item label
+  @Input() labelKey = 'label';
+
+  // option to diable internal filtering. can be used to show the full list returned 
+  // from an async operation (or allows a custom filter function to be used - in future)
+  @Input() disableSearch:boolean = false;
+  
+  // option to limit the number of items shown in the pop-up menu
+  @Input() maxItems:number = -1;
+
+  // event emitted whenever the search term changes
+  @Output() searchTerm = new EventEmitter();
 
   setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
@@ -99,10 +131,14 @@ export class MentionDirective {
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.stopSearch = false;
       this.showSearchList(nativeElement);
+      this.updateSearchList();
     }
     else if (this.startPos >= 0 && !this.stopSearch) {
+      if (pos <= this.startPos) {
+        this.searchList.hidden = true;
+      }
       // ignore shift when pressed alone, but not when used with another key
-      if (event.keyCode !== KEY_SHIFT &&
+      else if (event.keyCode !== KEY_SHIFT &&
           !event.metaKey &&
           !event.altKey &&
           !event.ctrlKey &&
@@ -155,17 +191,36 @@ export class MentionDirective {
           return false;
         }
         else {
-          // update search
           let mention = val.substring(this.startPos + 1, pos);
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
           }
-          let searchString = mention.toLowerCase();
-          let matches = this.items.filter(e => e.toLowerCase().startsWith(searchString));
-          this.searchList.items = matches;
-          this.searchList.hidden = matches.length == 0 || pos <= this.startPos;
+          this.searchString = mention;
+          this.searchTerm.emit(this.searchString);
+          this.updateSearchList();
         }
       }
+    }
+  }
+
+  updateSearchList() {
+    let matches: string[] = [];
+    if (this.items) {
+      let objects = this.items;
+      // disabling the search relies on the async operation to do the filtering
+      if (!this.disableSearch && this.searchString) {
+        let searchStringLowerCase = this.searchString.toLowerCase();
+        objects = this.items.filter(e => e[this.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+      }
+      matches = objects.map(e => e[this.labelKey]);
+      if (this.maxItems > 0) {
+        matches = matches.slice(0, this.maxItems);
+      }
+    }
+    // update the search list
+    if (this.searchList) {
+      this.searchList.items = matches;
+      this.searchList.hidden = matches.length == 0;
     }
   }
 
@@ -174,8 +229,6 @@ export class MentionDirective {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance;
-      this.searchList.items = this.items;
-      this.searchList.hidden = this.items.length==0;
       this.searchList.position(nativeElement, this.iframe);
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
@@ -185,8 +238,6 @@ export class MentionDirective {
     }
     else {
       this.searchList.activeIndex = 0;
-      this.searchList.items = this.items;
-      this.searchList.hidden = this.items.length==0;
       this.searchList.position(nativeElement, this.iframe);
       window.setTimeout(() => this.searchList.resetScroll());
     }
