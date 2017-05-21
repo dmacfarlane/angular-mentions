@@ -155,12 +155,12 @@ export class MentionDirective {
         }
         else {
           // update search
-          let mention = val.substring(this.startPos, pos);
+          let mention = val.substring(this.startPos + 1, pos);
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
           }
-          let regEx = new RegExp("^" + mention.substring(1), "i");
-          let matches = this.items.filter(e => e.match(regEx) != null);
+          let searchString = mention.toLowerCase();
+          let matches = this.items.filter(e => e.toLowerCase().startsWith(searchString));
           this.searchList.items = matches;
           this.searchList.hidden = matches.length == 0 || pos <= this.startPos;
         }
