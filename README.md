@@ -47,7 +47,7 @@ Where `items` is a string array of the items to suggest. For example:
 - `[triggerChar]="@"` to specify the character that should trigger the menu behavior. The default value is '@'.
 - `[maxItems]="10"` to limit the number of items shown in the pop-up menu. The default is no limit.
 - `[mentionSelect]="formatter"` to specify a optional function to format the selected item before inserting the text.
-- `[labelKey]="label"` to specify the field to be used as the item label (when the items are objects).
+- `[labelKey]="'label'"` to specify the field to be used as the item label (when the items are objects).
 - `[disableSearch]="true"` to disable internal filtering (only useful if async search is used).
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
 

@@ -69,7 +69,7 @@ export class MentionDirective {
   @Input() mentionSelect: (selection: string) => (string) = (selection: string) => selection;
 
   // option to specify the field in the objects to be used as the item label
-  @Input() labelKey = 'label';
+  @Input() labelKey:string = 'label';
 
   // option to diable internal filtering. can be used to show the full list returned 
   // from an async operation (or allows a custom filter function to be used - in future)

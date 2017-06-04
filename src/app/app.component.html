@@ -7,8 +7,8 @@ and content editable fields. Try entering some @names below.</p>
 <h3>Minimal</h3>
 <input [mention]="items" class="form-control" type="text">
 
-<h3>Minimal Async</h3>
-<input [mention]="httpItems | async" class="form-control" type="text" (searchTerm)='search($event)'>
+<!--<h3>Minimal Async</h3>
+<input [mention]="httpItems | async" [labelKey]="'label'" class="form-control" type="text" (searchTerm)='search($event)'>-->
 
 <h3>Textarea</h3>
 <textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>

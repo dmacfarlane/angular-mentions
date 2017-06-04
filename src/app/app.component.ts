@@ -18,8 +18,8 @@ import { COMMON_NAMES } from './common-names';
 })
 export class AppComponent {
   items: string[] = COMMON_NAMES;
-  httpItems: Observable<string[]>;
-  private searchTermStream = new Subject<string>();
+  httpItems: Observable<any[]>;
+  private searchTermStream = new Subject();
   ngOnInit() {
     this.httpItems = this.searchTermStream
       .debounceTime(300)
@@ -32,13 +32,13 @@ export class AppComponent {
 
   // this should be in a separate app.service.ts file
   constructor(private http: Http) { }
-  getItems(term): Promise<string[]> {
+  getItems(term): Promise<any[]> {
     console.log('getItems:', term);
     // return this.http.get('api/names') // get all names
     return this.http.get('api/objects?label='+term) // get filtered names
                .toPromise()
                .then(data => {console.log(data); return data})
-               .then(response => response.json().data as string[])
+               .then(response => response.json().data)
                .catch(this.handleError);
   }
   handleError(e) {
