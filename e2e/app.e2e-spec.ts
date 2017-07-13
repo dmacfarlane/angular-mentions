@@ -15,7 +15,7 @@ describe('angular2-mentions App', function() {
   it('test mentions text field', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
-    let el = element(by.css('input'));
+    let el = element.all(by.css('input')).first();
     testMentions(el);
   });
 
