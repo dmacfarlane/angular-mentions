@@ -1,20 +1,20 @@
 <h1>Angular 2 Mentions</h1>
 
-<p>Simple Angular2 mentions inspired by <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
+<p>Simple Angular mentions inspired by <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
 <p style="color:grey">Supports auto-complete for mentions in text input fields, text areas,
 and content editable fields. Try entering some @names below.</p>
 
 <h3>Minimal</h3>
-<input [mention]="items" class="form-control" type="text">
+<input [mention]="items" type="text" class="form-control" autocomplete="off">
 
 <!--<h3>Minimal Async</h3>
 <input [mention]="httpItems | async" [labelKey]="'label'" class="form-control" type="text" (searchTerm)='search($event)'>-->
 
 <h3>Textarea</h3>
-<textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>
+<textarea [mention]="items" class="form-control" autocomplete="off" cols="60" rows="4"></textarea>
 
 <h3>Content Editable</h3>
-<div [mention]="items" class="form-control" contenteditable="true" style="border:1px lightgrey solid;min-height:88px"></div>
+<div [mention]="items" class="form-control" contenteditable="true" autocomplete="off" style="border:1px lightgrey solid;min-height:88px"></div>
 
 <h3>Embedded Editor</h3>
 <tinymce></tinymce>
