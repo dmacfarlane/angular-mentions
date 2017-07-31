@@ -4,7 +4,27 @@ import { MentionDirective } from '../mention/mention.directive';
 import { COMMON_NAMES } from './common-names';
 import { Mentionable } from '../mention/mentionable';
 
-declare var tinymce: any;
+import * as tinymce from 'tinymce';
+import 'tinymce/themes/modern';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/charmap';
+import 'tinymce/plugins/print';
+import 'tinymce/plugins/preview';
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/visualblocks';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/fullscreen';
+import 'tinymce/plugins/insertdatetime';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/contextmenu';
+import 'tinymce/plugins/paste';
+import 'tinymce/plugins/code';
 
 /**
  * Angular 2 Mentions.
@@ -35,7 +55,7 @@ export class TinyMCE {
 	constructor(private _elementRef: ElementRef, private _zone: NgZone) { }
 	ngAfterViewInit() {
 		tinymce.init({
-			mode: 'exact',
+			selector: "#tmce",
 			height: 100,
 			theme: 'modern',
 			plugins: [
@@ -43,8 +63,8 @@ export class TinyMCE {
 				'searchreplace visualblocks code fullscreen',
 				'insertdatetime media table contextmenu paste code'
 			],
+			skin_url: 'assets/tinymce/skins/lightgray',
 			toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-			elements: "tmce",
 			setup: this.tinySetup.bind(this)
 		}
 		);

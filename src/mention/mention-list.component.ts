@@ -12,18 +12,7 @@ import { getCaretCoordinates } from './caret-coords';
  */
 @Component({
   selector: 'mention-list',
-  styles: [`
-      .scrollable-menu {
-        display: block;
-        height: auto;
-        max-height: 300px;
-        overflow: auto;
-      }
-    `,`
-      [hidden] {
-        display: none;
-      }
-    `],
+  styleUrls: ['./mention-list.component.css'],
   template: `
     <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
 				<li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
