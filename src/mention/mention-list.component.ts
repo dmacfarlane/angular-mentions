@@ -1,4 +1,5 @@
-import { Component, ElementRef, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Mentionable } from './mentionable';
+import { Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef } from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
@@ -25,18 +26,21 @@ import { getCaretCoordinates } from './caret-coords';
     `],
   template: `
     <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
-        <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
-            <a class="text-primary" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
+				<li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
+						<a class="text-primary" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
+							<ng-template [ngTemplateOutlet]="listTemplate" [ngOutletContext]="{'item': item}"></ng-template>
+						</a>
         </li>
     </ul>
     `
 })
 export class MentionListComponent {
-  items = [];
+  items: Mentionable[] = [];
   activeIndex: number = 0;
   hidden: boolean = false;
   @ViewChild('list') list : ElementRef;
-  @Output() itemClick = new EventEmitter();
+	@Output() itemClick = new EventEmitter();
+	@Input() listTemplate: TemplateRef<any>;
   constructor(private _element: ElementRef) {}
 
   // lots of confusion here between relative coordinates and containers
