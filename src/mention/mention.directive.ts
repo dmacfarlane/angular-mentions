@@ -221,22 +221,22 @@ export class MentionDirective {
 	}
 
 	showSearchList(nativeElement: HTMLInputElement) {
-		// if (this.searchList === null) {
-		let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
-		let componentRef = this._viewContainerRef.createComponent(componentFactory);
-		this.searchList = componentRef.instance;
-		this.searchList.position(nativeElement, this.iframe);
-		componentRef.instance['itemClick'].subscribe(() => {
-			nativeElement.focus();
-			let fakeKeydown = { "keyCode": KEY_ENTER, "wasClick": true };
-			this.keyHandler(fakeKeydown, nativeElement);
-		});
-		// }	else {
-		this.searchList.activeIndex = 0;
-		this.searchList.position(nativeElement, this.iframe);
+		if (this.searchList === undefined) {
+			let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
+			let componentRef = this._viewContainerRef.createComponent(componentFactory);
+			this.searchList = componentRef.instance;
+			this.searchList.position(nativeElement, this.iframe);
+			componentRef.instance['itemClick'].subscribe(() => {
+				nativeElement.focus();
+				let fakeKeydown = { "keyCode": KEY_ENTER, "wasClick": true };
+				this.keyHandler(fakeKeydown, nativeElement);
+			});
+		} else {
+			this.searchList.activeIndex = 0;
+			this.searchList.position(nativeElement, this.iframe);
+			window.setTimeout(() => this.searchList.resetScroll());
+		}
 		this.searchList.listTemplate = this.listTemplate;
-		window.setTimeout(() => this.searchList.resetScroll());
-		// }
 		this.updateSearchList();
 	}
 }
