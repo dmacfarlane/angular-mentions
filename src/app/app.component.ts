@@ -1,5 +1,5 @@
 import { Mentionable } from '../mention/mentionable';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Http } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
@@ -16,6 +16,7 @@ import { COMMON_NAMES } from './common-names';
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
+	encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
 	httpItems: Observable<any[]>;
