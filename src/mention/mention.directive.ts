@@ -30,40 +30,11 @@ const KEY_2 = 50;
   }
 })
 export class MentionDirective {
-  searchString: string;
-  startPos: number;
-  items: any[];
-  startNode;
-  searchList: MentionListComponent;
-  stopSearch: boolean;
-  iframe: any; // optional
-  constructor(
-    private _element: ElementRef,
-    private _componentResolver: ComponentFactoryResolver,
-    private _viewContainerRef: ViewContainerRef
-  ) {}
 
   @Input() triggerChar: string = "@";
 
   @Input() set mention(items:any[]){
-    if (items && items.length>0) {
-      if (typeof items[0] == 'string') {
-        // convert strings to objects
-        const me = this;
-        this.items = items.map(function(label){ 
-          let object = {};
-          object[me.labelKey] = label;
-          return object;
-        });
-      }
-      else {
-        this.items = items;
-      }
-      // remove items without an objectKey (label)
-      this.items = this.items.filter(e => e[this.labelKey]);
-      this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
-      this.updateSearchList();
-    }
+    this.items = items;
   }
 
   @Input() mentionSelect: (selection: string) => (string) = (selection: string) => selection;
@@ -80,6 +51,38 @@ export class MentionDirective {
 
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
+
+  searchString: string;
+  startPos: number;
+  items: any[];
+  startNode;
+  searchList: MentionListComponent;
+  stopSearch: boolean;
+  iframe: any; // optional
+
+  constructor(
+    private _element: ElementRef,
+    private _componentResolver: ComponentFactoryResolver,
+    private _viewContainerRef: ViewContainerRef
+  ) {}
+
+  ngOnInit() {
+    if (this.items && this.items.length>0) {
+      if (typeof this.items[0] == 'string') {
+        // convert strings to objects
+        const me = this;
+        this.items = this.items.map(function(label){ 
+          let object = {};
+          object[me.labelKey] = label;
+          return object;
+        });
+      }
+      // remove items without an objectKey (label)
+      this.items = this.items.filter(e => e[this.labelKey]);
+      this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
+      this.updateSearchList();
+    }
+  }  
 
   setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
