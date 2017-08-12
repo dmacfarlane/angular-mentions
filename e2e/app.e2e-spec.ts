@@ -14,28 +14,28 @@ describe('angular2-mentions App', function() {
 
   it('test mentions text field', () => {
     page.navigateTo();
-    expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
+    expect(page.getHeadingText()).toEqual('Angular Mentions');
     let el = element.all(by.css('input')).first();
     testMentions(el);
   });
 
   it('test mentions text area', () => {
     page.navigateTo();
-    expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
+    expect(page.getHeadingText()).toEqual('Angular Mentions');
     let el = element.all(by.css('textarea')).first();
     testMentions(el);
   });
 
   it('test mentions div', () => {
     page.navigateTo();
-    expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
+    expect(page.getHeadingText()).toEqual('Angular Mentions');
     let el = element.all(by.css('div')).first();
     testMentions(el);
   });
 
   it('test mentions iframe', () => {
     page.navigateTo();
-    expect(page.getHeadingText()).toEqual('Angular 2 Mentions');
+    expect(page.getHeadingText()).toEqual('Angular Mentions');
     let el = element.all(by.id('tmce_ifr'));
     // iframe testing workaround - sendKeys is not working unless menu is opened first
     // this wasn't needed in previous versions of angular/protractor

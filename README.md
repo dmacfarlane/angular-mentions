@@ -61,10 +61,3 @@ For Example:
 #### Output Events
 
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
-
-
-#### TODO:
-
-- Improve npm package structure
-- Improve menu positioning
-- Additional tests for options

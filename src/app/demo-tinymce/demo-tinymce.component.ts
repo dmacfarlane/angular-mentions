@@ -1,7 +1,7 @@
 import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
 
-import { MentionDirective } from '../mention/mention.directive';
-import { COMMON_NAMES } from './common-names';
+import { MentionDirective } from '../../mention/mention.directive';
+import { COMMON_NAMES } from '../common-names';
 
 declare var tinymce: any;
 
@@ -12,7 +12,7 @@ declare var tinymce: any;
  * Example usage with TinyMCE.
  */
 @Component({
-  selector: 'tinymce',
+  selector: 'app-demo-tinymce',
   template: `
     <div class="form-group" style="position:relative">
       <div [mention]="items"></div>
@@ -21,7 +21,7 @@ declare var tinymce: any;
       </div>
     </div>`
 })
-export class TinyMCE {
+export class DemoTinymceComponent {
   @Input() htmlContent;
   @ViewChild(MentionDirective) mention: MentionDirective;
   protected items:string[] = COMMON_NAMES;

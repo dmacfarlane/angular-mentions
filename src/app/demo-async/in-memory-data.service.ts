@@ -1,5 +1,5 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
-import { COMMON_NAMES } from '../app/common-names';
+import { COMMON_NAMES } from '../common-names';
 
 export class InMemoryDataService implements InMemoryDbService {
   createDb() {

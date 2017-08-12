@@ -2,13 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { MentionModule } from '../mention/mention.module';
-import { TinyMCE } from './tinymce.component';
-
 // Imports for loading & configuring the in-memory web api
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService }  from './in-memory-data.service';
+import { InMemoryDataService }  from './demo-async/in-memory-data.service';
+
+import { AppComponent } from './app.component';
+import { MentionModule } from '../mention/mention.module';
+import { DemoAsyncComponent } from './demo-async/demo-async.component';
+import { DemoOptionsComponent } from './demo-options/demo-options.component';
+import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
 
 @NgModule({
   imports: [
@@ -19,7 +21,9 @@ import { InMemoryDataService }  from './in-memory-data.service';
   ],
   declarations: [
     AppComponent,
-    TinyMCE
+    DemoAsyncComponent,
+    DemoOptionsComponent,
+    DemoTinymceComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
