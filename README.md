@@ -1,6 +1,6 @@
-# Angular 2 Mentions
+# Angular Mentions
 
-Simple Angular 2 mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
+Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
 
 [Click here for a Demo](http://dmacfarlane.github.io/angular2-mentions/)
 
@@ -42,14 +42,26 @@ Where `items` is a string array of the items to suggest. For example:
 
     items: string[] = ["Noah", "Liam", "Mason", "Jacob", ...
 
-#### Options
+#### Configuration Options
 
-- `[triggerChar]="@"` to specify the character that should trigger the menu behavior. The default value is '@'.
-- `[maxItems]="10"` to limit the number of items shown in the pop-up menu. The default is no limit.
-- `[mentionSelect]="formatter"` to specify a optional function to format the selected item before inserting the text.
-- `[labelKey]="'label'"` to specify the field to be used as the item label (when the items are objects).
-- `[disableSearch]="true"` to disable internal filtering (only useful if async search is used).
+The following optional configuration items can be used.
+
+| Option        | Default  | Description |
+| ---           | ---      | ---         |
+| triggerChar   | @        | The character that will trigger the menu behavior. |
+| maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
+| mentionSelect |          | An optional function to format the selected item before inserting the text. |
+| labelKey      | label    | The field to be used as the item label (when the items are objects). |
+| disableSearch | false    | Disable internal filtering (only useful if async search is used). |
+
+For Example: 
+
+    <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name',valueKey:'value'}">
+
+#### Output Events
+
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+
 
 #### TODO:
 

@@ -31,26 +31,36 @@ const KEY_2 = 50;
 })
 export class MentionDirective {
 
-  @Input() triggerChar: string = "@";
-
   @Input() set mention(items:any[]){
     this.items = items;
   }
 
-  @Input() mentionSelect: (selection: string) => (string) = (selection: string) => selection;
-
-  // option to specify the field in the objects to be used as the item label
-  @Input() labelKey:string = 'label';
-
-  // option to diable internal filtering. can be used to show the full list returned 
-  // from an async operation (or allows a custom filter function to be used - in future)
-  @Input() disableSearch:boolean = false;
-  
-  // option to limit the number of items shown in the pop-up menu
-  @Input() maxItems:number = -1;
+  @Input() set mentionConfig(config:any) {
+    this.triggerChar = config.triggerChar || this.triggerChar;
+    this.labelKey = config.labelKey || this.labelKey;
+    this.disableSearch = config.disableSearch || this.disableSearch;
+    this.maxItems = config.maxItems || this.maxItems;
+    this.mentionSelect = config.mentionSelect || this.mentionSelect;
+  }
 
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
+
+  // the character that will trigger the menu behavior
+  private triggerChar: string = "@";
+
+  // option to specify the field in the objects to be used as the item label
+  private labelKey:string = 'label';
+
+  // option to diable internal filtering. can be used to show the full list returned 
+  // from an async operation (or allows a custom filter function to be used - in future)
+  private disableSearch:boolean = false;
+
+  // option to limit the number of items shown in the pop-up menu
+  private maxItems:number = -1;
+  
+  // optional function to format the selected item before inserting the text
+  private mentionSelect: (selection: string) => (string) = (selection: string) => selection;
 
   searchString: string;
   startPos: number;
@@ -77,7 +87,7 @@ export class MentionDirective {
           return object;
         });
       }
-      // remove items without an objectKey (label)
+      // remove items without an labelKey or valueKey
       this.items = this.items.filter(e => e[this.labelKey]);
       this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
       this.updateSearchList();

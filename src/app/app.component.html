@@ -1,14 +1,18 @@
-<h1>Angular 2 Mentions</h1>
+<h1>Angular Mentions</h1>
 
-<p>Simple Angular2 mentions inspired by <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
+<p>Simple Angular mentions inspired by <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
 <p style="color:grey">Supports auto-complete for mentions in text input fields, text areas,
 and content editable fields. Try entering some @names below.</p>
-
+ 
 <h3>Minimal</h3>
 <input [mention]="items" class="form-control" type="text">
 
 <!--<h3>Minimal Async</h3>
-<input [mention]="httpItems | async" [labelKey]="'label'" class="form-control" type="text" (searchTerm)='search($event)'>-->
+<input [mention]="httpItems | async" [labelKey]="'label'" (searchTerm)='search($event)' class="form-control" type="text">-->
+
+<!-- <h3>Options</h3>
+<input [mention]="objectItems" class="form-control" type="text"
+       [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name',valueKey:'value',mentionSelect:format}"> -->
 
 <h3>Textarea</h3>
 <textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>
