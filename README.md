@@ -56,7 +56,7 @@ The following optional configuration items can be used.
 
 For Example: 
 
-    <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name's}">
+    <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
 
 #### Output Events
 
