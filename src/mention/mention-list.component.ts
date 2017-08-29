@@ -22,11 +22,15 @@ import { getCaretCoordinates } from './caret-coords';
       [hidden] {
         display: none;
       }
+    `,`
+      li.active {
+        background-color: #f7f7f9;
+      }
     `],
   template: `
     <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
         <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
-            <a class="text-primary" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
+            <a class="dropdown-item" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
         </li>
     </ul>
     `
