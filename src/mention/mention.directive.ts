@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
+import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef, TemplateRef } from "@angular/core";
 import { EventEmitter, Output } from "@angular/core";
 
 import { MentionListComponent } from './mention-list.component';
@@ -43,6 +43,8 @@ export class MentionDirective {
     this.mentionSelect = config.mentionSelect || this.mentionSelect;
   }
 
+  @Input() listTemplate: TemplateRef<any>;
+
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
@@ -52,15 +54,15 @@ export class MentionDirective {
   // option to specify the field in the objects to be used as the item label
   private labelKey:string = 'label';
 
-  // option to diable internal filtering. can be used to show the full list returned 
+  // option to diable internal filtering. can be used to show the full list returned
   // from an async operation (or allows a custom filter function to be used - in future)
   private disableSearch:boolean = false;
 
   // option to limit the number of items shown in the pop-up menu
   private maxItems:number = -1;
-  
+
   // optional function to format the selected item before inserting the text
-  private mentionSelect: (selection: string) => (string) = (selection: string) => selection;
+  private mentionSelect: (item: any) => (string) = (item: any) => this.triggerChar + item[this.labelKey];
 
   searchString: string;
   startPos: number;
@@ -81,7 +83,7 @@ export class MentionDirective {
       if (typeof this.items[0] == 'string') {
         // convert strings to objects
         const me = this;
-        this.items = this.items.map(function(label){ 
+        this.items = this.items.map(function(label){
           let object = {};
           object[me.labelKey] = label;
           return object;
@@ -92,7 +94,7 @@ export class MentionDirective {
       this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
       this.updateSearchList();
     }
-  }  
+  }
 
   setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
@@ -171,7 +173,7 @@ export class MentionDirective {
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
             insertValue(nativeElement, this.startPos, pos,
-              this.mentionSelect(this.triggerChar + this.searchList.activeItem), this.iframe);
+              this.mentionSelect(this.searchList.activeItem), this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
@@ -217,7 +219,7 @@ export class MentionDirective {
   }
 
   updateSearchList() {
-    let matches: string[] = [];
+    let matches: any[] = [];
     if (this.items) {
       let objects = this.items;
       // disabling the search relies on the async operation to do the filtering
@@ -225,7 +227,7 @@ export class MentionDirective {
         let searchStringLowerCase = this.searchString.toLowerCase();
         objects = this.items.filter(e => e[this.labelKey].toLowerCase().startsWith(searchStringLowerCase));
       }
-      matches = objects.map(e => e[this.labelKey]);
+      matches = objects;
       if (this.maxItems > 0) {
         matches = matches.slice(0, this.maxItems);
       }
@@ -243,6 +245,8 @@ export class MentionDirective {
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance;
       this.searchList.position(nativeElement, this.iframe);
+      this.searchList.listTemplate = this.listTemplate;
+      this.searchList.labelKey = this.labelKey;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
         let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
