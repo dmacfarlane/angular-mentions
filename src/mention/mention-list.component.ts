@@ -1,4 +1,7 @@
-import { Component, ElementRef, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component, ElementRef, Output, EventEmitter, ViewChild, ContentChild, Input,
+  TemplateRef, OnInit
+} from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
@@ -28,20 +31,34 @@ import { getCaretCoordinates } from './caret-coords';
       }
     `],
   template: `
-    <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
+    <ng-template #defaultItemTemplate let-item="item">
+      {{item[labelKey]}}
+    </ng-template>
+    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu">
         <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
-            <a class="dropdown-item" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">{{item}}</a>
+            <a class="dropdown-item" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
+              <ng-template [ngTemplateOutlet]="itemTemplate" [ngOutletContext]="{'item':item}"></ng-template>
+            </a>
         </li>
     </ul>
     `
 })
-export class MentionListComponent {
+export class MentionListComponent implements OnInit {
+  @Input() labelKey: string = 'label';
+  @Input() itemTemplate: TemplateRef<any>;
+  @Output() itemClick = new EventEmitter();
+  @ViewChild('list') list: ElementRef;
+  @ViewChild('defaultItemTemplate') defaultItemTemplate: TemplateRef<any>;
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
-  @ViewChild('list') list : ElementRef;
-  @Output() itemClick = new EventEmitter();
   constructor(private _element: ElementRef) {}
+
+  ngOnInit() {
+    if (!this.itemTemplate) {
+      this.itemTemplate = this.defaultItemTemplate;
+    }
+  }
 
   // lots of confusion here between relative coordinates and containers
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
@@ -92,7 +109,7 @@ export class MentionListComponent {
       }
     }
     // select the next item
-    this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);    
+    this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);
   }
 
   activatePreviousItem() {
@@ -111,7 +128,7 @@ export class MentionListComponent {
     // select the previous item
     this.activeIndex = Math.max(Math.min(this.activeIndex - 1, this.items.length - 1), 0);
   }
-  
+
   resetScroll() {
     this.list.nativeElement.scrollTop = 0;
   }
