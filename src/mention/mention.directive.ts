@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, ComponentFactoryResolver, ViewContainerRef, TemplateRef } from "@angular/core";
-import { EventEmitter, Output, OnInit } from "@angular/core";
+import { EventEmitter, Output, OnInit, OnChanges, SimpleChanges } from "@angular/core";
 
 import { MentionListComponent } from './mention-list.component';
 import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
@@ -29,7 +29,7 @@ const KEY_2 = 50;
     '(blur)': 'blurHandler($event)'
   }
 })
-export class MentionDirective implements OnInit {
+export class MentionDirective implements OnInit, OnChanges {
 
   @Input() set mention(items:any[]){
     this.items = items;
@@ -93,7 +93,15 @@ export class MentionDirective implements OnInit {
       // remove items without an labelKey (as it's required to filter the list)
       this.items = this.items.filter(e => e[this.labelKey]);
       this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
-      this.updateSearchList();
+      if (this.searchList && !this.searchList.hidden) {
+        this.updateSearchList();
+      }
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mention']) {
+      this.ngOnInit();
     }
   }
 
