@@ -41,6 +41,7 @@ export class MentionDirective implements OnInit, OnChanges {
     this.disableSearch = config.disableSearch || this.disableSearch;
     this.maxItems = config.maxItems || this.maxItems;
     this.mentionSelect = config.mentionSelect || this.mentionSelect;
+    this.dropUp = config.dropUp || this.dropUp;
   }
 
   // template to use for rendering list items
@@ -58,6 +59,7 @@ export class MentionDirective implements OnInit, OnChanges {
   // option to diable internal filtering. can be used to show the full list returned
   // from an async operation (or allows a custom filter function to be used - in future)
   private disableSearch:boolean = false;
+  private dropUp:boolean = false;
 
   // option to limit the number of items shown in the pop-up menu
   private maxItems:number = -1;
@@ -253,6 +255,7 @@ export class MentionDirective implements OnInit, OnChanges {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance;
+      this.searchList.dropUp = this.dropUp;
       this.searchList.position(nativeElement, this.iframe);
       this.searchList.itemTemplate = this.mentionListTemplate;
       this.searchList.labelKey = this.labelKey;
@@ -263,6 +266,7 @@ export class MentionDirective implements OnInit, OnChanges {
       });
     }
     else {
+      this.searchList.dropUp = this.dropUp;
       this.searchList.activeIndex = 0;
       this.searchList.position(nativeElement, this.iframe);
       window.setTimeout(() => this.searchList.resetScroll());

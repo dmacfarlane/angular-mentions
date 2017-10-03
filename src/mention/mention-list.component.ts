@@ -21,7 +21,11 @@ import { getCaretCoordinates } from './caret-coords';
         max-height: 300px;
         overflow: auto;
       }
-    `,`
+
+      .dropup .dropdown-menu {
+        margin-bottom: 24px;  
+      }
+      `,`
       [hidden] {
         display: none;
       }
@@ -52,6 +56,7 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
+  dropUp: boolean = false;
   constructor(private _element: ElementRef) {}
 
   ngOnInit() {
@@ -86,6 +91,10 @@ export class MentionListComponent implements OnInit {
       coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
     let el: HTMLElement = this._element.nativeElement;
+    if (this.dropUp) {
+      el.className = 'dropup';
+      this.list.nativeElement.style.marginBottom = '24px';
+    }
     el.style.position = "absolute";
     el.style.left = coords.left + 'px';
     el.style.top = coords.top + 'px';

@@ -53,6 +53,7 @@ The following optional configuration items can be used.
 | mentionSelect |          | An optional function to format the selected item before inserting the text. |
 | labelKey      | label    | The field to be used as the item label (when the items are objects). |
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
+| dropUp        | false    | Pop-up menus can be changed to upwards (instead of downwards). |
 
 For Example: 
 
