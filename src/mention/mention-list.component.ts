@@ -21,11 +21,7 @@ import { getCaretCoordinates } from './caret-coords';
         max-height: 300px;
         overflow: auto;
       }
-
-      .dropup .dropdown-menu {
-        margin-bottom: 24px;  
-      }
-      `,`
+    `,`
       [hidden] {
         display: none;
       }
