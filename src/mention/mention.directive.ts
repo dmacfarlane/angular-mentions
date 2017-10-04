@@ -154,6 +154,7 @@ export class MentionDirective implements OnInit, OnChanges {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.stopSearch = false;
+      this.searchString = null;
       this.showSearchList(nativeElement);
       this.updateSearchList();
     }

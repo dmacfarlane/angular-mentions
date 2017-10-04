@@ -54,12 +54,12 @@ describe('angular2-mentions App', function() {
 
       // popup menu
       el.sendKeys('Hello @');
-      //browser.wait(EC.textToBePresentInElementValue(el, 'Hello @'), 1000);
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @');
             
       // select mention using arrow keys and pressing enter
-      //el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
+      // el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
+
       // select mention by clicking mouse on second item in menu
       element(by.css('.dropdown-menu li:nth-child(2) a')).click();
       expect(menu.isDisplayed()).toBe(false);
@@ -70,8 +70,22 @@ describe('angular2-mentions App', function() {
       expect(menu.isDisplayed()).toBe(false);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin');
       
+      // start another mention (with no values)
+      el.sendKeys(' and @u');
+      expect(menu.isDisplayed()).toBe(false);
+      expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @u');
+      
+      // remove the mention
+      el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
+      expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and ');
+
       // start another mention
-      el.sendKeys(' and @e');
+      el.sendKeys('@');
+      expect(menu.isDisplayed()).toBe(true);
+      expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @');
+
+      // continue the mention
+      el.sendKeys('e');
       expect(menu.isDisplayed()).toBe(true);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
       
@@ -84,7 +98,7 @@ describe('angular2-mentions App', function() {
       el.sendKeys('!!', protractor.Key.ARROW_LEFT, protractor.Key.ARROW_LEFT);
       el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
       expect(getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and !!');
-      
+
       // and insert another mention
       el.sendKeys('@HE', protractor.Key.ENTER);
       expect(menu.isDisplayed()).toBe(false);
