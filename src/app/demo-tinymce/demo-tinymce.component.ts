@@ -49,7 +49,14 @@ export class DemoTinymceComponent {
       let frame = <any>window.frames[ed.iframeElement.id];
       let contentEditable = frame.contentDocument.getElementById('tinymce');
       comp._zone.run(() => {
-        comp.mention.keyHandler(e, contentEditable);
+        comp.mention.keyDownHandler(e, contentEditable);
+      });
+    });
+    ed.on('keypress', function(e) {
+      let frame = <any>window.frames[ed.iframeElement.id];
+      let contentEditable = frame.contentDocument.getElementById('tinymce');
+      comp._zone.run(() => {
+        comp.mention.keyPressHandler(e, contentEditable);
       });
     });
     ed.on('init', function(args) {

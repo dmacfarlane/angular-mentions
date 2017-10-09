@@ -25,7 +25,8 @@ const KEY_2 = 50;
 @Directive({
   selector: '[mention]',
   host: {
-    '(keydown)': 'keyHandler($event)',
+    '(keydown)': 'keyDownHandler($event)',
+    '(keypress)': 'keyPressHandler($event)',
     '(blur)': 'blurHandler($event)'
   }
 })
@@ -126,30 +127,10 @@ export class MentionDirective implements OnInit, OnChanges {
     }
   }
 
-  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
-    let val: string = getValue(nativeElement);
+  keyPressHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let pos = getCaretPosition(nativeElement, this.iframe);
-    let charPressed = event.key;
-    if (!charPressed) {
-      let charCode = event.which || event.keyCode;
-      if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
-        charPressed = String.fromCharCode(charCode + 32);
-      }
-      else if (event.shiftKey && charCode === KEY_2) {
-        charPressed = this.triggerChar;
-      }
-      else {
-        // TODO (dmacfarlane) fix this for non-alpha keys
-        // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
-        charPressed = String.fromCharCode(event.which || event.keyCode);
-      }
-    }
-    if (event.keyCode == KEY_ENTER && event.wasClick && pos < this.startPos) {
-      // put caret back in position prior to contenteditable menu click
-      pos = this.startNode.length;
-      setCaretPosition(this.startNode, pos, this.iframe);
-    }
-    //console.log("keyHandler", this.startPos, pos, val, charPressed, event);
+    let charPressed = this.extractCharPressed(event)
+
     if (charPressed == this.triggerChar) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
@@ -158,7 +139,20 @@ export class MentionDirective implements OnInit, OnChanges {
       this.showSearchList(nativeElement);
       this.updateSearchList();
     }
-    else if (this.startPos >= 0 && !this.stopSearch) {
+  }
+
+  keyDownHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    let val: string = getValue(nativeElement);
+    let pos = getCaretPosition(nativeElement, this.iframe);
+    let charPressed = this.extractCharPressed(event)
+    
+    if (event.keyCode == KEY_ENTER && event.wasClick && pos < this.startPos) {
+      // put caret back in position prior to contenteditable menu click
+      pos = this.startNode.length;
+      setCaretPosition(this.startNode, pos, this.iframe);
+    }
+    //console.log("keyDownHandler", this.startPos, pos, val, charPressed, event);
+    if (this.startPos >= 0 && !this.stopSearch) {
       if (pos <= this.startPos) {
         this.searchList.hidden = true;
       }
@@ -260,7 +254,7 @@ export class MentionDirective implements OnInit, OnChanges {
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
         let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
-        this.keyHandler(fakeKeydown, nativeElement);
+        this.keyDownHandler(fakeKeydown, nativeElement);
       });
     }
     else {
@@ -268,5 +262,25 @@ export class MentionDirective implements OnInit, OnChanges {
       this.searchList.position(nativeElement, this.iframe);
       window.setTimeout(() => this.searchList.resetScroll());
     }
+  }
+
+  private extractCharPressed(event: any): string {
+    let charPressed: string = event.key;
+    if (!charPressed) {
+      let charCode = event.which || event.keyCode;
+      if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
+        charPressed = String.fromCharCode(charCode + 32);
+      }
+      else if (event.shiftKey && charCode === KEY_2) {
+        charPressed = this.triggerChar;
+      }
+      else {
+        // TODO (dmacfarlane) fix this for non-alpha keys
+        // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
+        charPressed = String.fromCharCode(event.which || event.keyCode);
+      }
+    }
+
+    return charPressed;
   }
 }
