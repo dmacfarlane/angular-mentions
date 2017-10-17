@@ -63,7 +63,7 @@ export class MentionDirective implements OnInit, OnChanges {
   private maxItems:number = -1;
 
   // optional function to format the selected item before inserting the text
-  private mentionSelect: (item: any) => (any) = (item: any);
+  private mentionSelect: (item: any) => (any) = (item: any) => item;
 
   searchString: string;
   startPos: number;
