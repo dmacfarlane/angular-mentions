@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-demo-contenteditable',
@@ -6,16 +6,8 @@ import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 })
 export class DemoContenteditableComponent {
   @Input() items: any[];
-  @ViewChild('input') el: ElementRef;
 
-  constructor() { }
-
-  formatItem = (item) => {
-      // setTimeout(() => {
-      //     const text = this.el.nativeElement.textContent;
-      //     this.el.nativeElement.innerHTML = text;
-      // }, 100);
-
+  formatItem(item) {
     return `<em>${item.label}</em>`;
   }
 }
