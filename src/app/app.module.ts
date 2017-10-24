@@ -12,6 +12,7 @@ import { DemoAsyncComponent } from './demo-async/demo-async.component';
 import { DemoOptionsComponent } from './demo-options/demo-options.component';
 import { DemoTemplateComponent } from './demo-template/demo-template.component';
 import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
+import { DemoContenteditableComponent } from './demo-contenteditable/demo-contenteditable.component';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
     DemoAsyncComponent,
     DemoOptionsComponent,
     DemoTemplateComponent,
-    DemoTinymceComponent
+    DemoTinymceComponent,
+    DemoContenteditableComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

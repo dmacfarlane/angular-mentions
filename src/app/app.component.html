@@ -11,7 +11,7 @@ and content editable fields. Try entering some @names below.</p>
 <textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>
 
 <h3>Content Editable</h3>
-<div [mention]="items" class="form-control" contenteditable="true" style="border:1px lightgrey solid;min-height:88px"></div>
+<app-demo-contenteditable [items]="items"></app-demo-contenteditable>
 
 <h3>Embedded Editor</h3>
 <app-demo-tinymce></app-demo-tinymce>

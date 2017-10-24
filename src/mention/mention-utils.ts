@@ -24,7 +24,7 @@ export function insertValue(
   noRecursion: boolean = false
 ) {
   //console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
-  if (isTextElement(el)) {
+  if (isInputOrTextAreaElement(el)) {
     let val = getValue(el);
     setValue(el, val.substring(0, start) + text + val.substring(end, val.length));
     setCaretPosition(el, start + text.length, iframe);
@@ -38,17 +38,41 @@ export function insertValue(
       // if (text.endsWith(' ')) {
       //   text = text.substring(0, text.length-1) + '\xA0';
       // }
-      insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, text, iframe, true);
+      insertHTML(selObj, start, end, text, iframe);
     }
+  }
+}
+
+function insertHTML(sel: Selection, start: number, end: number, html: string, iframe: HTMLIFrameElement) {
+  const previousSiblingsLength = getLengthOfPreviousSiblings(sel.anchorNode);
+  start -= previousSiblingsLength;
+  end -= previousSiblingsLength;
+
+  let range = getDocument(iframe).createRange();
+  range.setStart(sel.anchorNode, start);
+  range.setEnd(sel.anchorNode, end);
+  range.deleteContents();
+  const tempEl = getDocument(iframe).createElement('div');
+  tempEl.innerHTML = html + '\xA0';
+
+  let frag = getDocument(iframe).createDocumentFragment(),
+      node, lastNode;
+  while ((node = tempEl.firstChild)) {
+      lastNode = frag.appendChild(node);
+  }
+  range.insertNode(frag);
+
+  if (lastNode) {
+    range = range.cloneRange();
+    range.setStartAfter(lastNode);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 }
 
 export function isInputOrTextAreaElement(el: HTMLElement): boolean {
   return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA');
-};
-
-export function isTextElement(el: HTMLElement): boolean {
-  return el != null && (el.nodeName == 'INPUT' || el.nodeName == 'TEXTAREA' || el.nodeName == '#text');
 };
 
 export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTMLIFrameElement = null) {
@@ -67,6 +91,17 @@ export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTML
   }
 }
 
+function getLengthOfPreviousSiblings(node: Node, length: number = 0) {
+  if (node.previousSibling) {
+    length += node.previousSibling.textContent.length;
+
+    return getLengthOfPreviousSiblings(node.previousSibling, length);
+  }
+  else {
+    return length;
+  }
+}
+
 export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement = null) {
   //console.log("getCaretPosition", el);
   if (isInputOrTextAreaElement(el)) {
@@ -78,7 +113,7 @@ export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement
     if (selObj.rangeCount>0) {
       var selRange = selObj.getRangeAt(0);
       var position = selRange.startOffset;
-      return position;
+      return position + getLengthOfPreviousSiblings(selObj.anchorNode);
     }
   }
 }
