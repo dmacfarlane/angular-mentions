@@ -37,6 +37,7 @@ export class MentionDirective implements OnInit, OnChanges {
 
   @Input() set mentionConfig(config:any) {
     this.triggerChar = config.triggerChar || this.triggerChar;
+    this.triggerCharKeyCode = config.triggerCharKeyCode || this.triggerCharKeyCode;
     this.labelKey = config.labelKey || this.labelKey;
     this.disableSearch = config.disableSearch || this.disableSearch;
     this.maxItems = config.maxItems || this.maxItems;
@@ -51,6 +52,9 @@ export class MentionDirective implements OnInit, OnChanges {
 
   // the character that will trigger the menu behavior
   private triggerChar: string = "@";
+
+  // the character keycode which can also trigger the menu behavior
+  private triggerCharKeyCode: number = 192;
 
   // option to specify the field in the objects to be used as the item label
   private labelKey:string = 'label';
@@ -130,6 +134,7 @@ export class MentionDirective implements OnInit, OnChanges {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
+    let charPressedKeyCode = event.keyCode;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
@@ -150,7 +155,7 @@ export class MentionDirective implements OnInit, OnChanges {
       setCaretPosition(this.startNode, pos, this.iframe);
     }
     //console.log("keyHandler", this.startPos, pos, val, charPressed, event);
-    if (charPressed == this.triggerChar) {
+    if (charPressed == this.triggerChar || charPressedKeyCode == this.triggerCharKeyCode) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.stopSearch = false;
