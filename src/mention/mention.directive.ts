@@ -37,7 +37,7 @@ export class MentionDirective implements OnInit, OnChanges {
 
   @Input() set mentionConfig(config:any) {
     this.triggerChar = config.triggerChar || this.triggerChar;
-    this.triggerCharKeyCode = config.triggerCharKeyCode || this.triggerCharKeyCode;
+    this.triggerCharKeyCode = config.triggerCharKeyCode;
     this.labelKey = config.labelKey || this.labelKey;
     this.disableSearch = config.disableSearch || this.disableSearch;
     this.maxItems = config.maxItems || this.maxItems;
@@ -54,7 +54,7 @@ export class MentionDirective implements OnInit, OnChanges {
   private triggerChar: string = "@";
 
   // the character keycode which can also trigger the menu behavior
-  private triggerCharKeyCode: number = 192;
+  private triggerCharKeyCode: string;
 
   // option to specify the field in the objects to be used as the item label
   private labelKey:string = 'label';
@@ -155,7 +155,7 @@ export class MentionDirective implements OnInit, OnChanges {
       setCaretPosition(this.startNode, pos, this.iframe);
     }
     //console.log("keyHandler", this.startPos, pos, val, charPressed, event);
-    if (charPressed == this.triggerChar || charPressedKeyCode == this.triggerCharKeyCode) {
+    if ((!this.triggerCharKeyCode && charPressed == this.triggerChar) || charPressedKeyCode == this.triggerCharKeyCode) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.stopSearch = false;
