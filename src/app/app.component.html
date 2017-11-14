@@ -1,17 +1,11 @@
 <h1>Angular Mentions</h1>
 
-<p>Simple Angular mentions inspired by
-  <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
-<p style="color:grey">Supports auto-complete for mentions in text input fields, text areas, and content editable fields. Try entering some @names
-  below.
-</p>
+<p>Simple Angular mentions inspired by <a href="http://jeff-collins.github.io/ment.io/#/">Ment.io</a>.</p>
+<p style="color:grey">Supports auto-complete for mentions in text input fields, text areas,
+and content editable fields. Try entering some @names below.</p>
 
 <h3>Minimal</h3>
 <input [mention]="items" class="form-control" (selectedItem)="selectedItem($event)" type="text">
-
-<!-- <app-demo-async></app-demo-async> -->
-
-<!-- <app-demo-options></app-demo-options> -->
 
 <h3>Textarea</h3>
 <textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>
@@ -21,6 +15,11 @@
 
 <h3>Embedded Editor</h3>
 <app-demo-tinymce></app-demo-tinymce>
+
+<!-- other demos that can be enabled -->
+<!-- <app-demo-async></app-demo-async> -->
+<!-- <app-demo-options></app-demo-options>  -->
+<!-- <app-demo-template></app-demo-template> -->
 
 <br>
 <p style="color:grey">angular2-mentions on

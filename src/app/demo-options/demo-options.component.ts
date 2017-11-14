@@ -6,11 +6,11 @@ import { Component } from '@angular/core';
 })
 export class DemoOptionsComponent {
 
-  format(s:string) {
-    return s.toUpperCase();
+  format(item:any) {
+    return item['value'].toUpperCase();
   }
 
-  objectItems = [
+  complexItems = [
     {
       "value" : "user1",
       "email": "user1@domain.com",
@@ -26,5 +26,5 @@ export class DemoOptionsComponent {
       "email": "user3@domain.com",
       "name": "User Three"
     }
-  ];  
+  ];
 }

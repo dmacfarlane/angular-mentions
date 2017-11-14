@@ -1,4 +1,7 @@
-import { Component, ElementRef, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component, ElementRef, Output, EventEmitter, ViewChild, ContentChild, Input,
+  TemplateRef, OnInit
+} from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
@@ -33,26 +36,36 @@ import { getCaretCoordinates } from './caret-coords';
       }
     `],
   template: `
-    <ul class="dropdown-menu scrollable-menu" #list [hidden]="hidden">
-        <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i" (mousedown)="activeIndex=i;itemClick.emit(item);$event.preventDefault()">
-        <div *ngIf="item[avatarKey]" class="avatar">
-          <img [src]="item[avatarKey]" width="25" height="25" style="margin: 5px;" />
-          <a class="dropdown-item" *ngIf="item[labelKey]">{{item[labelKey]}}</a>
-        </div>
-        <a class="dropdown-item" *ngIf="!item[labelKey]">{{item}}</a>
+    <ng-template #defaultItemTemplate let-item="item" class="avatar">
+      <img [src]="item[avatarKey]" width="25" height="25" style="margin: 5px;" *ngIf="item[avatarKey]" />
+      <a class="dropdown-item" *ngIf="item[labelKey]">{{item[labelKey]}}</a>
+    </ng-template>
+    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu">
+        <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
+            <a class="dropdown-item" (mousedown)="activeIndex=i;itemClick.emit(item);$event.preventDefault()">
+              <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{'item':item}"></ng-template>
+            </a>
         </li>
     </ul>
     `
 })
-export class MentionListComponent {
-  items = [];
-  labelKey: string;
-  avatarKey: string;
-  activeIndex = 0;
-  hidden = false;
-  @ViewChild('list') list: ElementRef;
+export class MentionListComponent implements OnInit {
+  @Input() labelKey: string = 'label';
+  @Input() avatarKey: string = 'avatar';
+  @Input() itemTemplate: TemplateRef<any>;
   @Output() itemClick = new EventEmitter();
-  constructor(private _element: ElementRef) { }
+  @ViewChild('list') list: ElementRef;
+  @ViewChild('defaultItemTemplate') defaultItemTemplate: TemplateRef<any>;
+  items = [];
+  activeIndex: number = 0;
+  hidden: boolean = false;
+  constructor(private _element: ElementRef) {}
+
+  ngOnInit() {
+    if (!this.itemTemplate) {
+      this.itemTemplate = this.defaultItemTemplate;
+    }
+  }
 
   // lots of confusion here between relative coordinates and containers
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {

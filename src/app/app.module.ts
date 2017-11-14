@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { MentionModule } from '../mention/mention.module';
 import { DemoAsyncComponent } from './demo-async/demo-async.component';
 import { DemoOptionsComponent } from './demo-options/demo-options.component';
+import { DemoTemplateComponent } from './demo-template/demo-template.component';
 import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
     AppComponent,
     DemoAsyncComponent,
     DemoOptionsComponent,
+    DemoTemplateComponent,
     DemoTinymceComponent
   ],
   providers: [],
