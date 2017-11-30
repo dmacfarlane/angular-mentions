@@ -130,7 +130,6 @@ export class MentionDirective implements OnInit, OnChanges {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
-    let charPressedKeyCode = event.keyCode;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
