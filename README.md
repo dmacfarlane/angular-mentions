@@ -49,7 +49,6 @@ The following optional configuration items can be used.
 | Option             | Default  | Description |
 | ---                | ---      | ---         |
 | triggerChar        | @        | The character that will trigger the menu behavior. |
-| triggerCharKeyCode |          | The key code that can trigger the menu behavior - use [keycode.info](http://keycode.info/) to help you find the correct key code |
 | maxItems           |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
 | mentionSelect      |          | An optional function to format the selected item before inserting the text. |
 | labelKey           | label    | The field to be used as the item label (when the items are objects). |
