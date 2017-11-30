@@ -37,6 +37,7 @@ export class MentionDirective implements OnInit, OnChanges {
 
   @Input() set mentionConfig(config:any) {
     this.triggerChar = config.triggerChar || this.triggerChar;
+    this.keyCodeSpecified = typeof this.triggerChar === 'number'
     this.labelKey = config.labelKey || this.labelKey;
     this.disableSearch = config.disableSearch || this.disableSearch;
     this.maxItems = config.maxItems || this.maxItems;
@@ -50,7 +51,7 @@ export class MentionDirective implements OnInit, OnChanges {
   @Output() searchTerm = new EventEmitter();
 
   // the character that will trigger the menu behavior
-  private triggerChar: string = "@";
+  private triggerChar: string | number = "@";
 
   // option to specify the field in the objects to be used as the item label
   private labelKey:string = 'label';
@@ -72,6 +73,7 @@ export class MentionDirective implements OnInit, OnChanges {
   searchList: MentionListComponent;
   stopSearch: boolean;
   iframe: any; // optional
+  keyCodeSpecified: boolean;
 
   constructor(
     private _element: ElementRef,
@@ -129,7 +131,7 @@ export class MentionDirective implements OnInit, OnChanges {
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
-    let charPressed = event.key;
+    let charPressed = this.keyCodeSpecified ? event.keyCode : event.key;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
