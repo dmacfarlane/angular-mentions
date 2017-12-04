@@ -26,8 +26,8 @@
   },
   "private": false,
   "peerDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/core": "^4.0.0"
+    "@angular/common": ">=4.0.0",
+    "@angular/core": ">=4.0.0"
   },
   "devDependencies": {
     "@angular/cli": "^1.0.0",
