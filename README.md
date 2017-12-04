@@ -2,15 +2,15 @@
 
 Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
 
-[Click here for a Demo](http://dmacfarlane.github.io/angular2-mentions/)
+[Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields. Not fully browser tested and comes without warranty!
 
 To install and start the demo application:
 
-    git clone https://github.com/dmacfarlane/angular2-mentions.git
-    cd angular2-mentions
+    git clone https://github.com/dmacfarlane/angular-mentions.git
+    cd angular-mentions
     npm install
     ng serve
 
@@ -18,7 +18,7 @@ To install and start the demo application:
 
 Add the package as a dependency to your project using:
 
-    npm install --save angular2-mentions
+    npm install --save angular-mentions
 
 Add the CSS to your index.html:
 
@@ -26,7 +26,7 @@ Add the CSS to your index.html:
 
 Add the module to your app.module imports:
 
-    import { MentionModule } from 'angular2-mentions/mention';
+    import { MentionModule } from 'angular-mentions/mention';
     ...
 
     @NgModule({

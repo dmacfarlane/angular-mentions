@@ -1,13 +1,13 @@
 import { browser, element, by, protractor } from 'protractor';
 
-import { Angular2MentionsPage } from './app.po';
+import { AngularMentionsPage } from './app.po';
 
-describe('angular2-mentions App', function() {
+describe('angular-mentions App', function() {
   var EC = protractor.ExpectedConditions;
-  let page: Angular2MentionsPage;
+  let page: AngularMentionsPage;
 
   beforeEach(() => {
-    page = new Angular2MentionsPage();
+    page = new AngularMentionsPage();
   })
 
   let elements = 

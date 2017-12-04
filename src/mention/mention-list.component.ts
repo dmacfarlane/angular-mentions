@@ -8,7 +8,7 @@ import { getCaretCoordinates } from './caret-coords';
 
 /**
  * Angular 2 Mentions.
- * https://github.com/dmacfarlane/angular2-mentions
+ * https://github.com/dmacfarlane/angular-mentions
  *
  * Copyright (c) 2016 Dan MacFarlane
  */
