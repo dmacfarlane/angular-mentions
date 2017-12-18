@@ -52,6 +52,16 @@ describe('angular-mentions App', function() {
       el.click();
       expect(getValue(el, tagName)).toEqual('');
 
+      // test for git issue #59
+      el.sendKeys('@');
+      expect(menu.isDisplayed()).toBe(true);
+      el.sendKeys(protractor.Key.BACK_SPACE);
+      expect(menu.isDisplayed()).toBe(false);
+      el.sendKeys('xa');
+      expect(menu.isDisplayed()).toBe(false);
+      el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
+      expect(getValue(el, tagName)).toEqual('');
+
       // popup menu
       el.sendKeys('Hello @');
       expect(menu.isDisplayed()).toBe(true);
