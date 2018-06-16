@@ -3,6 +3,7 @@ import { EventEmitter, Output, OnInit, OnChanges, SimpleChanges } from "@angular
 
 import { MentionListComponent } from './mention-list.component';
 import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
+import { MentionItem } from './mention-item';
 
 const KEY_BACKSPACE = 8;
 const KEY_TAB = 9;
@@ -23,7 +24,7 @@ const KEY_2 = 50;
  * Copyright (c) 2017 Dan MacFarlane
  */
 @Directive({
-  selector: '[mention]',
+  selector: '[mentions]',
   host: {
     '(keydown)': 'keyHandler($event)',
     '(blur)': 'blurHandler($event)'
@@ -31,78 +32,76 @@ const KEY_2 = 50;
 })
 export class MentionDirective implements OnInit, OnChanges {
 
-  @Input() set mention(items:any[]){
-    this.items = items;
+  @Input() set mentions(mentionItems: Array<MentionItem>) {
+    this.mentionItems = mentionItems;
   }
-
-  @Input() set mentionConfig(config:any) {
-    this.triggerChar = config.triggerChar || this.triggerChar;
-    this.keyCodeSpecified = typeof this.triggerChar === 'number'
-    this.labelKey = config.labelKey || this.labelKey;
-    this.disableSearch = config.disableSearch || this.disableSearch;
-    this.maxItems = config.maxItems || this.maxItems;
-    this.mentionSelect = config.mentionSelect || this.mentionSelect;
-  }
-
-  // template to use for rendering list items
-  @Input() mentionListTemplate: TemplateRef<any>;
 
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
+  // Outputs on selected term
+  @Output() selectedTerm = new EventEmitter();
+
   // the character that will trigger the menu behavior
-  private triggerChar: string | number = "@";
+  private defaultTriggerChar: string = "@";
 
   // option to specify the field in the objects to be used as the item label
-  private labelKey:string = 'label';
+  private defaultLabelKey: string = 'label';
 
   // option to diable internal filtering. can be used to show the full list returned
   // from an async operation (or allows a custom filter function to be used - in future)
-  private disableSearch:boolean = false;
+  private defaultDisableSearch: boolean = false;
 
   // option to limit the number of items shown in the pop-up menu
-  private maxItems:number = -1;
-
-  // optional function to format the selected item before inserting the text
-  private mentionSelect: (item: any) => (string) = (item: any) => this.triggerChar + item[this.labelKey];
+  private defaultMaxItems: number = -1;
 
   searchString: string;
   startPos: number;
-  items: any[];
+  mentionItems: Array<MentionItem>
   startNode;
-  searchList: MentionListComponent;
   stopSearch: boolean;
   iframe: any; // optional
   keyCodeSpecified: boolean;
+  lastMentionItem: MentionItem;
 
   constructor(
     private _element: ElementRef,
     private _componentResolver: ComponentFactoryResolver,
     private _viewContainerRef: ViewContainerRef
-  ) {}
+  ) { }
 
-  ngOnInit() {
-    if (this.items && this.items.length>0) {
-      if (typeof this.items[0] == 'string') {
-        // convert strings to objects
-        const me = this;
-        this.items = this.items.map(function(label){
-          let object = {};
-          object[me.labelKey] = label;
-          return object;
-        });
-      }
-      // remove items without an labelKey (as it's required to filter the list)
-      this.items = this.items.filter(e => e[this.labelKey]);
-      this.items.sort((a,b)=>a[this.labelKey].localeCompare(b[this.labelKey]));
-      if (this.searchList && !this.searchList.hidden) {
-        this.updateSearchList();
-      }
+  setMentionItemDefaults() {
+    for (let mentionItem of this.mentionItems) {
+      mentionItem.triggerChar = mentionItem.triggerChar || this.defaultTriggerChar;
+      mentionItem.labelKey = mentionItem.labelKey || this.defaultLabelKey;
+      mentionItem.disableSearch = mentionItem.disableSearch || this.defaultDisableSearch;
+      mentionItem.maxItems = mentionItem.maxItems || this.defaultMaxItems;
     }
   }
 
+  convertStringsToObjects() {
+    for (let mentionItem of this.mentionItems) {
+      if (typeof mentionItem.items[0] == 'string') {
+        mentionItem.items = mentionItem.items.map((label) => {
+          let object = {};
+          object[mentionItem.labelKey] = label;
+          return object;
+        });
+      }
+
+      // remove items without an labelKey (as it's required to filter the list)
+      mentionItem.items = mentionItem.items.filter(e => e[mentionItem.labelKey]);
+      mentionItem.items.sort((a, b) => a[mentionItem.labelKey].localeCompare(b[mentionItem.labelKey]));
+    }
+  }
+
+  ngOnInit() {
+    this.setMentionItemDefaults();
+    this.convertStringsToObjects();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['mention']) {
+    if (changes['mentions']) {
       this.ngOnInit();
     }
   }
@@ -123,8 +122,8 @@ export class MentionDirective implements OnInit, OnChanges {
   blurHandler(event: any) {
     this.stopEvent(event);
     this.stopSearch = true;
-    if (this.searchList) {
-      this.searchList.hidden = true;
+    if (this.lastMentionItem && this.lastMentionItem.searchList) {
+      this.lastMentionItem.searchList.hidden = true;
     }
   }
 
@@ -137,9 +136,10 @@ export class MentionDirective implements OnInit, OnChanges {
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
         charPressed = String.fromCharCode(charCode + 32);
       }
-      else if (event.shiftKey && charCode === KEY_2) {
-        charPressed = this.triggerChar;
-      }
+      // TODO wut?
+      // else if (event.shiftKey && charCode === KEY_2) {
+      //   charPressed = this.triggerChar;
+      // }
       else {
         // TODO (dmacfarlane) fix this for non-alpha keys
         // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
@@ -151,44 +151,51 @@ export class MentionDirective implements OnInit, OnChanges {
       pos = this.startNode.length;
       setCaretPosition(this.startNode, pos, this.iframe);
     }
-    //console.log("keyHandler", this.startPos, pos, val, charPressed, event);
-    if (charPressed == this.triggerChar) {
+    // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
+
+    let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
+    if (mentionItem) {
+      this.lastMentionItem = mentionItem;
+
+      // if (charPressed == this.triggerChar) {
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.stopSearch = false;
       this.searchString = null;
-      this.showSearchList(nativeElement);
-      this.updateSearchList();
+      this.showSearchList(mentionItem, nativeElement);
+      this.updateSearchList(mentionItem);
     }
     else if (this.startPos >= 0 && !this.stopSearch) {
       if (pos <= this.startPos) {
-        this.searchList.hidden = true;
+        this.lastMentionItem.searchList.hidden = true;
       }
       // ignore shift when pressed alone, but not when used with another key
       else if (event.keyCode !== KEY_SHIFT &&
-          !event.metaKey &&
-          !event.altKey &&
-          !event.ctrlKey &&
-          pos > this.startPos
+        !event.metaKey &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        pos > this.startPos
       ) {
         if (event.keyCode === KEY_SPACE) {
           this.startPos = -1;
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
           pos--;
-          if (pos==0) {
+          if (pos == 0) {
             this.stopSearch = true;
           }
-          this.searchList.hidden = this.stopSearch;
+          this.lastMentionItem.searchList.hidden = this.stopSearch;
         }
-        else if (!this.searchList.hidden) {
+        else if (!this.lastMentionItem.searchList.hidden) {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
-            this.searchList.hidden = true;
+            this.lastMentionItem.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-            insertValue(nativeElement, this.startPos, pos,
-              this.mentionSelect(this.searchList.activeItem), this.iframe);
+            let mentionSelect = this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey];
+            insertValue(nativeElement, this.startPos, pos, mentionSelect, this.iframe);
+
+            this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
@@ -200,18 +207,18 @@ export class MentionDirective implements OnInit, OnChanges {
           }
           else if (event.keyCode === KEY_ESCAPE) {
             this.stopEvent(event);
-            this.searchList.hidden = true;
+            this.lastMentionItem.searchList.hidden = true;
             this.stopSearch = true;
             return false;
           }
           else if (event.keyCode === KEY_DOWN) {
             this.stopEvent(event);
-            this.searchList.activateNextItem();
+            this.lastMentionItem.searchList.activateNextItem();
             return false;
           }
           else if (event.keyCode === KEY_UP) {
             this.stopEvent(event);
-            this.searchList.activatePreviousItem();
+            this.lastMentionItem.searchList.activatePreviousItem();
             return false;
           }
         }
@@ -227,51 +234,60 @@ export class MentionDirective implements OnInit, OnChanges {
           }
           this.searchString = mention;
           this.searchTerm.emit(this.searchString);
-          this.updateSearchList();
+          this.updateSearchList(this.lastMentionItem);
         }
       }
     }
   }
 
-  updateSearchList() {
+  getMentionItemFromCharPressed(charPressed) {
+    for (let mentionItem of this.mentionItems) {
+      if (charPressed == mentionItem.triggerChar) {
+        return mentionItem;
+      }
+    }
+    return null;
+  }
+
+  updateSearchList(mentionItem: MentionItem) {
     let matches: any[] = [];
-    if (this.items) {
-      let objects = this.items;
+    if (mentionItem.items) {
+      let objects = mentionItem.items;
       // disabling the search relies on the async operation to do the filtering
-      if (!this.disableSearch && this.searchString) {
+      if (!mentionItem.disableSearch && this.searchString) {
         let searchStringLowerCase = this.searchString.toLowerCase();
-        objects = this.items.filter(e => e[this.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+        objects = mentionItem.items.filter(e => e[mentionItem.labelKey].toLowerCase().startsWith(searchStringLowerCase));
       }
       matches = objects;
-      if (this.maxItems > 0) {
-        matches = matches.slice(0, this.maxItems);
+      if (mentionItem.maxItems > 0) {
+        matches = matches.slice(0, mentionItem.maxItems);
       }
     }
     // update the search list
-    if (this.searchList) {
-      this.searchList.items = matches;
-      this.searchList.hidden = matches.length == 0;
+    if (mentionItem.searchList) {
+      mentionItem.searchList.items = matches;
+      mentionItem.searchList.hidden = matches.length == 0;
     }
   }
 
-  showSearchList(nativeElement: HTMLInputElement) {
-    if (this.searchList == null) {
+  showSearchList(mentionItem: MentionItem, nativeElement: HTMLInputElement) {
+    if (mentionItem.searchList == null) {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
-      this.searchList = componentRef.instance;
-      this.searchList.position(nativeElement, this.iframe);
-      this.searchList.itemTemplate = this.mentionListTemplate;
-      this.searchList.labelKey = this.labelKey;
+      mentionItem.searchList = componentRef.instance;
+      mentionItem.searchList.position(nativeElement, this.iframe);
+      mentionItem.searchList.itemTemplate = mentionItem.mentionListTemplate;
+      mentionItem.searchList.labelKey = mentionItem.labelKey;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
-        let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
+        let fakeKeydown = { "keyCode": KEY_ENTER, "wasClick": true };
         this.keyHandler(fakeKeydown, nativeElement);
       });
     }
     else {
-      this.searchList.activeIndex = 0;
-      this.searchList.position(nativeElement, this.iframe);
-      window.setTimeout(() => this.searchList.resetScroll());
+      mentionItem.searchList.activeIndex = 0;
+      mentionItem.searchList.position(nativeElement, this.iframe);
+      window.setTimeout(() => mentionItem.searchList.resetScroll());
     }
   }
 }

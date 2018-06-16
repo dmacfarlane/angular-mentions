@@ -1,18 +1,24 @@
-# Angular Mentions
+# Angular Mentions - Dessalines fork
 
-Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
 
-[Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
+Forked from [dmacfarlane/angular-mentions](https://github.com/dmacfarlane/angular-mentions)
+
+
+Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
+
+[Click here for a Demo](http://dessalines.github.io/angular-mentions/)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields. Not fully browser tested and comes without warranty!
 
 To install and start the demo application:
 
-    git clone https://github.com/dmacfarlane/angular-mentions.git
-    cd angular-mentions
-    npm install
-    ng serve
+```
+git clone https://github.com/dessalines/angular-mentions.git
+cd angular-mentions
+yarn
+ng serve
+```
 
 ### Usage
 
@@ -34,30 +40,72 @@ Add the module to your app.module imports:
         ...
     })
 
-Add the `[mention]` directive to your input element:
+Add the `[mentions]` directive to your input element:
 
-    <input type="text" [mention]="items">
+    <input type="text" [mentions]="mentionItems">
 
-Where `items` is a string array of the items to suggest. For example:
+Where `mentionItems` is an an array of `MentionItem`:
 
-    items: string[] = ["Noah", "Liam", "Mason", "Jacob", ...
+```
+mentionItems: Array<MentionItem> = [
+    {
+      items: {"jerry", "ben", "tom"},
+      triggerChar: '@',
+    },
+    {
+      items: {"happy", "sad", "trending"},
+      triggerChar: '#',
+    },
+    {
+      items: [
+        {
+          id: 1,
+          name: "community_A"
+        },
+        {
+          id: 2,
+          name: "community_B"
+        }
+      ],
+      labelKey: "name",
+      triggerChar: "~"
+    }
+  ];
+```
 
 #### Configuration Options
 
-The following optional configuration items can be used.
+```
+export interface MentionItem {
 
-| Option        | Default  | Description |
-| ---           | ---      | ---         |
-| triggerChar   | @        | The character that will trigger the menu behavior. |
-| maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
-| mentionSelect |          | An optional function to format the selected item before inserting the text. |
-| labelKey      | label    | The field to be used as the item label (when the items are objects). |
-| disableSearch | false    | Disable internal filtering (only useful if async search is used). |
+  // The list of items to be searched on.
+  items: Array<{}>;
 
-For Example: 
+  // the character that will trigger the menu behavior
+  triggerChar: string;
 
-    <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
+  // option to specify the field in the objects to be used as the item label
+  labelKey?: string;
+
+  // option to limit the number of items shown in the pop-up menu
+  maxItems?: number;
+
+  // option to diable internal filtering. can be used to show the full list returned
+  // from an async operation (or allows a custom filter function to be used - in future)
+  disableSearch?: boolean;
+
+  // template to use for rendering list items
+  mentionListTemplate?: TemplateRef<any>;
+
+  // internal use
+  searchList? : MentionListComponent;
+}
+```
+
 
 #### Output Events
 
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+
+- `(selectedTerm)=""` event emitted whenever a term is selected.
+

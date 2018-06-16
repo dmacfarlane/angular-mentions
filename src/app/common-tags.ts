@@ -1,0 +1,1 @@
+export const COMMON_TAGS: string[] = ['love','instagood','me','tbt','cute','follow','followme','photooftheday','happy','tagforlikes','beautiful','self','girl','picoftheday','like4like','smile','friends','fun','like','fashion'];
