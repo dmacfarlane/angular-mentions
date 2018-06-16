@@ -18,10 +18,10 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
 const appRoutes: Routes = [
   // the main one
   { path: '', component: DemoSimpleComponent },
-  // { path: 'demo-async', component: DemoAsyncComponent },
-  // { path: 'demo-options', component: DemoOptionsComponent },
-  // { path: 'demo-template', component: DemoTemplateComponent },
-  // { path: 'demo-tinymce', component: DemoTinymceComponent },
+  { path: 'demo-async', component: DemoAsyncComponent },
+  { path: 'demo-options', component: DemoOptionsComponent },
+  { path: 'demo-template', component: DemoTemplateComponent },
+  { path: 'demo-tinymce', component: DemoTinymceComponent },
 ];
 
 
@@ -37,10 +37,10 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     DemoSimpleComponent,
-    // DemoAsyncComponent,
-    // DemoOptionsComponent,
-    // DemoTemplateComponent,
-    // DemoTinymceComponent
+    DemoAsyncComponent,
+    DemoOptionsComponent,
+    DemoTemplateComponent,
+    DemoTinymceComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

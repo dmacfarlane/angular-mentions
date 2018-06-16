@@ -7,7 +7,7 @@ export interface MentionItem {
   items: Array<{}>;
 
   // the character that will trigger the menu behavior
-  triggerChar: string;
+  triggerChar?: string;
 
   // option to specify the field in the objects to be used as the item label
   labelKey?: string;
