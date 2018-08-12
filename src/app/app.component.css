@@ -1,0 +1,6 @@
+/* Example CSS for an @mention */
+.mention {
+    background-color: #eee;
+    border-radius: 0.25em;
+    padding: 0.5em;
+}

@@ -41,6 +41,7 @@ export class MentionDirective implements OnInit, OnChanges {
     this.labelKey = config.labelKey || this.labelKey;
     this.disableSearch = config.disableSearch || this.disableSearch;
     this.maxItems = config.maxItems || this.maxItems;
+    this.insertHTML = config.insertHTML || this.insertHTML;
     this.mentionSelect = config.mentionSelect || this.mentionSelect;
   }
 
@@ -62,6 +63,9 @@ export class MentionDirective implements OnInit, OnChanges {
 
   // option to limit the number of items shown in the pop-up menu
   private maxItems:number = -1;
+
+  //Insert Text (false) or HTML (true)
+  private insertHTML:boolean = false;
 
   // optional function to format the selected item before inserting the text
   private mentionSelect: (item: any) => (string) = (item: any) => this.triggerChar + item[this.labelKey];
@@ -188,6 +192,7 @@ export class MentionDirective implements OnInit, OnChanges {
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
             insertValue(nativeElement, this.startPos, pos,
+              this.insertHTML,
               this.mentionSelect(this.searchList.activeItem), this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {

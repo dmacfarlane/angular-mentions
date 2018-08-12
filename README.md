@@ -50,13 +50,63 @@ The following optional configuration items can be used.
 | ---           | ---      | ---         |
 | triggerChar   | @        | The character that will trigger the menu behavior. |
 | maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
-| mentionSelect |          | An optional function to format the selected item before inserting the text. |
+| insertHTML    | false    | Insert HTML instead of plain text. |
+| mentionSelect |          | An optional function to format the selected item before inserting the text.  Use this function to create HTML. |
 | labelKey      | label    | The field to be used as the item label (when the items are objects). |
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
 
-For Example: 
+Options Example: 
 
     <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
+
+HTML Element Example:
+
+    <div
+        [mention]="items"
+        [mentionConfig]="{
+            insertHTML: true,
+            mentionSelect: insertSpanElement
+        }"
+        class="form-control"
+        contenteditable="true"
+        style="border:1px lightgrey solid;min-height:88px"></div>
+
+    /**
+     * Note: There is no way to add a trailing space after this span.
+     * There will be useability consequences.
+     */
+    public insertSpanElement(name) {
+        let el = document.createElement("span");
+        el.contentEditable = "false";
+        el.className = "mention";
+        el.innerText = `@${name.label}`;
+        return el;
+    }
+
+HTML Code Example:
+
+    <div
+        [mention]="items"
+        [mentionConfig]="{
+            insertHTML: true,
+            mentionSelect: insertSpanText
+        }"
+        class="form-control"
+        contenteditable="true"
+        style="border:1px lightgrey solid;min-height:88px"></div>
+
+    /**
+     * Note the trailig &nbsp;.
+     * It helps with useability.
+     */
+    public insertSpanText(name) {
+        return `
+        <span
+            class="mention"
+            contenteditable="false"
+            >@${name.label}</span>&nbsp;
+        `;
+    }
 
 #### Output Events
 

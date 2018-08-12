@@ -19,7 +19,8 @@ export function insertValue(
   el: HTMLInputElement,
   start: number,
   end: number,
-  text: string,
+  insertHTML: boolean,
+  text: any,
   iframe: HTMLIFrameElement,
   noRecursion: boolean = false
 ) {
@@ -32,15 +33,79 @@ export function insertValue(
   else if (!noRecursion) {
     let selObj: Selection = getWindowSelection(iframe);
     if (selObj && selObj.rangeCount > 0) {
-      var selRange = selObj.getRangeAt(0);
-      var position = selRange.startOffset;
-      var anchorNode = selObj.anchorNode;
-      // if (text.endsWith(' ')) {
-      //   text = text.substring(0, text.length-1) + '\xA0';
-      // }
-      insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, text, iframe, true);
+      if (insertHTML) {
+        insertElement(selObj, start, end, text, iframe);
+      }
+      else {
+        var selRange = selObj.getRangeAt(0);
+        var position = selRange.startOffset;
+        var anchorNode = selObj.anchorNode;
+        // if (text.endsWith(' ')) {
+        //   text = text.substring(0, text.length-1) + '\xA0';
+        // }
+
+        insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, insertHTML, text, iframe, true);
+      }
     }
   }
+}
+
+function makeAngularElements(el) {
+  if (!(el instanceof HTMLElement)) {
+    return;
+  }
+  el.setAttribute("_ngcontent-c0", '');
+  for (let i in el.children) {
+    makeAngularElements(el.children[i])
+  }
+}
+
+function insertElement(
+  selObj: Selection,
+  start: number,
+  end: number,
+  text: HTMLElement,
+  iframe: HTMLIFrameElement
+) {
+  if (!(text instanceof HTMLElement)) {
+    var e = getDocument(iframe).createElement("span");
+    e.innerHTML = text;
+    text = e;
+  }
+
+  //make the element an angular element
+  makeAngularElements(text);
+
+  var anchorNode = selObj.anchorNode;
+
+  //Get the text that preceeded and followed what was typed as part of the autocomplete
+  var beforeString = anchorNode.nodeValue.substr(0, start);
+  var afterString = anchorNode.nodeValue.substring(end);
+
+  //Remove the text
+  anchorNode.nodeValue = "";
+
+  //Create spans for the preceeding text & following text
+  let beforeEl = getDocument(iframe).createElement("span");
+  beforeEl.innerText = beforeString;
+  let afterEl = getDocument(iframe).createElement("span");
+  afterEl.innerText = afterString;
+
+  //Insert the spans + the mention element
+  anchorNode.parentNode.insertBefore(afterEl, anchorNode.nextSibling);
+  anchorNode.parentNode.insertBefore(text, anchorNode.nextSibling);
+  anchorNode.parentNode.insertBefore(beforeEl, anchorNode.nextSibling);
+
+  //Create a range located ater the mention
+  let range = getDocument(iframe).createRange();
+  range.selectNode(afterEl);
+  range.setStart(afterEl, 0);
+  range.setEnd(afterEl, 0);
+  
+  //Move the cursor to that spot
+  range.collapse(false);
+  selObj.removeAllRanges();
+  selObj.addRange(range);
 }
 
 export function isInputOrTextAreaElement(el: HTMLElement): boolean {
