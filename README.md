@@ -22,25 +22,33 @@ Add the package as a dependency to your project using:
 
 Add the CSS to your index.html:
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+```html
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+```
 
 Add the module to your app.module imports:
 
-    import { MentionModule } from 'angular-mentions/mention';
-    ...
+```typescript
+import { MentionModule } from 'angular-mentions/mention';
+...
 
-    @NgModule({
-        imports: [ MentionModule ],
-        ...
-    })
+@NgModule({
+    imports: [ MentionModule ],
+    ...
+})
+```
 
 Add the `[mention]` directive to your input element:
 
-    <input type="text" [mention]="items">
+```html
+<input type="text" [mention]="items">
+```
 
 Where `items` is a string array of the items to suggest. For example:
 
-    items: string[] = ["Noah", "Liam", "Mason", "Jacob", ...
+```typescript
+items: string[] = ["Noah", "Liam", "Mason", "Jacob", ...
+```
 
 #### Configuration Options
 
@@ -56,7 +64,9 @@ The following optional configuration items can be used.
 
 For Example: 
 
-    <input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
+```html
+<input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
+```
 
 #### Output Events
 
