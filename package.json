@@ -10,9 +10,9 @@
   "main": "src/mention/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmacfarlane/angular-mentions.git"
+    "url": "https://github.com/francisvgi/fvi-angular-mentions.git"
   },
-  "author": "Dan MacFarlane",
+  "author": "Francis Ilagan",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
