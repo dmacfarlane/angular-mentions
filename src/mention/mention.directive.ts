@@ -55,6 +55,9 @@ export class MentionDirective implements OnInit, OnChanges {
   // option to limit the number of items shown in the pop-up menu
   private defaultMaxItems: number = -1;
 
+  //
+  public mentionSelect = function (item) { return this.lastMentionItem.triggerChar + item.searchList.activeItem[this.lastMentionItem.labelKey]; }; 
+
   searchString: string;
   startPos: number;
   mentionItems: Array<MentionItem>
@@ -76,6 +79,7 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.labelKey = mentionItem.labelKey || this.defaultLabelKey;
       mentionItem.disableSearch = mentionItem.disableSearch || this.defaultDisableSearch;
       mentionItem.maxItems = mentionItem.maxItems || this.defaultMaxItems;
+      mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
     }
   }
 
@@ -192,8 +196,7 @@ export class MentionDirective implements OnInit, OnChanges {
             this.lastMentionItem.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-            let mentionSelect = this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey];
-            insertValue(nativeElement, this.startPos, pos, mentionSelect, this.iframe);
+            insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
 
             this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
             // fire input event so angular bindings are updated
