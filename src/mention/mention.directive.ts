@@ -55,8 +55,8 @@ export class MentionDirective implements OnInit, OnChanges {
   // option to limit the number of items shown in the pop-up menu
   private defaultMaxItems: number = -1;
 
-  //
-  public mentionSelect = function (item) { return this.lastMentionItem.triggerChar + item.searchList.activeItem[this.lastMentionItem.labelKey]; }; 
+  // Function formatter
+  private mentionSelect = function (item) { return this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey]; }; 
 
   searchString: string;
   startPos: number;
