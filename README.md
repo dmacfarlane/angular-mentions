@@ -1,7 +1,7 @@
 # Angular Mentions - Dessalines fork
 
-
-Forked from [dmacfarlane/angular-mentions](https://github.com/dmacfarlane/angular-mentions)
+Forked from [dessalines/angular-mentions](https://github.com/dessalines/angular-mentions)
+  Forked from [dmacfarlane/angular-mentions](https://github.com/dmacfarlane/angular-mentions)
 
 
 Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
