@@ -24,4 +24,5 @@ export interface MentionItem {
 
   searchList? : MentionListComponent;
 
+  mentionSelect? : any;
 }
