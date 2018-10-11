@@ -13,12 +13,10 @@ and content editable fields. Not fully browser tested and comes without warranty
 
 To install and start the demo application:
 
-```
 git clone https://github.com/dessalines/angular-mentions.git
 cd angular-mentions
 yarn
 ng serve
-```
 
 ### Usage
 
