@@ -2,6 +2,7 @@ import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
 
 import { MentionDirective } from '../../mention/mention.directive';
 import { COMMON_NAMES } from '../common-names';
+import { MentionItem } from 'mention';
 
 declare var tinymce: any;
 
@@ -15,7 +16,7 @@ declare var tinymce: any;
   selector: 'app-demo-tinymce',
   template: `
     <div class="form-group" style="position:relative">
-      <div [mention]="items"></div>
+      <div [mentions]="items"></div>
       <div>
         <textarea class="hidden" cols="60" rows="4" id="tmce">{{htmlContent}}</textarea>
       </div>
@@ -24,7 +25,7 @@ declare var tinymce: any;
 export class DemoTinymceComponent {
   @Input() htmlContent;
   @ViewChild(MentionDirective) mention: MentionDirective;
-  public items:string[] = COMMON_NAMES;
+  public items:Array<MentionItem> = [{items: COMMON_NAMES}];
   constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
   ngAfterViewInit() {
     tinymce.init({

@@ -1,2 +1,2 @@
 <h3>Minimal Async</h3>
-<input [mention]="httpItems | async" (searchTerm)='search($event)' class="form-control" type="text">
+<input [mentions]="[{items: httpItems | async}]" (searchTerm)='search($event)' class="form-control" type="text">
