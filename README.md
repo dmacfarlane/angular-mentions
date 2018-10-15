@@ -1,28 +1,24 @@
-# Angular Mentions - Dessalines fork
+# Angular Mentions - Francis fork
+
+
+Forked from [dmacfarlane/angular-mentions](https://github.com/dmacfarlane/angular-mentions)
 
 Forked from [dessalines/angular-mentions](https://github.com/dessalines/angular-mentions)
-  Forked from [dmacfarlane/angular-mentions](https://github.com/dmacfarlane/angular-mentions)
-
 
 Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
-
-[Click here for a Demo](http://dessalines.github.io/angular-mentions/)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields. Not fully browser tested and comes without warranty!
 
-To install and start the demo application:
-
-git clone https://github.com/dessalines/angular-mentions.git
+git clone https://github.com/francisvgi/fvi-angular-mentions.git
 cd angular-mentions
-yarn
 ng serve
 
 ### Usage
 
 Add the package as a dependency to your project using:
 
-    npm install --save angular-mentions
+    npm install --save fvi-angular-mentions
 
 Add the CSS to your index.html:
 
@@ -30,7 +26,7 @@ Add the CSS to your index.html:
 
 Add the module to your app.module imports:
 
-    import { MentionModule } from 'angular-mentions/mention';
+    import { MentionModule } from 'fvi-angular-mentions/mention';
     ...
 
     @NgModule({
@@ -49,6 +45,7 @@ mentionItems: Array<MentionItem> = [
     {
       items: {"jerry", "ben", "tom"},
       triggerChar: '@',
+	  mentionSelect: formatMention
     },
     {
       items: {"happy", "sad", "trending"},
@@ -97,6 +94,9 @@ export interface MentionItem {
 
   // internal use
   searchList? : MentionListComponent;
+  
+  // optional function to format the selected item before inserting the text
+  selectMention? : any;
 }
 ```
 
@@ -106,4 +106,6 @@ export interface MentionItem {
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
 
 - `(selectedTerm)=""` event emitted whenever a term is selected.
+
+THANKS TO DESSALINES (https://github.com/dessalines/angular-mentions) AND DMACFARLANE(https://github.com/dmacfarlane/angular-mentions).
 
