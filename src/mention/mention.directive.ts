@@ -116,7 +116,9 @@ export class MentionDirective implements OnChanges {
       }
       // remove items without an labelKey (as it's required to filter the list)
       items = items.filter(e => e[config.labelKey]);
-      items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+      if (!config.disableSort) {
+        items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+      }
     }
     config.items = items;
 

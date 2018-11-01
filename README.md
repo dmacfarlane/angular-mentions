@@ -61,6 +61,7 @@ The following optional configuration items can be used.
 | maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
 | mentionSelect |          | An optional function to format the selected item before inserting the text. |
 | labelKey      | label    | The field to be used as the item label (when the items are objects). |
+| disableSort   | false    | Dsiable sorting of suggested items. |
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
 
 For Example: 

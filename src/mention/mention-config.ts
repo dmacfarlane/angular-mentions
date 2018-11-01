@@ -17,6 +17,9 @@ export interface Mentions {
   
   // option to limit the number of items shown in the pop-up menu
   maxItems?:number;
+
+  // option to disable sorting
+  disableSort?:boolean;
   
   // optional function to format the selected item before inserting the text
   mentionSelect?:(item: any) => (string);
