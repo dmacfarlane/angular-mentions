@@ -56,6 +56,7 @@ The following optional configuration items can be used.
 
 | Option        | Default  | Description |
 | ---           | ---      | ---         |
+| items         |          | An array of strings or objects to suggest.
 | triggerChar   | @        | The character that will trigger the menu behavior. |
 | maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
 | mentionSelect |          | An optional function to format the selected item before inserting the text. |
@@ -71,3 +72,41 @@ For Example:
 #### Output Events
 
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+
+### Alternative Usage
+
+The component can also be used by only specifying the mentionConfig object:
+
+```html
+<input type="text" [mentionConfig]="mentionConfig">
+```
+
+With the following structure:
+
+```javascript
+let mentionConfig = {
+    items: [ "Noah", "Liam", "Mason", "Jacob", ... ],
+    triggerChar: "@",
+    ...
+}
+```
+
+In this way, multiple config objects can be used:
+
+```javascript
+let mentionConfig = {
+    configs: [
+        {
+            items: [ "Noah", "Liam", "Mason", "Jacob", ... ],
+            triggerChar: '@'
+        },
+        {
+            items: [ "Red", "Yellow", "Green", ... ],
+            triggerChar: '#'
+        },
+    }]
+}
+```
+This allows different lists and trigger characters to be configured.
+
+Note that becuase objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
