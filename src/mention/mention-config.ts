@@ -7,7 +7,7 @@ export interface MentionConfig extends Mentions {
 
 export interface Mentions {
   // an array of strings or objects to suggest
-  items:any[];
+  items?:any[];
   
   // the character that will trigger the menu behavior  
   triggerChar?:string;
@@ -20,6 +20,9 @@ export interface Mentions {
 
   // option to disable sorting
   disableSort?:boolean;
+
+  // display menu above text instead of below
+  dropUp?:boolean;
   
   // optional function to format the selected item before inserting the text
   mentionSelect?:(item: any) => (string);

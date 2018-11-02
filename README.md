@@ -56,13 +56,14 @@ The following optional configuration items can be used.
 
 | Option        | Default  | Description |
 | ---           | ---      | ---         |
-| items         |          | An array of strings or objects to suggest.
+| items         |          | An array of strings or objects to suggest. |
 | triggerChar   | @        | The character that will trigger the menu behavior. |
-| maxItems      |          | Limit the number of items shown in the pop-up menu. The default is no limit. |
-| mentionSelect |          | An optional function to format the selected item before inserting the text. |
 | labelKey      | label    | The field to be used as the item label (when the items are objects). |
-| disableSort   | false    | Dsiable sorting of suggested items. |
+| disableSort   | false    | Disable sorting of suggested items. |
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
+| dropUp        | false    | Show the menu above the cursor instead of below. |
+| maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
+| mentionSelect |          | An optional function to format the selected item before inserting the text. |
 
 For Example: 
 

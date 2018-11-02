@@ -288,7 +288,7 @@ export class MentionDirective implements OnChanges {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance;
-      this.searchList.position(nativeElement, this.iframe);
+      this.searchList.position(nativeElement, this.iframe, this.activeConfig.dropUp);
       this.searchList.itemTemplate = this.mentionListTemplate;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
@@ -299,7 +299,7 @@ export class MentionDirective implements OnChanges {
     else {
       this.searchList.labelKey = this.activeConfig.labelKey;
       this.searchList.activeIndex = 0;
-      this.searchList.position(nativeElement, this.iframe);
+      this.searchList.position(nativeElement, this.iframe, this.activeConfig.dropUp);
       window.setTimeout(() => this.searchList.resetScroll());
     }
   }

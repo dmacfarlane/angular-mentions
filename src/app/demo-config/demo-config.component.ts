@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { COMMON_NAMES } from '../common-names';
+import { MentionConfig } from 'mention/mention-config';
 
 @Component({
   selector: 'app-demo-config',
@@ -29,7 +30,7 @@ export class DemoConfigComponent {
     return item['value'].toUpperCase();
   }
 
-  mentionConfig = {
+  mentionConfig:MentionConfig = {
     mentions: [
       {
         items: this.complexItems,
