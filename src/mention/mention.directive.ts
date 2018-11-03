@@ -204,7 +204,7 @@ export class MentionDirective implements OnChanges {
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
           pos--;
-          if (pos==0) {
+          if (pos==this.startPos) {
             this.stopSearch = true;
           }
           this.searchList.hidden = this.stopSearch;
