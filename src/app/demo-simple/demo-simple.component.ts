@@ -22,6 +22,10 @@ export class DemoSimpleComponent {
       triggerChar: '#',
     },
     {
+      items: COMMON_TAGS,
+      triggerChar: '',
+    },
+    {
       items: [
         {
           id: 1,
