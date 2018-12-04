@@ -1,13 +1,14 @@
 {
-  "name": "angular-mentions",
-  "version": "0.8.0",
-  "description": "Angular mentions for text fields.",
+  "name": "fvi-angular-mentions",
+  "version": "0.9.93",
+  "description": "Angular mentions from Dmacfarlane - angular-mentions and devel branch of Dessalines. Modified version of angular-mentions that has an optional function to format the selected item before inserting the text.",
   "keywords": [
     "angular",
     "mention",
+	"multiple mention",
     "autocomplete"
   ],
-  "main": "src/mention/index.ts",
+  "main": "mention/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/francisvgi/fvi-angular-mentions.git"
@@ -62,5 +63,8 @@
   },
   "files": [
     "mention"
+  ],
+  "exclude": [
+	"src/mention/index.ts"
   ]
 }
