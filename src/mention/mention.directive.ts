@@ -36,6 +36,10 @@ export class MentionDirective implements OnInit, OnChanges {
     this.mentionItems = mentionItems;
   }
 
+  @Input() set isEmptyTrigger(isEmptyTrigger: boolean) {
+    this.withEmptyTrigger = isEmptyTrigger;
+  }
+
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
@@ -170,6 +174,7 @@ export class MentionDirective implements OnInit, OnChanges {
     // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
 
     let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
+    
     if (mentionItem) {
       this.lastMentionItem = mentionItem;
 
@@ -265,11 +270,6 @@ export class MentionDirective implements OnInit, OnChanges {
       }
     }
 
-    //only one set of mentionItem should have empty triggerChar
-    // if (!mentioned && this.withEmptyTrigger) {
-    //   mentioned = this.mentionItems.find((item: MentionItem) => item.triggerChar === "");
-    // }
-
     return mentioned;
   }
 
@@ -297,8 +297,8 @@ export class MentionDirective implements OnInit, OnChanges {
   showSearchList(mentionItem: MentionItem, nativeElement: HTMLInputElement) {
     for (let listedItem of this.mentionItems) {
       if (listedItem.searchList)
-          listedItem.searchList.hidden = true;
-  }
+        listedItem.searchList.hidden = true;
+    }
 
     if (mentionItem.searchList == null) {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
