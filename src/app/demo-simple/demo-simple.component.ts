@@ -11,37 +11,53 @@ import { COMMON_TAGS } from '../common-tags';
   templateUrl: './demo-simple.component.html'
 })
 export class DemoSimpleComponent {
+  mentionItems: Array<MentionItem>= [];
+  ngOnInit(): void {
+    const self: this = this;
 
-  mentionItems: Array<MentionItem> = [
-    {
-      items: COMMON_NAMES,
-      triggerChar: '@',
-    },
-    {
-      items: COMMON_TAGS,
-      triggerChar: '#',
-    },
-    {
-      items: COMMON_TAGS,
-      triggerChar: '',
-    },
-    {
-      items: [
-        {
-          id: 1,
-          name: "community_A"
-        },
-        {
-          id: 2,
-          name: "community_B"
-        }
-      ],
-      labelKey: "name",
-      triggerChar: "~"
-    }
-  ];
+    this.mentionItems = [
+      {
+        items: COMMON_NAMES,
+        triggerChar: '@',
+      },
+      {
+        items: COMMON_TAGS,
+        triggerChar: '#',
+      },
+      {
+        items: COMMON_TAGS,
+        triggerChar: '',
+      },
+      {
+        items: COMMON_NAMES,
+        triggerChar: ' ',
+      },
+      {
+        items: [
+          {
+            id: 1,
+            name: "community_A"
+          },
+          {
+            id: 2,
+            name: "community_B"
+          }
+        ],
+        labelKey: "name",
+        triggerChar: "~",
+      }
+    ];
+  }
 
   selectedTerm(item: any) {
     console.log(item);
+  }
+
+  select(input: any) {
+    return `${input.id}`;
+  }
+
+  select2(input: any) {
+    return `${input.label}++++`;
   }
 }
