@@ -63,10 +63,14 @@ export class MentionDirective implements OnInit, OnChanges {
 
   // Function formatter
   // private mentionSelect = function (item) { return this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey]; };
+  //v0.10.0
+  //private mentionSelect: (item: any) => (string) = (item: any) => this.lastMentionItem.triggerChar + item[this.lastMentionItem.labelKey];
+  //v0.9.3
+  //private mentionSelect = function (item) { return this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey]; };
+  //v0.10.2
   private mentionSelect: (item: any) => (string) = ((item: any) => {
     return this.lastMentionItem.triggerChar + item[this.lastMentionItem.labelKey];
   });
-
   searchString: string;
   startPos: number;
   mentionItems: Array<MentionItem>
@@ -90,7 +94,8 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.labelKey = mentionItem.labelKey || this.defaultLabelKey;
       mentionItem.disableSearch = mentionItem.disableSearch || this.defaultDisableSearch;
       mentionItem.maxItems = mentionItem.maxItems || this.defaultMaxItems;
-      // mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
+      //v0.10.2
+     // mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
     }
   }
 
@@ -217,6 +222,7 @@ export class MentionDirective implements OnInit, OnChanges {
             this.lastMentionItem.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
+<<<<<<< HEAD
 
             // if mentionSelect is overridden
             if (this.lastMentionItem.mentionSelect) {
@@ -224,11 +230,22 @@ export class MentionDirective implements OnInit, OnChanges {
                 this.startPos = 0;
                 pos = this.lastMentionItem.searchList.activeItem.length + 1;
               }
+=======
+            // if mentionSelect is overridden
+            if (this.lastMentionItem.mentionSelect) {
+>>>>>>> Change in mentionSelect (function formatter)
               insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
             } else {
               // default method
               insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
             }
+<<<<<<< HEAD
+=======
+            //v0.9.3
+            //insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+            //v0.10.0
+            //insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+>>>>>>> Change in mentionSelect (function formatter)
 
             this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
             // fire input event so angular bindings are updated
