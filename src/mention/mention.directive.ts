@@ -62,9 +62,10 @@ export class MentionDirective implements OnInit, OnChanges {
   private defaultMaxItems: number = -1;
 
   // Function formatter
-  //private mentionSelect = function (item) { return this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey]; };
-  //
-  private mentionSelect: (item: any) => (string) = (item: any) => this.lastMentionItem.triggerChar + item[this.lastMentionItem.labelKey];
+  // private mentionSelect = function (item) { return this.lastMentionItem.triggerChar + this.lastMentionItem.searchList.activeItem[this.lastMentionItem.labelKey]; };
+  private mentionSelect: (item: any) => (string) = ((item: any) => {
+    return this.lastMentionItem.triggerChar + item[this.lastMentionItem.labelKey];
+  });
 
   searchString: string;
   startPos: number;
@@ -89,7 +90,7 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.labelKey = mentionItem.labelKey || this.defaultLabelKey;
       mentionItem.disableSearch = mentionItem.disableSearch || this.defaultDisableSearch;
       mentionItem.maxItems = mentionItem.maxItems || this.defaultMaxItems;
-      mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
+      // mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
     }
   }
 
@@ -176,7 +177,7 @@ export class MentionDirective implements OnInit, OnChanges {
     // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
 
     let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
-    
+
     if (mentionItem) {
       this.lastMentionItem = mentionItem;
 
@@ -216,7 +217,18 @@ export class MentionDirective implements OnInit, OnChanges {
             this.lastMentionItem.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-            insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+
+            // if mentionSelect is overridden
+            if (this.lastMentionItem.mentionSelect) {
+              if (!this.iframe && (this.startPos < 0 || !this.startPos)) {
+                this.startPos = 0;
+                pos = this.lastMentionItem.searchList.activeItem.length + 1;
+              }
+              insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+            } else {
+              // default method
+              insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+            }
 
             this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
             // fire input event so angular bindings are updated
@@ -257,6 +269,7 @@ export class MentionDirective implements OnInit, OnChanges {
           }
           this.searchString = mention;
           this.searchTerm.emit(this.searchString);
+          this.showSearchList(this.lastMentionItem, this._element.nativeElement);
           this.updateSearchList(this.lastMentionItem);
         }
       }
