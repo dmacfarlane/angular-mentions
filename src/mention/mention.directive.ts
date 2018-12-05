@@ -222,7 +222,6 @@ export class MentionDirective implements OnInit, OnChanges {
             this.lastMentionItem.searchList.hidden = true;
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-<<<<<<< HEAD
 
             // if mentionSelect is overridden
             if (this.lastMentionItem.mentionSelect) {
@@ -230,22 +229,15 @@ export class MentionDirective implements OnInit, OnChanges {
                 this.startPos = 0;
                 pos = this.lastMentionItem.searchList.activeItem.length + 1;
               }
-=======
-            // if mentionSelect is overridden
-            if (this.lastMentionItem.mentionSelect) {
->>>>>>> Change in mentionSelect (function formatter)
               insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
             } else {
               // default method
               insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
             }
-<<<<<<< HEAD
-=======
             //v0.9.3
             //insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
             //v0.10.0
             //insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
->>>>>>> Change in mentionSelect (function formatter)
 
             this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
             // fire input event so angular bindings are updated
