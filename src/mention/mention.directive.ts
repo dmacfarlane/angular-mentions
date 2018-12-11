@@ -184,7 +184,8 @@ export class MentionDirective implements OnInit, OnChanges {
     let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
 
     if (!mentionItem && charPressed !== " " && charPressed !== null && this.withEmptyTrigger && !nativeElement.value
-      && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB) {
+      && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB
+      && event.keyCode !== KEY_DOWN && event.keyCode !== KEY_UP) {
       mentionItem = this.getMentionItemFromCharPressed("");
     }
 
