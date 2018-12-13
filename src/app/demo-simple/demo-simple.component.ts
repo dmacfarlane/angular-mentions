@@ -11,13 +11,13 @@ import { COMMON_TAGS } from '../common-tags';
   templateUrl: './demo-simple.component.html'
 })
 export class DemoSimpleComponent {
-  mentionItems: Array<MentionItem>= [];
+  mentionItems: Array<MentionItem> = [];
   ngOnInit(): void {
     const self: this = this;
 
     this.mentionItems = [
       {
-        items: COMMON_NAMES,
+        items: COMMON_TAGS,
         triggerChar: '@',
       },
       {
@@ -25,7 +25,7 @@ export class DemoSimpleComponent {
         triggerChar: '#',
       },
       {
-        items: COMMON_TAGS,
+        items: COMMON_NAMES,
         triggerChar: '',
       },
       {
@@ -51,13 +51,5 @@ export class DemoSimpleComponent {
 
   selectedTerm(item: any) {
     console.log(item);
-  }
-
-  select(input: any) {
-    return `${input.id}`;
-  }
-
-  select2(input: any) {
-    return `${input.label}++++`;
   }
 }

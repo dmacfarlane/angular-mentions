@@ -306,7 +306,8 @@ export class MentionDirective implements OnInit, OnChanges {
           this.searchString = mention;
           this.searchTerm.emit(this.searchString);
 
-          if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "")) {
+          if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
+            (nativeElement.value.endsWith(" ") || nativeElement.value.endsWith(","))) {
             this.setEmptyTrigger();
           }
 
