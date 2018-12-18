@@ -114,7 +114,7 @@ export class MentionDirective implements OnInit, OnChanges {
     this.setMentionItemDefaults();
     this.convertStringsToObjects();
 
-    this.setEmptyTrigger();
+    this.setEmptyTrigger(false);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -123,11 +123,11 @@ export class MentionDirective implements OnInit, OnChanges {
     }
   }
 
-  setEmptyTrigger(): void {
+  setEmptyTrigger(show: boolean = true): void {
     if (this.withEmptyTrigger) {
       this.lastMentionItem = this.mentionItems.find((item) => item.triggerChar === "");
 
-      if (this.lastMentionItem) {
+      if (this.lastMentionItem && show) {
         this.showSearchList(this.lastMentionItem, this._element.nativeElement);
         this.updateSearchList(this.lastMentionItem);
       }
