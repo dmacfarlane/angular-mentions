@@ -211,8 +211,8 @@ export class MentionDirective implements OnInit, OnChanges {
       this.withEmptyTrigger) {
 
       if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
-        && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB &&
-        !event.wasClick) {
+        && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN 
+        && event.keyCode !== KEY_UP && !event.wasClick) {
         this.searchString = nativeElement.value + charPressed;
         this.setEmptyTrigger();
       } else if (pos <= this.startPos && !this.withEmptyTrigger) {
