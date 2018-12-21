@@ -33,8 +33,8 @@ export class DemoAsyncComponent implements OnInit {
     // return this.http.get('api/names') // get all names
     return this.http.get('api/objects?label='+term) // get filtered names
                .toPromise()
-               .then(data => {console.log(data); return data})
                .then(response => response.json().data)
+               .then(data => {console.log(data); return data})
                .catch(this.handleError);
   }
   handleError(e) {

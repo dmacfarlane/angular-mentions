@@ -5,8 +5,16 @@ export class AngularMentionsPage {
     return browser.get('/');
   }
 
+  navigateToDemoConfig() {
+    return browser.get('/config');
+  }
+
   getHeadingText() {
     return element(by.css('app-root h1')).getText();
+  }
+  
+  getSubHeadingText() {
+    return element(by.css('app-root h3')).getText();
   }
 
   getValue(el, tagName) {

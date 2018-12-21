@@ -52,7 +52,7 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
-  constructor(private _element: ElementRef) {}
+  constructor(private element: ElementRef) {}
 
   ngOnInit() {
     if (!this.itemTemplate) {
@@ -61,7 +61,7 @@ export class MentionListComponent implements OnInit {
   }
 
   // lots of confusion here between relative coordinates and containers
-  position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
+  position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null, dropUp: boolean) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
       // parent elements need to have postition:relative for this to work correctly?
@@ -85,7 +85,9 @@ export class MentionListComponent implements OnInit {
       coords.top = caretRelativeToView.top - parentRelativeToContainer.top + nativeParentElement.offsetTop - scrollTop;
       coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
-    let el: HTMLElement = this._element.nativeElement;
+    let el: HTMLElement = this.element.nativeElement;
+    this.list.nativeElement.style.marginBottom = dropUp ? '24px' : null;
+    el.className = dropUp ? 'dropup' : null;
     el.style.position = "absolute";
     el.style.left = coords.left + 'px';
     el.style.top = coords.top + 'px';

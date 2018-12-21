@@ -59,6 +59,17 @@ describe('angular-mentions app', function() {
       el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
       expect(page.getValue(el, tagName)).toEqual('');
 
+      // another variation of issue #59
+      el.sendKeys('xx @');
+      expect(menu.isDisplayed()).toBe(true);
+      el.sendKeys(protractor.Key.BACK_SPACE);
+      expect(menu.isDisplayed()).toBe(false);
+      el.sendKeys('xa');
+      expect(menu.isDisplayed()).toBe(false);
+      // el.clear(); // clear does not work for tinymce
+      el.sendKeys((new Array(6)).fill(protractor.Key.BACK_SPACE).join(''));
+      expect(page.getValue(el, tagName)).toEqual('');
+
       // popup menu
       el.sendKeys('Hello @');
       expect(menu.isDisplayed()).toBe(true);
