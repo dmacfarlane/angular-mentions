@@ -97,7 +97,7 @@ In this way, multiple config objects can be used:
 
 ```javascript
 let mentionConfig = {
-    configs: [
+    mentions: [
         {
             items: [ "Noah", "Liam", "Mason", "Jacob", ... ],
             triggerChar: '@'
