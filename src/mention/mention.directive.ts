@@ -268,7 +268,7 @@ export class MentionDirective implements OnChanges {
       // disabling the search relies on the async operation to do the filtering
       if (!this.disableSearch && this.searchString) {
         let searchStringLowerCase = this.searchString.toLowerCase();
-        objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+        objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().includes(searchStringLowerCase));
       }
       matches = objects;
       if (this.activeConfig.maxItems > 0) {
