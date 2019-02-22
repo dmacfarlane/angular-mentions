@@ -5,8 +5,7 @@ function setValue(el: HTMLInputElement, value: any) {
   //console.log("setValue", el.nodeName, "["+value+"]");
   if (isInputOrTextAreaElement(el)) {
     el.value = value;
-  }
-  else {
+  } else {
     el.textContent = value;
   }
 }
@@ -24,12 +23,13 @@ export function insertValue(
   noRecursion: boolean = false
 ) {
   //console.log("insertValue", el.nodeName, start, end, "["+text+"]", el);
+  const txt = `[${text.substring(1, text.length)}]`;
+
   if (isTextElement(el)) {
     let val = getValue(el);
-    setValue(el, val.substring(0, start) + text + val.substring(end, val.length));
-    setCaretPosition(el, start + text.length, iframe);
-  }
-  else if (!noRecursion) {
+    setValue(el, val.substring(0, start) + txt + val.substring(end, val.length));
+    setCaretPosition(el, start + txt.length, iframe);
+  } else if (!noRecursion) {
     let selObj: Selection = getWindowSelection(iframe);
     if (selObj && selObj.rangeCount > 0) {
       var selRange = selObj.getRangeAt(0);
@@ -38,7 +38,7 @@ export function insertValue(
       // if (text.endsWith(' ')) {
       //   text = text.substring(0, text.length-1) + '\xA0';
       // }
-      insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, text, iframe, true);
+      insertValue(<HTMLInputElement>anchorNode, position - (end - start), position, txt, iframe, true);
     }
   }
 }
@@ -56,8 +56,7 @@ export function setCaretPosition(el: HTMLInputElement, pos: number, iframe: HTML
   if (isInputOrTextAreaElement(el) && el.selectionStart) {
     el.focus();
     el.setSelectionRange(pos, pos);
-  }
-  else {
+  } else {
     let range = getDocument(iframe).createRange();
     range.setStart(el, pos);
     range.collapse(true);
@@ -72,10 +71,9 @@ export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement
   if (isInputOrTextAreaElement(el)) {
     var val = el.value;
     return val.slice(0, el.selectionStart).length;
-  }
-  else {
+  } else {
     var selObj = getWindowSelection(iframe); //window.getSelection();
-    if (selObj.rangeCount>0) {
+    if (selObj.rangeCount > 0) {
       var selRange = selObj.getRangeAt(0);
       var position = selRange.startOffset;
       return position;
@@ -136,8 +134,8 @@ export function getContentEditableCaretCoords(ctx: { iframe: HTMLIFrameElement, 
 }
 
 function localToRelativeCoordinates(
-  ctx: { iframe: HTMLIFrameElement, parent?: Element }, 
-  element: Element, 
+  ctx: { iframe: HTMLIFrameElement, parent?: Element },
+  element: Element,
   coordinates: { top: number; left: number }
 ) {
   let obj = <HTMLElement>element;

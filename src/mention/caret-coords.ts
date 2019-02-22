@@ -58,7 +58,9 @@ export function getCaretCoordinates(element, position, options = null) {
   var debug = options && options.debug || false;
   if (debug) {
     var el = document.querySelector('#input-textarea-caret-position-mirror-div');
-    if (el) { el.parentNode.removeChild(el); }
+    if (el) {
+      el.parentNode.removeChild(el);
+    }
   }
 
   // mirrored div
@@ -71,13 +73,15 @@ export function getCaretCoordinates(element, position, options = null) {
 
   // default textarea styles
   style.whiteSpace = 'pre-wrap';
-  if (element.nodeName !== 'INPUT')
-    style.wordWrap = 'break-word';  // only for textarea-s
+  if (element.nodeName !== 'INPUT') {
+    style.wordWrap = 'break-word';
+  }  // only for textarea-s
 
   // position off-screen
   style.position = 'absolute';  // required to return coordinates properly
-  if (!debug)
-    style.visibility = 'hidden';  // not 'display: none' because we want rendering
+  if (!debug) {
+    style.visibility = 'hidden';
+  }  // not 'display: none' because we want rendering
 
   // transfer the element's properties to the div
   properties.forEach(function (prop) {
@@ -86,16 +90,18 @@ export function getCaretCoordinates(element, position, options = null) {
 
   if (isFirefox) {
     // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
-    if (element.scrollHeight > parseInt(computed.height))
+    if (element.scrollHeight > parseInt(computed.height)) {
       style.overflowY = 'scroll';
+    }
   } else {
     style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
   }
 
   div.textContent = element.value.substring(0, position);
   // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
-  if (element.nodeName === 'INPUT')
+  if (element.nodeName === 'INPUT') {
     div.textContent = div.textContent.replace(/\s/g, '\u00a0');
+  }
 
   var span = document.createElement('span');
   // Wrapping must be replicated *exactly*, including when a long word gets
