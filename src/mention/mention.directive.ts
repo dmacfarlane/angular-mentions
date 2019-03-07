@@ -27,7 +27,8 @@ const KEY_2 = 50;
   selector: '[mention], [mentionConfig]',
   host: {
     '(keydown)': 'keyHandler($event)',
-    '(blur)': 'blurHandler($event)'
+    '(blur)': 'blurHandler($event)',
+    'autocomplete': 'off'
   }
 })
 export class MentionDirective implements OnChanges {
@@ -213,10 +214,10 @@ export class MentionDirective implements OnChanges {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
             this.searchList.hidden = true;
+            const text = this.activeConfig.mentionSelect(this.searchList.activeItem);
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
-            insertValue(nativeElement, this.startPos, pos,
-              this.activeConfig.mentionSelect(this.searchList.activeItem), this.iframe);
+            insertValue(nativeElement, this.startPos, pos, text, this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
               var evt = document.createEvent("HTMLEvents");
