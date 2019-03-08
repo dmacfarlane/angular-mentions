@@ -16,9 +16,13 @@ To install and start the demo application:
 
 ### Usage
 
-Add the package as a dependency to your project using:
+**For Angular 5 and below**
 
-    npm install --save angular-mentions
+    npm install --save angular-mentions@0.9.0
+
+**For Angular 6+**
+
+    npm install --save angular-mentions@1.0.0
 
 Add the CSS to your index.html:
 
