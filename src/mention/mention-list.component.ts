@@ -65,13 +65,13 @@ export class MentionListComponent implements OnInit {
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null, dropUp: boolean) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
-      const blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
+      this.blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
       const scrollToHeightDiff = (nativeParentElement.scrollHeight - nativeParentElement.clientHeight);
       const scrollToWidthDiff = (nativeParentElement.scrollWidth - nativeParentElement.clientWidth);
       // parent elements need to have postition:relative for this to work correctly?
       coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-      coords.top = nativeParentElement.offsetTop - scrollToHeightDiff + coords.top + blockCursorSize.height;
-      coords.left = nativeParentElement.offsetLeft - (scrollToWidthDiff ? scrollToWidthDiff + blockCursorSize.width : 0) + coords.left;
+      coords.top = nativeParentElement.offsetTop - scrollToHeightDiff + coords.top + this.blockCursorSize.height;
+      coords.left = nativeParentElement.offsetLeft - (scrollToWidthDiff ? scrollToWidthDiff + this.blockCursorSize.width : 0) + coords.left;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
