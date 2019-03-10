@@ -52,7 +52,7 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
-  private blockCursorSize;
+  private blockCursorSize: {height:number, width:number};
   constructor(private element: ElementRef) {}
 
   ngOnInit() {
@@ -139,7 +139,7 @@ export class MentionListComponent implements OnInit {
     this.list.nativeElement.scrollTop = 0;
   }
 
-  private getBlockCursorDimensions(nativeParentElement) {
+  private getBlockCursorDimensions(nativeParentElement: HTMLInputElement) {
     if (this.blockCursorSize) {
       return this.blockCursorSize;
     }
