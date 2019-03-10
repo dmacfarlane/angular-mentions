@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 // Imports for loading & configuring the in-memory web api
@@ -17,7 +17,7 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
 @NgModule({
   imports: [
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
     InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
     MentionModule
   ],
