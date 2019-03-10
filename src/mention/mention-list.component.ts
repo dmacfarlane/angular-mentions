@@ -52,6 +52,7 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
+  private blockCursorSize: {height:number, width:number};
   constructor(private element: ElementRef) {}
 
   ngOnInit() {
@@ -64,10 +65,13 @@ export class MentionListComponent implements OnInit {
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null, dropUp: boolean) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
+      this.blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
+      const scrollToHeightDiff = (nativeParentElement.scrollHeight - nativeParentElement.clientHeight);
+      const scrollToWidthDiff = (nativeParentElement.scrollWidth - nativeParentElement.clientWidth);
       // parent elements need to have postition:relative for this to work correctly?
       coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-      coords.top = nativeParentElement.offsetTop + coords.top + 16;
-      coords.left = nativeParentElement.offsetLeft + coords.left;
+      coords.top = nativeParentElement.offsetTop - scrollToHeightDiff + coords.top + this.blockCursorSize.height;
+      coords.left = nativeParentElement.offsetLeft - (scrollToWidthDiff ? scrollToWidthDiff + this.blockCursorSize.width : 0) + coords.left;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
@@ -133,5 +137,16 @@ export class MentionListComponent implements OnInit {
 
   resetScroll() {
     this.list.nativeElement.scrollTop = 0;
+  }
+
+  private getBlockCursorDimensions(nativeParentElement: HTMLInputElement) {
+    if (this.blockCursorSize) {
+      return this.blockCursorSize;
+    }
+    const parentStyles = window.getComputedStyle(nativeParentElement);
+    return {
+      height: parseFloat(parentStyles.lineHeight),
+      width: parseFloat(parentStyles.fontSize)
+    };
   }
 }
