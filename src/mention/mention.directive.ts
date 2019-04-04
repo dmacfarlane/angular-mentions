@@ -59,10 +59,6 @@ export class MentionDirective implements OnChanges {
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
-  // option to diable internal filtering. can be used to show the full list returned
-  // from an async operation (or allows a custom filter function to be used - in future)
-  private disableSearch:boolean = false;
-
   private triggerChars:{[key:string]:MentionConfig} = {};
 
   searchString: string;
@@ -267,7 +263,7 @@ export class MentionDirective implements OnChanges {
     if (this.activeConfig && this.activeConfig.items) {
       let objects = this.activeConfig.items;
       // disabling the search relies on the async operation to do the filtering
-      if (!this.disableSearch && this.searchString) {
+      if (!this.activeConfig.disableSearch && this.searchString) {
         let searchStringLowerCase = this.searchString.toLowerCase();
         objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
       }
