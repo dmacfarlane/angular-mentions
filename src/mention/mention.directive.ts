@@ -43,7 +43,7 @@ export class MentionDirective implements OnChanges {
   // the provided configuration object
   @Input() mentionConfig: MentionConfig = {items:[]};
 
-  private activeConfig: MentionConfig;// = this.DEFAULT_CONFIG;
+  private activeConfig: MentionConfig;
 
   private DEFAULT_CONFIG: MentionConfig = {
     items: [],
@@ -65,12 +65,12 @@ export class MentionDirective implements OnChanges {
 
   private triggerChars:{[key:string]:MentionConfig} = {};
 
-  searchString: string;
-  startPos: number;
-  startNode;
-  searchList: MentionListComponent;
-  stopSearch: boolean;
-  iframe: any; // optional
+  private searchString: string;
+  private startPos: number;
+  private startNode;
+  private searchList: MentionListComponent;
+  private searching: boolean;
+  private iframe: any; // optional
 
   constructor(
     private _element: ElementRef,
@@ -148,10 +148,7 @@ export class MentionDirective implements OnChanges {
 
   blurHandler(event: any) {
     this.stopEvent(event);
-    this.stopSearch = true;
-    if (this.searchList) {
-      this.searchList.hidden = true;
-    }
+    this.stopSearch();
   }
 
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
@@ -184,12 +181,12 @@ export class MentionDirective implements OnChanges {
       this.activeConfig = config;
       this.startPos = pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
-      this.stopSearch = false;
+      this.searching = true;
       this.searchString = null;
       this.showSearchList(nativeElement);
       this.updateSearchList();
     }
-    else if (this.startPos >= 0 && !this.stopSearch) {
+    else if (this.startPos >= 0 && this.searching) {
       if (pos <= this.startPos) {
         this.searchList.hidden = true;
       }
@@ -206,14 +203,12 @@ export class MentionDirective implements OnChanges {
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
           pos--;
           if (pos==this.startPos) {
-            this.stopSearch = true;
+            this.stopSearch();
           }
-          this.searchList.hidden = this.stopSearch;
         }
         else if (!this.searchList.hidden) {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
-            this.searchList.hidden = true;
             const text = this.activeConfig.mentionSelect(this.searchList.activeItem);
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
@@ -225,12 +220,12 @@ export class MentionDirective implements OnChanges {
               nativeElement.dispatchEvent(evt);
             }
             this.startPos = -1;
+            this.stopSearch();
             return false;
           }
           else if (event.keyCode === KEY_ESCAPE) {
             this.stopEvent(event);
-            this.searchList.hidden = true;
-            this.stopSearch = true;
+            this.stopSearch();
             return false;
           }
           else if (event.keyCode === KEY_DOWN) {
@@ -249,7 +244,7 @@ export class MentionDirective implements OnChanges {
           this.stopEvent(event);
           return false;
         }
-        else {
+        else if (this.searching) {
           let mention = val.substring(this.startPos + 1, pos);
           if (event.keyCode !== KEY_BACKSPACE) {
             mention += charPressed;
@@ -260,6 +255,14 @@ export class MentionDirective implements OnChanges {
         }
       }
     }
+  }
+
+  stopSearch() {
+    if (this.searchList) {
+      this.searchList.hidden = true;
+    }
+    this.activeConfig = null;
+    this.searching = false;
   }
 
   updateSearchList() {
