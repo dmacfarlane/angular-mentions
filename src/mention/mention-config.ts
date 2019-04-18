@@ -21,6 +21,10 @@ export interface Mentions {
   // option to disable sorting
   disableSort?:boolean;
 
+  // option to diable internal filtering. can be used to show the full list returned
+  // from an async operation (or allows a custom filter function to be used - in future)
+  disableSearch?:boolean;
+
   // display menu above text instead of below
   dropUp?:boolean;
   
