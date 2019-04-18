@@ -151,6 +151,7 @@ export class MentionDirective implements OnChanges {
     this.stopSearch();
   }
 
+  // @param nativeElement is the alternative text element in an iframe scenario
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
@@ -215,9 +216,17 @@ export class MentionDirective implements OnChanges {
             insertValue(nativeElement, this.startPos, pos, text, this.iframe);
             // fire input event so angular bindings are updated
             if ("createEvent" in document) {
-              var evt = document.createEvent("HTMLEvents");
-              evt.initEvent("input", false, true);
-              nativeElement.dispatchEvent(evt);
+              let evt = document.createEvent("HTMLEvents");
+              if (this.iframe) {
+                // a 'change' event is required to trigger tinymce updates
+                evt.initEvent("change", true, false);
+              }
+              else {
+                evt.initEvent("input", true, false);
+              }
+              // this seems backwards, but fire the event from this elements nativeElement (not the 
+              // one provided that may be in an iframe, as it won't be propogate)
+              this._element.nativeElement.dispatchEvent(evt);
             }
             this.startPos = -1;
             this.stopSearch();

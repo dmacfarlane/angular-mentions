@@ -22,7 +22,7 @@ declare var tinymce: any;
     </div>`
 })
 export class DemoTinymceComponent {
-  @Input() htmlContent;
+  @Input() htmlContent:string;
   @ViewChild(MentionDirective) mention: MentionDirective;
   public items:string[] = COMMON_NAMES;
   constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
@@ -43,17 +43,15 @@ export class DemoTinymceComponent {
     );
   }
   tinySetup(ed) {
-    let comp = this;
-    let mention = this.mention;
-    ed.on('keydown', function(e) {
+    ed.on('init', (args) => {
+      this.mention.setIframe(ed.iframeElement);
+    });
+    ed.on('keydown', (e) => {
       let frame = <any>window.frames[ed.iframeElement.id];
       let contentEditable = frame.contentDocument.getElementById('tinymce');
-      comp._zone.run(() => {
-        comp.mention.keyHandler(e, contentEditable);
+      this._zone.run(() => {
+        this.mention.keyHandler(e, contentEditable);
       });
-    });
-    ed.on('init', function(args) {
-      mention.setIframe(ed.iframeElement);
     });
   }
 }
