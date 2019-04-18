@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -7,7 +7,6 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/toPromise';
 
 @Component({
   selector: 'app-demo-async',
@@ -18,7 +17,7 @@ export class DemoAsyncComponent implements OnInit {
   private searchTermStream = new Subject();
   ngOnInit() {
     this.httpItems = this.searchTermStream
-      .debounceTime(300)
+      .debounceTime(500)
       .distinctUntilChanged()
       .switchMap((term: string) => this.getItems(term));
   }
@@ -27,17 +26,10 @@ export class DemoAsyncComponent implements OnInit {
   }
 
   // this should be in a separate demo-async.service.ts file
-  constructor(private http: Http) { }
-  getItems(term): Promise<any[]> {
+  constructor(private http: HttpClient) { }
+  getItems(term):Observable<any[]> {
     console.log('getItems:', term);
     // return this.http.get('api/names') // get all names
-    return this.http.get('api/objects?label='+term) // get filtered names
-               .toPromise()
-               .then(response => response.json().data)
-               .then(data => {console.log(data); return data})
-               .catch(this.handleError);
-  }
-  handleError(e) {
-    console.log(e);
+    return this.http.get<any[]>('api/objects?label='+term); // get filtered names
   }
 }
