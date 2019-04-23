@@ -158,6 +158,15 @@ export class MentionDirective implements OnInit, OnChanges {
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
+
+    if (navigator.userAgent.match(/Android/i)) {
+      var inputValue = val;
+      var charKeyCode = event.keyCode || event.which;
+      if (charKeyCode == 0 || charKeyCode == 229) {
+        event.keyCode = inputValue.charCodeAt(inputValue.length);
+      }
+    }
+
     let charPressed = this.keyCodeSpecified ? event.keyCode : event.key;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
@@ -211,7 +220,7 @@ export class MentionDirective implements OnInit, OnChanges {
       this.withEmptyTrigger) {
 
       if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
-        && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN 
+        && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN
         && event.keyCode !== KEY_UP && !event.wasClick) {
         this.searchString = nativeElement.value + charPressed;
         this.setEmptyTrigger();
