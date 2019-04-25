@@ -81,7 +81,7 @@ export class MentionDirective implements OnChanges {
     }
   }
 
-  private updateConfig() {
+  public updateConfig() {
     let config = this.mentionConfig;
     this.triggerChars = {};
     // use items from directive if they have been set
