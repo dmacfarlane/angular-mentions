@@ -29,7 +29,7 @@ Add the CSS to your index.html:
 Add the module to your app.module imports:
 
 ```typescript
-import { MentionModule } from 'angular-mentions/mention';
+import { MentionModule } from 'angular-mentions';
 ...
 
 @NgModule({
