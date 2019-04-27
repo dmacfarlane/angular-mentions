@@ -4,8 +4,6 @@
 /dist
 /tmp
 /aot
-# module dist
-/mention
 
 # dependencies
 /node_modules
@@ -27,6 +25,7 @@
 npm-debug.log
 testem.log
 /typings
+/ignore
 
 # e2e
 /e2e/*.js

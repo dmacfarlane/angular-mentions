@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { COMMON_NAMES } from '../common-names';
-import { MentionConfig } from 'mention/mention-config';
+import { MentionConfig } from 'angular-mentions';
 
 @Component({
   selector: 'app-demo-config',

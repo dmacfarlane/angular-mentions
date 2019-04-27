@@ -1,6 +1,6 @@
 import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
 
-import { MentionDirective } from '../../mention/mention.directive';
+import { MentionDirective } from 'angular-mentions';
 import { COMMON_NAMES } from '../common-names';
 
 declare var tinymce: any;
