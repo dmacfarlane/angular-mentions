@@ -1,9 +1,9 @@
-import { Directive, ElementRef, ComponentFactoryResolver, ViewContainerRef, TemplateRef } from "@angular/core";
-import { Input, EventEmitter, Output, OnChanges, SimpleChanges } from "@angular/core";
+import { ComponentFactoryResolver, Directive, ElementRef, TemplateRef, ViewContainerRef } from "@angular/core";
+import { EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { getCaretPosition, getValue, insertValue, setCaretPosition } from './mention-utils';
 
 import { MentionConfig } from "./mention-config";
 import { MentionListComponent } from './mention-list.component';
-import { getValue, insertValue, getCaretPosition, setCaretPosition } from './mention-utils';
 
 const KEY_BACKSPACE = 8;
 const KEY_TAB = 9;
@@ -15,7 +15,7 @@ const KEY_LEFT = 37;
 const KEY_UP = 38;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
-const KEY_2 = 50;
+const KEY_BUFFERED = 229;
 
 /**
  * Angular 2 Mentions.
@@ -27,6 +27,7 @@ const KEY_2 = 50;
   selector: '[mention], [mentionConfig]',
   host: {
     '(keydown)': 'keyHandler($event)',
+    '(input)': 'inputHandler($event)',
     '(blur)': 'blurHandler($event)',
     'autocomplete': 'off'
   }
@@ -67,6 +68,7 @@ export class MentionDirective implements OnChanges {
   private searchList: MentionListComponent;
   private searching: boolean;
   private iframe: any; // optional
+  private lastKeyCode: number;
 
   constructor(
     private _element: ElementRef,
@@ -147,15 +149,28 @@ export class MentionDirective implements OnChanges {
     this.stopSearch();
   }
 
+  inputHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    if (this.lastKeyCode === KEY_BUFFERED && event.data) {
+      let keyCode = event.data.charCodeAt(0);
+      this.keyHandler({ keyCode, inputEvent: true }, nativeElement);
+    }
+  }
+
   // @param nativeElement is the alternative text element in an iframe scenario
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    this.lastKeyCode = event.keyCode;
+
+    if (event.isComposing || event.keyCode === KEY_BUFFERED) {
+      return;
+    }
+
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
     let charPressed = event.key;
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
-        charPressed = String.fromCharCode(charCode + 32);
+        charPressed = String.fromCharCode(charCode + 32); 
       }
       // else if (event.shiftKey && charCode === KEY_2) {
       //   charPressed = this.config.triggerChar;
@@ -176,7 +191,7 @@ export class MentionDirective implements OnChanges {
     let config = this.triggerChars[charPressed];
     if (config) {
       this.activeConfig = config;
-      this.startPos = pos;
+      this.startPos = event.inputEvent ? pos - 1 : pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.searching = true;
       this.searchString = null;
@@ -199,7 +214,7 @@ export class MentionDirective implements OnChanges {
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
           pos--;
-          if (pos==this.startPos) {
+          if (pos == this.startPos) {
             this.stopSearch();
           }
         }
@@ -251,7 +266,7 @@ export class MentionDirective implements OnChanges {
         }
         else if (this.searching) {
           let mention = val.substring(this.startPos + 1, pos);
-          if (event.keyCode !== KEY_BACKSPACE) {
+          if (event.keyCode !== KEY_BACKSPACE && !event.inputEvent) {
             mention += charPressed;
           }
           this.searchString = mention;
@@ -301,7 +316,7 @@ export class MentionDirective implements OnChanges {
       this.searchList.itemTemplate = this.mentionListTemplate;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
-        let fakeKeydown = {"keyCode":KEY_ENTER,"wasClick":true};
+        let fakeKeydown = { keyCode: KEY_ENTER, wasClick: true };
         this.keyHandler(fakeKeydown, nativeElement);
       });
     }
