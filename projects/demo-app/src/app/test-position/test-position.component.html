@@ -1,0 +1,35 @@
+<h3>Mention-list Position Testing</h3>
+<p>Page to test position of the mention list with different elements.</p>
+
+<h5>Vertical scroll bar:</h5>
+<textarea style="height:100px;width:300px;position:relative" [mention]="items" #x>
+This tests the position of mention list when the element has a scroll bar.
+.
+Enter mention here: 
+.
+More lines to increase height...
+.
+..
+.
+..
+.
+..
+.
+End
+</textarea>
+<br>{{scrollValues(x)}}
+
+<h5>Horizontal scroll bar (has issues with positioning):</h5>
+<!-- https://github.com/component/textarea-caret-position/issues/54 -->
+<textarea style="height:100px;width:300px;white-space:nowrap" [mention]="items" #y>
+This tests the position of mention list when the element has a scroll bar.
+</textarea>
+<br>{{scrollValues(y)}}
+
+<h5>Input scrolling:</h5>
+<input type="text" [mention]="items" value="" #z> {{scrollValues(z)}}<br>
+<input type="text" [mention]="items" value="Enter mention after scrolling:"><br>
+
+<h5>Drop up:</h5>
+<input type="text" [mention]="items" [mentionConfig]="{dropUp:true}" value=""><br>
+<input type="text" [mention]="items" [mentionConfig]="{dropUp:true}" value="Enter mention after scrolling:"><br>

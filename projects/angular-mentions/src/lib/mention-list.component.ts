@@ -52,7 +52,6 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
-  private blockCursorSize: {height:number, width:number};
   constructor(private element: ElementRef) {}
 
   ngOnInit() {
@@ -65,13 +64,11 @@ export class MentionListComponent implements OnInit {
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null, dropUp: boolean) {
     let coords = { top: 0, left: 0 };
     if (isInputOrTextAreaElement(nativeParentElement)) {
-      this.blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
-      const scrollToHeightDiff = (nativeParentElement.scrollHeight - nativeParentElement.clientHeight);
-      const scrollToWidthDiff = (nativeParentElement.scrollWidth - nativeParentElement.clientWidth);
+      const blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
       // parent elements need to have postition:relative for this to work correctly?
-      coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart);
-      coords.top = nativeParentElement.offsetTop - scrollToHeightDiff + coords.top + this.blockCursorSize.height;
-      coords.left = nativeParentElement.offsetLeft - (scrollToWidthDiff ? scrollToWidthDiff + this.blockCursorSize.width : 0) + coords.left;
+      coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart, null);
+      coords.top = nativeParentElement.offsetTop + coords.top + blockCursorSize.height - nativeParentElement.scrollTop;
+      coords.left = nativeParentElement.offsetLeft + coords.left - nativeParentElement.scrollLeft;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
@@ -140,9 +137,6 @@ export class MentionListComponent implements OnInit {
   }
 
   private getBlockCursorDimensions(nativeParentElement: HTMLInputElement) {
-    if (this.blockCursorSize) {
-      return this.blockCursorSize;
-    }
     const parentStyles = window.getComputedStyle(nativeParentElement);
     return {
       height: parseFloat(parentStyles.lineHeight),

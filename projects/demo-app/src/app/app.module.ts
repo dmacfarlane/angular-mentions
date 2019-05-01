@@ -13,6 +13,7 @@ import { DemoConfigComponent } from './demo-config/demo-config.component';
 import { DemoOptionsComponent } from './demo-options/demo-options.component';
 import { DemoTemplateComponent } from './demo-template/demo-template.component';
 import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
+import { TestPositionComponent } from './test-position/test-position.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
     DemoConfigComponent,
     DemoOptionsComponent,
     DemoTemplateComponent,
-    DemoTinymceComponent
+    DemoTinymceComponent,
+    TestPositionComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
