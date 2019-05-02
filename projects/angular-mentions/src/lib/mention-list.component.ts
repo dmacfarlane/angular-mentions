@@ -1,13 +1,12 @@
 import {
-  Component, ElementRef, Output, EventEmitter, ViewChild, ContentChild, Input,
-  TemplateRef, OnInit
+  Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef, OnInit
 } from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
 import { getCaretCoordinates } from './caret-coords';
 
 /**
- * Angular 2 Mentions.
+ * Angular Mentions.
  * https://github.com/dmacfarlane/angular-mentions
  *
  * Copyright (c) 2016 Dan MacFarlane
@@ -52,6 +51,9 @@ export class MentionListComponent implements OnInit {
   items = [];
   activeIndex: number = 0;
   hidden: boolean = false;
+  dropUp: boolean = false;
+  private coords: {top:number, left:number};
+  private blockCursorSize: {height:number, width:number};
   constructor(private element: ElementRef) {}
 
   ngOnInit() {
@@ -61,18 +63,17 @@ export class MentionListComponent implements OnInit {
   }
 
   // lots of confusion here between relative coordinates and containers
-  position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null, dropUp: boolean) {
-    let coords = { top: 0, left: 0 };
+  position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
+    this.blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
     if (isInputOrTextAreaElement(nativeParentElement)) {
-      const blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
       // parent elements need to have postition:relative for this to work correctly?
-      coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart, null);
-      coords.top = nativeParentElement.offsetTop + coords.top + blockCursorSize.height - nativeParentElement.scrollTop;
-      coords.left = nativeParentElement.offsetLeft + coords.left - nativeParentElement.scrollLeft;
+      this.coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart, null);
+      this.coords.top = nativeParentElement.offsetTop + this.coords.top - nativeParentElement.scrollTop;
+      this.coords.left = nativeParentElement.offsetLeft + this.coords.left - nativeParentElement.scrollLeft;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
-      coords = getContentEditableCaretCoords(context);
+      this.coords = getContentEditableCaretCoords(context);
     }
     else {
       let doc = document.documentElement;
@@ -83,15 +84,11 @@ export class MentionListComponent implements OnInit {
       let caretRelativeToView = getContentEditableCaretCoords({ iframe: iframe });
       let parentRelativeToContainer: ClientRect = nativeParentElement.getBoundingClientRect();
 
-      coords.top = caretRelativeToView.top - parentRelativeToContainer.top + nativeParentElement.offsetTop - scrollTop;
-      coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
+      this.coords.top = caretRelativeToView.top - parentRelativeToContainer.top + nativeParentElement.offsetTop - scrollTop;
+      this.coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
-    let el: HTMLElement = this.element.nativeElement;
-    this.list.nativeElement.style.marginBottom = dropUp ? '24px' : null;
-    el.className = dropUp ? 'dropup' : null;
-    el.style.position = "absolute";
-    el.style.left = coords.left + 'px';
-    el.style.top = coords.top + 'px';
+    // set the default/inital position
+    this.positionElement();
   }
 
   get activeItem() {
@@ -132,9 +129,41 @@ export class MentionListComponent implements OnInit {
     this.activeIndex = Math.max(Math.min(this.activeIndex - 1, this.items.length - 1), 0);
   }
 
-  resetScroll() {
+  // reset for a new mention search
+  reset() {
     this.list.nativeElement.scrollTop = 0;
+    this.checkBounds();
   }
+
+  // final positioning is done after the list is shown (and the height and width are known)
+  // ensure it's in the page bounds
+  private checkBounds() {
+    let left = this.coords.left, top = this.coords.top, dropUp = this.dropUp;
+    const bounds: ClientRect = this.list.nativeElement.getBoundingClientRect();
+    // if off right of page, align right
+    if (bounds.left+bounds.width>window.innerWidth) {
+      left = (window.innerWidth - bounds.width - 10);
+    }
+    // if more than half off the bottom of the page, force dropUp
+    if ((bounds.top+bounds.height/2)>window.innerHeight) {
+      dropUp = true;
+    }
+    // if top is off page, disable dropUp
+    if (bounds.top<0) {
+      dropUp = false;
+    }
+    // set the revised/final position
+    this.positionElement(left, top, dropUp);
+  }
+
+  private positionElement(left:number=this.coords.left, top:number=this.coords.top, dropUp:boolean=this.dropUp) {
+    const el: HTMLElement = this.element.nativeElement;
+    top += dropUp ? 0 : this.blockCursorSize.height; // top of list is next line
+    el.className = dropUp ? 'dropup' : null;
+    el.style.position = "absolute";
+    el.style.left = left + 'px';
+    el.style.top = top + 'px';
+  }  
 
   private getBlockCursorDimensions(nativeParentElement: HTMLInputElement) {
     const parentStyles = window.getComputedStyle(nativeParentElement);

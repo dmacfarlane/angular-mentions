@@ -18,7 +18,7 @@ const KEY_DOWN = 40;
 const KEY_2 = 50;
 
 /**
- * Angular 2 Mentions.
+ * Angular Mentions.
  * https://github.com/dmacfarlane/angular-mentions
  *
  * Copyright (c) 2017 Dan MacFarlane
@@ -286,7 +286,6 @@ export class MentionDirective implements OnChanges {
     }
     // update the search list
     if (this.searchList) {
-      this.searchList.labelKey = this.activeConfig.labelKey;
       this.searchList.items = matches;
       this.searchList.hidden = matches.length == 0;
     }
@@ -297,7 +296,6 @@ export class MentionDirective implements OnChanges {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
       this.searchList = componentRef.instance;
-      this.searchList.position(nativeElement, this.iframe, this.activeConfig.dropUp);
       this.searchList.itemTemplate = this.mentionListTemplate;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
@@ -305,11 +303,10 @@ export class MentionDirective implements OnChanges {
         this.keyHandler(fakeKeydown, nativeElement);
       });
     }
-    else {
-      this.searchList.labelKey = this.activeConfig.labelKey;
-      this.searchList.activeIndex = 0;
-      this.searchList.position(nativeElement, this.iframe, this.activeConfig.dropUp);
-      window.setTimeout(() => this.searchList.resetScroll());
-    }
+    this.searchList.labelKey = this.activeConfig.labelKey;
+    this.searchList.dropUp = this.activeConfig.dropUp;
+    this.searchList.activeIndex = 0;
+    this.searchList.position(nativeElement, this.iframe);
+    window.setTimeout(() => this.searchList.reset());  
   }
 }
