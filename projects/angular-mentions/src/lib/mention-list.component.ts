@@ -52,8 +52,8 @@ export class MentionListComponent implements OnInit {
   activeIndex: number = 0;
   hidden: boolean = false;
   dropUp: boolean = false;
-  private coords: {top:number, left:number};
-  private blockCursorSize: {height:number, width:number};
+  private coords: {top:number, left:number} = {top:0, left:0};
+  private offset: number = 0;
   constructor(private element: ElementRef) {}
 
   ngOnInit() {
@@ -64,12 +64,13 @@ export class MentionListComponent implements OnInit {
 
   // lots of confusion here between relative coordinates and containers
   position(nativeParentElement: HTMLInputElement, iframe: HTMLIFrameElement = null) {
-    this.blockCursorSize = this.getBlockCursorDimensions(nativeParentElement);
     if (isInputOrTextAreaElement(nativeParentElement)) {
       // parent elements need to have postition:relative for this to work correctly?
       this.coords = getCaretCoordinates(nativeParentElement, nativeParentElement.selectionStart, null);
       this.coords.top = nativeParentElement.offsetTop + this.coords.top - nativeParentElement.scrollTop;
       this.coords.left = nativeParentElement.offsetLeft + this.coords.left - nativeParentElement.scrollLeft;
+      // getCretCoordinates() for text/input elements needs an additional offset to position the list correctly
+      this.offset = this.getBlockCursorDimensions(nativeParentElement).height;
     }
     else if (iframe) {
       let context: { iframe: HTMLIFrameElement, parent: Element } = { iframe: iframe, parent: iframe.offsetParent };
@@ -79,11 +80,9 @@ export class MentionListComponent implements OnInit {
       let doc = document.documentElement;
       let scrollLeft = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
       let scrollTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-
       // bounding rectangles are relative to view, offsets are relative to container?
       let caretRelativeToView = getContentEditableCaretCoords({ iframe: iframe });
       let parentRelativeToContainer: ClientRect = nativeParentElement.getBoundingClientRect();
-
       this.coords.top = caretRelativeToView.top - parentRelativeToContainer.top + nativeParentElement.offsetTop - scrollTop;
       this.coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
@@ -145,9 +144,9 @@ export class MentionListComponent implements OnInit {
       left = (window.innerWidth - bounds.width - 10);
     }
     // if more than half off the bottom of the page, force dropUp
-    if ((bounds.top+bounds.height/2)>window.innerHeight) {
-      dropUp = true;
-    }
+    // if ((bounds.top+bounds.height/2)>window.innerHeight) {
+    //   dropUp = true;
+    // }
     // if top is off page, disable dropUp
     if (bounds.top<0) {
       dropUp = false;
@@ -158,7 +157,7 @@ export class MentionListComponent implements OnInit {
 
   private positionElement(left:number=this.coords.left, top:number=this.coords.top, dropUp:boolean=this.dropUp) {
     const el: HTMLElement = this.element.nativeElement;
-    top += dropUp ? 0 : this.blockCursorSize.height; // top of list is next line
+    top += dropUp ? 0 : this.offset; // top of list is next line
     el.className = dropUp ? 'dropup' : null;
     el.style.position = "absolute";
     el.style.left = left + 'px';
