@@ -153,7 +153,6 @@ export class MentionDirective implements OnInit, OnChanges {
   }
 
   blurHandler(event: any) {
-    this.stopEvent(event);
     this.stopSearch = true;
     if (this.lastMentionItem && this.lastMentionItem.searchList) {
       this.lastMentionItem.searchList.hidden = true;
