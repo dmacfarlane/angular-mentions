@@ -1,15 +1,18 @@
 # Angular Mentions
 
-Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io).
+Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/ment.io) and [angular-mentions](https://github.com/dmacfarlane/angular-mentions).
 
-[Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
+[Click here for original repo](https://github.com/dmacfarlane/angular-mentions)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields. Not fully browser tested and comes without warranty!
 
+V2 Feature:
+- Added emitter (onItemSelected) to emit selected object / list item. 
+
 To install and start the demo application:
 
-    git clone https://github.com/dmacfarlane/angular-mentions.git
+    git clone https://github.com/khan019950/angular-mentions
     cd angular-mentions
     npm install
     ng serve
@@ -74,6 +77,7 @@ For Example:
 #### Output Events
 
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+- `(onItemSelected)=""` event emitted with selected object whenever user select item from list.
 
 ### Alternative Usage
 

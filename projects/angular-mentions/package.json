@@ -1,18 +1,19 @@
 {
   "name": "angular-mentions",
-  "version": "1.0.3",
+  "version": "2.0.1",
 
-  "description": "Angular mentions for text fields.",
+  "description": "Angular mentions for text fields with (onItemSelected) emitter which emits selected item.",
   "keywords": [
     "angular",
     "mention",
-    "autocomplete"
+    "autocomplete",
+    "v2"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmacfarlane/angular-mentions.git"
+    "url": "https://github.com/khan019950/angular-mentions"
   },
-  "author": "Dan MacFarlane",
+  "author": "Khan Abdul",
   "license": "MIT",
 
   "peerDependencies": {
