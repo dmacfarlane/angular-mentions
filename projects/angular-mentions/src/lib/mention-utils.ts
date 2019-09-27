@@ -75,9 +75,12 @@ export function getCaretPosition(el: HTMLInputElement, iframe: HTMLIFrameElement
   }
   else {
     var selObj = getWindowSelection(iframe); //window.getSelection();
-    if (selObj.rangeCount>0) {
+    if (selObj.rangeCount > 0) {
       var selRange = selObj.getRangeAt(0);
-      var position = selRange.startOffset;
+      var preCaretRange = selRange.cloneRange();
+      preCaretRange.selectNodeContents(el);
+      preCaretRange.setEnd(selRange.endContainer, selRange.endOffset);
+      var position = preCaretRange.toString().length;
       return position;
     }
   }
@@ -136,8 +139,8 @@ export function getContentEditableCaretCoords(ctx: { iframe: HTMLIFrameElement, 
 }
 
 function localToRelativeCoordinates(
-  ctx: { iframe: HTMLIFrameElement, parent?: Element }, 
-  element: Element, 
+  ctx: { iframe: HTMLIFrameElement, parent?: Element },
+  element: Element,
   coordinates: { top: number; left: number }
 ) {
   let obj = <HTMLElement>element;
