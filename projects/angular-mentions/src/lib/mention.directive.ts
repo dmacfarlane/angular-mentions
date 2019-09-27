@@ -34,7 +34,7 @@ const KEY_BUFFERED = 229;
 })
 export class MentionDirective implements OnChanges {
 
-  // stores the items passed to the mentions directive and used to populate the root items in mentionConfig 
+  // stores the items passed to the mentions directive and used to populate the root items in mentionConfig
   private mentionItems:any[];
 
   @Input('mention') set mention(items:any[]) {
@@ -129,7 +129,7 @@ export class MentionDirective implements OnChanges {
       this.activeConfig = config;
       this.updateSearchList();
     }
-  }  
+  }
 
   setIframe(iframe: HTMLIFrameElement) {
     this.iframe = iframe;
@@ -170,7 +170,7 @@ export class MentionDirective implements OnChanges {
     if (!charPressed) {
       let charCode = event.which || event.keyCode;
       if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
-        charPressed = String.fromCharCode(charCode + 32); 
+        charPressed = String.fromCharCode(charCode + 32);
       }
       // else if (event.shiftKey && charCode === KEY_2) {
       //   charPressed = this.config.triggerChar;
@@ -235,7 +235,7 @@ export class MentionDirective implements OnChanges {
               else {
                 evt.initEvent("input", true, false);
               }
-              // this seems backwards, but fire the event from this elements nativeElement (not the 
+              // this seems backwards, but fire the event from this elements nativeElement (not the
               // one provided that may be in an iframe, as it won't be propogate)
               this._element.nativeElement.dispatchEvent(evt);
             }
@@ -322,6 +322,6 @@ export class MentionDirective implements OnChanges {
     this.searchList.dropUp = this.activeConfig.dropUp;
     this.searchList.activeIndex = 0;
     this.searchList.position(nativeElement, this.iframe);
-    window.setTimeout(() => this.searchList.reset());  
+    window.setTimeout(() => this.searchList.reset());
   }
 }

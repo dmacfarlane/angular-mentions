@@ -46,7 +46,7 @@ describe('angular-mentions app', function() {
     el.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"));
     el.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, "a"));
     el.sendKeys(protractor.Key.DELETE);
-    testMultiLine(el);    
+    testMultiLine(el);
   });
 
   function testMentions(el){
@@ -80,7 +80,7 @@ describe('angular-mentions app', function() {
       el.sendKeys('Hello @');
       expect(menu.isDisplayed()).toBe(true);
       expect(page.getValue(el, tagName)).toEqual('Hello @');
-            
+
       // select mention using arrow keys and pressing enter
       // el.sendKeys(protractor.Key.ARROW_DOWN, protractor.Key.ENTER);
 
@@ -88,17 +88,17 @@ describe('angular-mentions app', function() {
       element(by.css('.dropdown-menu li:nth-child(2) a')).click();
       expect(menu.isDisplayed()).toBe(false);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron');
-      
+
       // select another mention
       el.sendKeys(' and @gav', protractor.Key.ENTER);
       expect(menu.isDisplayed()).toBe(false);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin');
-      
+
       // start another mention (with no values)
       el.sendKeys(' and @u');
       expect(menu.isDisplayed()).toBe(false);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @u');
-      
+
       // remove the mention
       el.sendKeys(protractor.Key.BACK_SPACE, protractor.Key.BACK_SPACE);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and ');
@@ -112,12 +112,12 @@ describe('angular-mentions app', function() {
       el.sendKeys('e');
       expect(menu.isDisplayed()).toBe(true);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
-      
+
       // but press escape instead
       el.sendKeys(protractor.Key.ESCAPE);
       expect(menu.isDisplayed()).toBe(false);
       expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @e');
-      
+
       // these are failing for content editable after chrome update (unable to reproduce manually)
       if (tagName!='div') {
         // remove the escaped entry
@@ -130,7 +130,7 @@ describe('angular-mentions app', function() {
         expect(menu.isDisplayed()).toBe(false);
         expect(page.getValue(el, tagName)).toEqual('Hello @Aaron and @Gavin and @Henry!!');
       }
-    });  
+    });
   }
 
   function testMultiLine(el){

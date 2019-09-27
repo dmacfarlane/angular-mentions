@@ -162,7 +162,7 @@ export class MentionListComponent implements OnInit {
     el.style.position = "absolute";
     el.style.left = left + 'px';
     el.style.top = top + 'px';
-  }  
+  }
 
   private getBlockCursorDimensions(nativeParentElement: HTMLInputElement) {
     const parentStyles = window.getComputedStyle(nativeParentElement);
