@@ -60,6 +60,9 @@ export class MentionDirective implements OnChanges {
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
+  // event emmited whenever you open or close mention dropdown
+  @Output() isOpen = new EventEmitter();
+
   private triggerChars:{[key:string]:MentionConfig} = {};
 
   private searchString: string;
@@ -194,6 +197,7 @@ export class MentionDirective implements OnChanges {
       this.startPos = event.inputEvent ? pos - 1 : pos;
       this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
       this.searching = true;
+      this.isOpen.emit(true);
       this.searchString = null;
       this.showSearchList(nativeElement);
       this.updateSearchList();
@@ -283,6 +287,7 @@ export class MentionDirective implements OnChanges {
     }
     this.activeConfig = null;
     this.searching = false;
+    this.isOpen.emit(false);
   }
 
   updateSearchList() {
