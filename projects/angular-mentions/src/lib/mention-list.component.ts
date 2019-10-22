@@ -13,7 +13,7 @@ import { getCaretCoordinates } from './caret-coords';
  */
 @Component({
   selector: 'mention-list',
-  styles: ['mention-list.component.scss'],
+  styleUrls: ['./mention-list.component.css'],
   template: `
     <ng-template #defaultItemTemplate let-item="item">
       {{item[labelKey]}}
