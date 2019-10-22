@@ -28,6 +28,9 @@ export interface Mentions {
   // display menu above text instead of below
   dropUp?:boolean;
 
+  // allow space while mentioning
+  allowSpace?: boolean;
+
   // optional function to format the selected item before inserting the text
   mentionSelect?:(item: any) => (string);
 }

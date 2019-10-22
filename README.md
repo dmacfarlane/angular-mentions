@@ -20,12 +20,6 @@ Add the package as a dependency to your project using:
 
     npm install angular-mentions
 
-Add the CSS to your index.html:
-
-```html
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-```
-
 Add the module to your app.module imports:
 
 ```typescript
@@ -64,6 +58,7 @@ The following optional configuration items can be used.
 | dropUp        | false    | Show the menu above the cursor instead of below. |
 | maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
 | mentionSelect |          | An optional function to format the selected item before inserting the text. |
+| allowSpace    | false    | An optional parameter whether to allow space while mentioning or not |
 
 For Example: 
 
@@ -74,6 +69,7 @@ For Example:
 #### Output Events
 
 - `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+- `(isOpen)=""` envet emitted whenever you open or close dropdown
 
 ### Alternative Usage
 

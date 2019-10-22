@@ -4,6 +4,7 @@
 
 ### Added
 - Added changelog
+- Added output to check if dropdown is open
 ### Changed
 - Changed styling of dropdown list
 ### Removed
