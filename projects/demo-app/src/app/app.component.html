@@ -7,8 +7,8 @@ and content editable fields. Try entering some @names below.</p>
 <ng-container *ngIf="!test">
 
     <h3>Minimal</h3>
-    <input [mention]="items" (isOpen)="open = $event" class="form-control" type="text">
-    {{open ? 'Dropdown is open' : 'Dropdown is closed'}}
+    <input [mention]="items" (isOpen)="open = $event" (searchTerm)="searchTerm = $event" [mentionConfig]="{returnTriggerChar: true}" class="form-control" type="text">
+    {{open ? 'Dropdown is open' : 'Dropdown is closed'}}, searchterm: {{searchTerm}}
 
     <h3>Textarea</h3>
     <textarea [mention]="items" class="form-control" cols="60" rows="4"></textarea>

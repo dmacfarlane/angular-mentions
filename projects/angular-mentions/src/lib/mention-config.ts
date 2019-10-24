@@ -26,6 +26,9 @@ export interface Mentions {
   // allow space while mentioning
   allowSpace?: boolean;
 
+  // whether to return trigger char in searchTerm or not
+  returnTriggerChar?: boolean;
+
   // optional function to format the selected item before inserting the text
   mentionSelect?: (item: any) => (string);
 }

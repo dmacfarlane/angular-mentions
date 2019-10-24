@@ -52,6 +52,7 @@ export class MentionDirective implements OnChanges {
     labelKey: 'label',
     maxItems: -1,
     allowSpace: false,
+    returnTriggerChar: false,
     mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
   };
 
@@ -160,6 +161,10 @@ export class MentionDirective implements OnChanges {
     }
   }
 
+  private emitSearchTerm() {
+    
+  }
+
   // @param nativeElement is the alternative text element in an iframe scenario
   keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
     this.lastKeyCode = event.keyCode;
@@ -202,6 +207,11 @@ export class MentionDirective implements OnChanges {
       this.searchString = null;
       this.showSearchList(nativeElement);
       this.updateSearchList();
+
+      if ( this.mentionConfig.returnTriggerChar ) {
+        this.searchTerm.emit(config.triggerChar);
+      }
+
     } else if (this.startPos >= 0 && this.searching) {
       if (pos <= this.startPos) {
         this.searchList.hidden = true;
@@ -267,7 +277,13 @@ export class MentionDirective implements OnChanges {
             mention += charPressed;
           }
           this.searchString = mention;
-          this.searchTerm.emit(this.searchString);
+
+          if ( this.mentionConfig.returnTriggerChar ) {
+            const triggerChar = (this.searchString || event.keyCode === KEY_BACKSPACE) ? val.substring(this.startPos, 1) : '';
+            this.searchTerm.emit(triggerChar + this.searchString);
+          } else {
+            this.searchTerm.emit(this.searchString);
+          }
           this.updateSearchList();
         }
       }
@@ -281,6 +297,7 @@ export class MentionDirective implements OnChanges {
     this.activeConfig = null;
     this.searching = false;
     this.isOpen.emit(false);
+    this.searchTerm.emit('');
   }
 
   updateSearchList() {

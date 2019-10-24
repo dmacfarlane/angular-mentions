@@ -13,6 +13,7 @@ import { COMMON_NAMES } from './common-names';
 export class AppComponent {
   items: string[] = COMMON_NAMES;
   public open: boolean;
+  public searchTerm: string;
   
   get test() {
     switch (window.location.pathname) {

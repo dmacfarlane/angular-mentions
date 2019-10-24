@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.0.6
+
+### Added
+- Added returnTriggerChar parameter
+
 ## 1.0.5
 
 ### Added
