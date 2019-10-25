@@ -20,11 +20,6 @@ Add the package as a dependency to your project using:
 
     npm install angular-mentions
 
-Add the CSS to your index.html:
-
-```html
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-```
 
 Add the module to your app.module imports:
 
