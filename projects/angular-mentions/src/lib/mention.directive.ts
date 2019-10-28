@@ -51,7 +51,7 @@ export class MentionDirective implements OnChanges {
     triggerChar: '@',
     labelKey: 'label',
     maxItems: -1,
-    allowSpaceWhileMentioning: false,
+    allowSpace: false,
     mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
   }
 
@@ -210,7 +210,7 @@ export class MentionDirective implements OnChanges {
           !event.ctrlKey &&
           pos > this.startPos
       ) {
-        if (!this.activeConfig.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE) {
+        if (!this.activeConfig.allowSpace && event.keyCode === KEY_SPACE) {
           this.startPos = -1;
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {

@@ -29,7 +29,7 @@ export interface Mentions {
   dropUp?:boolean;
 
   // whether to allow space while mentioning or not
-  allowSpaceWhileMentioning?: boolean;
+  allowSpace?: boolean;
 
   // optional function to format the selected item before inserting the text
   mentionSelect?:(item: any) => (string);
