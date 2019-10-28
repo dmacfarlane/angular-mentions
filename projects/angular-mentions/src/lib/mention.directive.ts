@@ -60,6 +60,8 @@ export class MentionDirective implements OnChanges {
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
+  @Output() showMentions = new EventEmitter<boolean>();
+
   private triggerChars:{[key:string]:MentionConfig} = {};
 
   private searchString: string;
@@ -201,6 +203,7 @@ export class MentionDirective implements OnChanges {
     else if (this.startPos >= 0 && this.searching) {
       if (pos <= this.startPos) {
         this.searchList.hidden = true;
+        this.showMentions.emit(this.searchList.hidden);
       }
       // ignore shift when pressed alone, but not when used with another key
       else if (event.keyCode !== KEY_SHIFT &&
@@ -280,6 +283,7 @@ export class MentionDirective implements OnChanges {
   stopSearch() {
     if (this.searchList) {
       this.searchList.hidden = true;
+      this.showMentions.emit(this.searchList.hidden);
     }
     this.activeConfig = null;
     this.searching = false;
@@ -303,6 +307,7 @@ export class MentionDirective implements OnChanges {
     if (this.searchList) {
       this.searchList.items = matches;
       this.searchList.hidden = matches.length == 0;
+      this.showMentions.emit(this.searchList.hidden);
     }
   }
 
