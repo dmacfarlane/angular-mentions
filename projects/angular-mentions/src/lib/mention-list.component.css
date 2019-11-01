@@ -1,0 +1,43 @@
+.mention-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 11em;
+  padding: 0.5em 0;
+  margin: 0.125em 0 0;
+  font-size: 1em;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25em;
+}
+.mention-item {
+  display: block;
+  padding: 0.2em 1.5em;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+.scrollable-menu {
+  display: block;
+  height: auto;
+  max-height: 296px; /* fits 11 items with 14px font-size */
+  overflow: auto;
+}
+[hidden] {
+  display: none;
+}
+li.active {
+  background-color: #f7f7f9;
+}
+  
