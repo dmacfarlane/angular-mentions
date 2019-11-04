@@ -20,6 +20,7 @@
 .mention-item {
   display: block;
   padding: 0.2em 1.5em;
+  line-height: 1.5em;
   clear: both;
   font-weight: 400;
   color: #212529;
@@ -28,16 +29,19 @@
   background-color: transparent;
   border: 0;
 }
+.mention-active > a {
+  color: #fff;
+  text-decoration: none;
+  background-color: #337ab7;
+  outline: 0;
+}
 .scrollable-menu {
   display: block;
   height: auto;
-  max-height: 296px; /* fits 11 items with 14px font-size */
+  max-height: 292px; /* fits 11 items with 14px font-size */
   overflow: auto;
 }
 [hidden] {
   display: none;
-}
-li.active {
-  background-color: #f7f7f9;
 }
   
