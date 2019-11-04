@@ -321,6 +321,7 @@ export class MentionDirective implements OnChanges {
     }
     this.searchList.labelKey = this.activeConfig.labelKey;
     this.searchList.dropUp = this.activeConfig.dropUp;
+    this.searchList.styleOff = this.mentionConfig.disableStyle;
     this.searchList.activeIndex = 0;
     this.searchList.position(nativeElement, this.iframe);
     window.setTimeout(() => this.searchList.reset());

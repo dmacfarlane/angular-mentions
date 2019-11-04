@@ -13,29 +13,15 @@ import { getCaretCoordinates } from './caret-coords';
  */
 @Component({
   selector: 'mention-list',
-  styles: [`
-      .scrollable-menu {
-        display: block;
-        height: auto;
-        max-height: 300px;
-        overflow: auto;
-      }
-    `,`
-      [hidden] {
-        display: none;
-      }
-    `,`
-      li.active {
-        background-color: #f7f7f9;
-      }
-    `],
+  styleUrls: ['./mention-list.component.css'],
   template: `
     <ng-template #defaultItemTemplate let-item="item">
       {{item[labelKey]}}
     </ng-template>
-    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu">
+    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu" [class.mention-menu]="!styleOff">
         <li *ngFor="let item of items; let i = index" [class.active]="activeIndex==i">
-            <a class="dropdown-item" (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
+            <a class="dropdown-item" [class.mention-item]="!styleOff"
+              (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
               <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{'item':item}"></ng-template>
             </a>
         </li>
@@ -52,6 +38,7 @@ export class MentionListComponent implements OnInit {
   activeIndex: number = 0;
   hidden: boolean = false;
   dropUp: boolean = false;
+  styleOff: boolean = false;
   private coords: {top:number, left:number} = {top:0, left:0};
   private offset: number = 0;
   constructor(private element: ElementRef) {}
