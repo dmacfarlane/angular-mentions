@@ -1,3 +1,13 @@
+/** 
+ * The internal mention styles can be disabled using the configuration setting leading to these 
+ * possible states:
+ *  
+ *   bootstrap not present; disableStyle false; (new default - use internal styles)
+ *   bootstrap not present; disableStyle true;  (no style - so user can add their own styles)
+ *   bootstrap present;     disableStyle true;  (original behavior - use bs styles)
+ *   bootstrap present;     disableStyle false; (mixes internal style with bs)
+ **/
+
 .mention-menu {
   position: absolute;
   top: 100%;
