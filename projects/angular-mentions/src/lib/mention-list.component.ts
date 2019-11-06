@@ -40,9 +40,9 @@ export class MentionListComponent implements OnInit {
   hidden: boolean = false;
   dropUp: boolean = false;
   styleOff: boolean = false;
-  private coords: {top:number, left:number} = {top:0, left:0};
+  private coords: { top: number, left: number } = { top: 0, left: 0 };
   private offset: number = 0;
-  constructor(private element: ElementRef) {}
+  constructor(private element: ElementRef) { }
 
   ngOnInit() {
     if (!this.itemTemplate) {
@@ -75,7 +75,7 @@ export class MentionListComponent implements OnInit {
       this.coords.left = caretRelativeToView.left - parentRelativeToContainer.left + nativeParentElement.offsetLeft - scrollLeft;
     }
     // set the default/inital position
-    this.positionElement();
+    //this.positionElement();
   }
 
   get activeItem() {
@@ -87,7 +87,7 @@ export class MentionListComponent implements OnInit {
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);
     if (activeEl) {
-      let nextLiEl: HTMLElement = <HTMLElement> activeEl.nextSibling;
+      let nextLiEl: HTMLElement = <HTMLElement>activeEl.nextSibling;
       if (nextLiEl && nextLiEl.nodeName == "LI") {
         let nextLiRect: ClientRect = nextLiEl.getBoundingClientRect();
         if (nextLiRect.bottom > listEl.getBoundingClientRect().bottom) {
@@ -104,7 +104,7 @@ export class MentionListComponent implements OnInit {
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);
     if (activeEl) {
-      let prevLiEl: HTMLElement = <HTMLElement> activeEl.previousSibling;
+      let prevLiEl: HTMLElement = <HTMLElement>activeEl.previousSibling;
       if (prevLiEl && prevLiEl.nodeName == "LI") {
         let prevLiRect: ClientRect = prevLiEl.getBoundingClientRect();
         if (prevLiRect.top < listEl.getBoundingClientRect().top) {
@@ -125,30 +125,39 @@ export class MentionListComponent implements OnInit {
   // final positioning is done after the list is shown (and the height and width are known)
   // ensure it's in the page bounds
   private checkBounds() {
-    let left = this.coords.left, top = this.coords.top, dropUp = this.dropUp;
+    let left = this.coords.left;
+    let right = null;
+    let top = this.coords.top;
+    let dropUp = this.dropUp;
     const bounds: ClientRect = this.list.nativeElement.getBoundingClientRect();
     // if off right of page, align right
-    if (bounds.left+bounds.width>window.innerWidth) {
-      left = (window.innerWidth - bounds.width - 10);
+    if (bounds.left + bounds.width > window.innerWidth) {
+      right = -bounds.width;
     }
+    // let iteration = 1;
+    // while(bounds.left+bounds.width+left>window.innerWidth) {
+    //   left = -10*iteration;
+    //   iteration++;
+    // }
     // if more than half off the bottom of the page, force dropUp
     // if ((bounds.top+bounds.height/2)>window.innerHeight) {
     //   dropUp = true;
     // }
     // if top is off page, disable dropUp
-    if (bounds.top<0) {
+    if (bounds.top < 0) {
       dropUp = false;
     }
     // set the revised/final position
-    this.positionElement(left, top, dropUp);
+    this.positionElement(left, top, dropUp, right);
   }
 
-  private positionElement(left:number=this.coords.left, top:number=this.coords.top, dropUp:boolean=this.dropUp) {
+  private positionElement(left: number = this.coords.left, top: number = this.coords.top, dropUp: boolean = this.dropUp, right?: number) {
     const el: HTMLElement = this.element.nativeElement;
     top += dropUp ? 0 : this.offset; // top of list is next line
     el.className = dropUp ? 'dropup' : null;
     el.style.position = "absolute";
-    el.style.left = left + 'px';
+    if (right != null && right != undefined) { el.style.right = right + 'px'; }
+    else { el.style.left = left + 'px';}
     el.style.top = top + 'px';
   }
 
