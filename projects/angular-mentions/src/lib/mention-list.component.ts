@@ -18,7 +18,8 @@ import { getCaretCoordinates } from './caret-coords';
     <ng-template #defaultItemTemplate let-item="item">
       {{item[labelKey]}}
     </ng-template>
-    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu" [class.mention-menu]="!styleOff" [class.mention-dropdown-menu]="!styleOff && dropUp">
+    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu"
+    [class.mention-menu]="!styleOff" [class.mention-dropdown]="!styleOff && dropUp">
       <li *ngFor="let item of items; let i = index" 
         [class.active]="activeIndex==i" [class.mention-active]="!styleOff && activeIndex==i">
         <a class="dropdown-item" [class.mention-item]="!styleOff"
