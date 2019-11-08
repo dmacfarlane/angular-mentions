@@ -278,6 +278,14 @@ export class MentionDirective implements OnChanges {
     }
   }
 
+  // exposed for external calls to open the mention list, e.g. by clicking a button
+  public startSearch(triggerChar?:string, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    triggerChar = triggerChar || this.mentionConfig.triggerChar || this.DEFAULT_CONFIG.triggerChar;
+    const pos = getCaretPosition(nativeElement, this.iframe);
+    insertValue(nativeElement, pos, pos, triggerChar, this.iframe);
+    this.keyHandler({key:triggerChar, inputEvent:true}, nativeElement);
+  }
+
   stopSearch() {
     if (this.searchList) {
       this.searchList.hidden = true;
