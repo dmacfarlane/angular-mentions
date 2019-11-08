@@ -5,7 +5,7 @@ Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/me
 [Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
-and content editable fields. Not fully browser tested and comes without warranty!
+and content editable fields.
 
 To install and start the demo application:
 
