@@ -59,7 +59,7 @@ export class MentionDirective implements OnChanges {
   @Input() mentionListTemplate: TemplateRef<any>;
 
   // event emitted whenever the search term changes
-  @Output() searchTerm = new EventEmitter();
+  @Output() searchTerm = new EventEmitter<string>();
 
   // event emitted whenever the mention list is opened or closed
   @Output() opened = new EventEmitter();
