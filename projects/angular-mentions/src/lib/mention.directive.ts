@@ -61,6 +61,10 @@ export class MentionDirective implements OnChanges {
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter();
 
+  // event emitted whenever the mention list is opened or closed
+  @Output() opened = new EventEmitter();
+  @Output() closed = new EventEmitter();
+
   private triggerChars:{[key:string]:MentionConfig} = {};
 
   private searchString: string;
@@ -287,6 +291,8 @@ export class MentionDirective implements OnChanges {
   }
 
   stopSearch() {
+    this.closed.emit();
+    
     if (this.searchList) {
       this.searchList.hidden = true;
     }
@@ -316,6 +322,8 @@ export class MentionDirective implements OnChanges {
   }
 
   showSearchList(nativeElement: HTMLInputElement) {
+    this.opened.emit();
+
     if (this.searchList == null) {
       let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
       let componentRef = this._viewContainerRef.createComponent(componentFactory);
