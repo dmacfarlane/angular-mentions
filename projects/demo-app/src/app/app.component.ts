@@ -12,6 +12,8 @@ import { COMMON_NAMES } from './common-names';
 })
 export class AppComponent {
   items: string[] = COMMON_NAMES;
+  public open: boolean;
+  
   get test() {
     switch (window.location.pathname) {
       case '/config'  : return 'config';
