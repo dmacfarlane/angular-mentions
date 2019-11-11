@@ -118,10 +118,12 @@ export class MentionDirective implements OnChanges {
           return object;
         });
       }
-      // remove items without an labelKey (as it's required to filter the list)
-      items = items.filter(e => e[config.labelKey]);
-      if (!config.disableSort) {
-        items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+      if (config.labelKey) {
+        // remove items without an labelKey (as it's required to filter the list)
+        items = items.filter(e => e[config.labelKey]);
+        if (!config.disableSort) {
+          items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+        }
       }
     }
     config.items = items;
@@ -305,7 +307,7 @@ export class MentionDirective implements OnChanges {
     if (this.activeConfig && this.activeConfig.items) {
       let objects = this.activeConfig.items;
       // disabling the search relies on the async operation to do the filtering
-      if (!this.activeConfig.disableSearch && this.searchString) {
+      if (!this.activeConfig.disableSearch && this.searchString && this.activeConfig.labelKey) {
         let searchStringLowerCase = this.searchString.toLowerCase();
         objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
       }
