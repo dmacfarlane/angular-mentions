@@ -52,7 +52,13 @@ export class MentionDirective implements OnChanges {
     labelKey: 'label',
     maxItems: -1,
     allowSpace: false,
-    mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
+    mentionSelect: (item: any) => {
+      let nestedLabel = item;
+      this.activeConfig.labelKey.split('.').forEach(
+        key => nestedLabel = nestedLabel[key]
+      );
+      return this.activeConfig.triggerChar + nestedLabel;
+    }
   }
 
   // template to use for rendering list items
