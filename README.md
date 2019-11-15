@@ -68,7 +68,13 @@ For Example:
 
 #### Output Events
 
-- `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+The following output events can be used.
+
+| Output        | Description |
+| ---           | ---         |
+| `@Output() serchTerm EventEmitter<string>` | Event that is emitted whenever the search term changes. Can be used to trigger async search.
+| `@Output() opened EventEmitter<void>`  | Event that is emitted when the mentions panel is opened.
+| `@Output() closed EventEmitter<void>`  | Event that is emitted when the mentions panel is closed.
 
 ### Alternative Usage
 
