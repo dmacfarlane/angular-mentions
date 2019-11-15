@@ -16,7 +16,7 @@ import { getCaretCoordinates } from './caret-coords';
   styleUrls: ['./mention-list.component.scss'],
   template: `
     <ng-template #defaultItemTemplate let-item="item">
-      {{item[labelKey]}}
+      {{getItemValueByLabelKey(item)}}
     </ng-template>
     <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu"
     [class.mention-menu]="!styleOff" [class.mention-dropdown]="!styleOff && dropUp">
@@ -49,6 +49,14 @@ export class MentionListComponent implements OnInit {
     if (!this.itemTemplate) {
       this.itemTemplate = this.defaultItemTemplate;
     }
+  }
+
+  public getItemValueByLabelKey(item) {
+    let nestedLabel = item;
+    this.labelKey.split('.').forEach(
+      key => nestedLabel = nestedLabel[key]
+    );
+    return nestedLabel;
   }
 
   // lots of confusion here between relative coordinates and containers

@@ -52,7 +52,13 @@ export class MentionDirective implements OnChanges {
     labelKey: 'label',
     maxItems: -1,
     allowSpace: false,
-    mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
+    mentionSelect: (item: any) => {
+      let nestedLabel = item;
+      this.activeConfig.labelKey.split('.').forEach(
+        key => nestedLabel = nestedLabel[key]
+      );
+      return this.activeConfig.triggerChar + nestedLabel;
+    }
   }
 
   // template to use for rendering list items
@@ -102,6 +108,14 @@ export class MentionDirective implements OnChanges {
     }
   }
 
+  private getItemValueByLabelKey(item, labelKey) {
+    let nestedLabel = item;
+    labelKey.split('.').forEach(
+      key => nestedLabel = nestedLabel[key]
+    );
+    return nestedLabel;
+  }
+
   // add configuration for a trigger char
   private addConfig(config:MentionConfig) {
     // defaults
@@ -122,7 +136,7 @@ export class MentionDirective implements OnChanges {
         // remove items without an labelKey (as it's required to filter the list)
         items = items.filter(e => e[config.labelKey]);
         if (!config.disableSort) {
-          items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+          items.sort((a,b) => this.getItemValueByLabelKey(a, config.labelKey).localeCompare(this.getItemValueByLabelKey(b, config.labelKey)));
         }
       }
     }
@@ -309,7 +323,7 @@ export class MentionDirective implements OnChanges {
       // disabling the search relies on the async operation to do the filtering
       if (!this.activeConfig.disableSearch && this.searchString && this.activeConfig.labelKey) {
         let searchStringLowerCase = this.searchString.toLowerCase();
-        objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+        objects = objects.filter(e => this.getItemValueByLabelKey(e, this.activeConfig.labelKey).toLowerCase().startsWith(searchStringLowerCase));
       }
       matches = objects;
       if (this.activeConfig.maxItems > 0) {
