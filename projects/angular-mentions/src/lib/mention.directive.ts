@@ -35,14 +35,14 @@ const KEY_BUFFERED = 229;
 export class MentionDirective implements OnChanges {
 
   // stores the items passed to the mentions directive and used to populate the root items in mentionConfig
-  private mentionItems:any[];
+  private mentionItems: any[];
 
-  @Input('mention') set mention(items:any[]) {
+  @Input('mention') set mention(items: any[]) {
     this.mentionItems = items;
   }
 
   // the provided configuration object
-  @Input() mentionConfig: MentionConfig = {items:[]};
+  @Input() mentionConfig: MentionConfig = { items: [] };
 
   private activeConfig: MentionConfig;
 
@@ -52,6 +52,7 @@ export class MentionDirective implements OnChanges {
     labelKey: 'label',
     maxItems: -1,
     allowSpace: false,
+    returnTrigger: false,
     mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
   }
 
@@ -65,7 +66,7 @@ export class MentionDirective implements OnChanges {
   @Output() opened = new EventEmitter();
   @Output() closed = new EventEmitter();
 
-  private triggerChars:{[key:string]:MentionConfig} = {};
+  private triggerChars: { [key: string]: MentionConfig } = {};
 
   private searchString: string;
   private startPos: number;
@@ -79,7 +80,7 @@ export class MentionDirective implements OnChanges {
     private _element: ElementRef,
     private _componentResolver: ComponentFactoryResolver,
     private _viewContainerRef: ViewContainerRef
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     // console.log('config change', changes);
@@ -98,21 +99,21 @@ export class MentionDirective implements OnChanges {
     this.addConfig(config);
     // nested configs
     if (config.mentions) {
-      config.mentions.forEach(config=>this.addConfig(config));
+      config.mentions.forEach(config => this.addConfig(config));
     }
   }
 
   // add configuration for a trigger char
-  private addConfig(config:MentionConfig) {
+  private addConfig(config: MentionConfig) {
     // defaults
     let defaults = Object.assign({}, this.DEFAULT_CONFIG);
     config = Object.assign(defaults, config);
     // items
     let items = config.items;
-    if (items && items.length>0) {
+    if (items && items.length > 0) {
       // convert strings to objects
       if (typeof items[0] == 'string') {
-        items = items.map((label)=>{
+        items = items.map((label) => {
           let object = {};
           object[config.labelKey] = label;
           return object;
@@ -122,7 +123,7 @@ export class MentionDirective implements OnChanges {
         // remove items without an labelKey (as it's required to filter the list)
         items = items.filter(e => e[config.labelKey]);
         if (!config.disableSort) {
-          items.sort((a,b)=>a[config.labelKey].localeCompare(b[config.labelKey]));
+          items.sort((a, b) => a[config.labelKey].localeCompare(b[config.labelKey]));
         }
       }
     }
@@ -132,7 +133,7 @@ export class MentionDirective implements OnChanges {
     this.triggerChars[config.triggerChar] = config;
 
     // for async update while menu/search is active
-    if (this.activeConfig && this.activeConfig.triggerChar==config.triggerChar) {
+    if (this.activeConfig && this.activeConfig.triggerChar == config.triggerChar) {
       this.activeConfig = config;
       this.updateSearchList();
     }
@@ -204,6 +205,11 @@ export class MentionDirective implements OnChanges {
       this.searchString = null;
       this.showSearchList(nativeElement);
       this.updateSearchList();
+
+      if (config.returnTrigger) {
+        this.searchTerm.emit(config.triggerChar);
+      }
+
     }
     else if (this.startPos >= 0 && this.searching) {
       if (pos <= this.startPos) {
@@ -211,10 +217,10 @@ export class MentionDirective implements OnChanges {
       }
       // ignore shift when pressed alone, but not when used with another key
       else if (event.keyCode !== KEY_SHIFT &&
-          !event.metaKey &&
-          !event.altKey &&
-          !event.ctrlKey &&
-          pos > this.startPos
+        !event.metaKey &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        pos > this.startPos
       ) {
         if (!this.activeConfig.allowSpace && event.keyCode === KEY_SPACE) {
           this.startPos = -1;
@@ -277,7 +283,12 @@ export class MentionDirective implements OnChanges {
             mention += charPressed;
           }
           this.searchString = mention;
-          this.searchTerm.emit(this.searchString);
+          if (this.activeConfig.returnTrigger) {
+            const triggerChar = (this.searchString || event.keyCode === KEY_BACKSPACE) ? val.substring(this.startPos, 1) : '';
+            this.searchTerm.emit(triggerChar + this.searchString);
+          } else {
+            this.searchTerm.emit(this.searchString);
+          }
           this.updateSearchList();
         }
       }
@@ -285,16 +296,16 @@ export class MentionDirective implements OnChanges {
   }
 
   // exposed for external calls to open the mention list, e.g. by clicking a button
-  public startSearch(triggerChar?:string, nativeElement: HTMLInputElement = this._element.nativeElement) {
+  public startSearch(triggerChar?: string, nativeElement: HTMLInputElement = this._element.nativeElement) {
     triggerChar = triggerChar || this.mentionConfig.triggerChar || this.DEFAULT_CONFIG.triggerChar;
     const pos = getCaretPosition(nativeElement, this.iframe);
     insertValue(nativeElement, pos, pos, triggerChar, this.iframe);
-    this.keyHandler({key:triggerChar, inputEvent:true}, nativeElement);
+    this.keyHandler({ key: triggerChar, inputEvent: true }, nativeElement);
   }
 
   stopSearch() {
     this.closed.emit();
-    
+
     if (this.searchList) {
       this.searchList.hidden = true;
     }
