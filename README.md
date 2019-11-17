@@ -57,8 +57,9 @@ The following optional configuration items can be used.
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
 | dropUp        | false    | Show the menu above the cursor instead of below. |
 | maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
-| mentionSelect |          | An optional function to format the selected item before inserting the text. |
-| allowSpace    | false    | An optional parameter to allow spaces while mentioning. |
+| mentionSelect |          | A function to format the selected item before inserting the text. |
+| allowSpace    | false    | Allow spaces while mentioning. |
+| returnTrigger | false    | Include the trigger char in the searchTerm event. |
 
 For Example: 
 

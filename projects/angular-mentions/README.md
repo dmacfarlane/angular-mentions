@@ -5,7 +5,7 @@ Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/me
 [Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
 
 Provides auto-complete suggestions for @mentions in text input fields, text areas,
-and content editable fields. Not fully browser tested and comes without warranty!
+and content editable fields.
 
 To install and start the demo application:
 
@@ -19,12 +19,6 @@ To install and start the demo application:
 Add the package as a dependency to your project using:
 
     npm install angular-mentions
-
-Add the CSS to your index.html:
-
-```html
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-```
 
 Add the module to your app.module imports:
 
@@ -63,8 +57,9 @@ The following optional configuration items can be used.
 | disableSearch | false    | Disable internal filtering (only useful if async search is used). |
 | dropUp        | false    | Show the menu above the cursor instead of below. |
 | maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
-| mentionSelect |          | An optional function to format the selected item before inserting the text. |
-| allowSpace    | false    | An optional paremeter which decides whether to allow space while mentioning or not |
+| mentionSelect |          | A function to format the selected item before inserting the text. |
+| allowSpace    | false    | Allow spaces while mentioning. |
+| returnTrigger | false    | Include the trigger char in the searchTerm event. |
 
 For Example: 
 
@@ -74,7 +69,13 @@ For Example:
 
 #### Output Events
 
-- `(searchTerm)=""` event emitted whenever the search term changes. Can be used to trigger async search.
+The following output events can be used.
+
+| Output        | Description |
+| ---           | ---         |
+| `@Output() serchTerm EventEmitter<string>` | Event that is emitted whenever the search term changes. Can be used to trigger async search.
+| `@Output() opened EventEmitter<void>`  | Event that is emitted when the mentions panel is opened.
+| `@Output() closed EventEmitter<void>`  | Event that is emitted when the mentions panel is closed.
 
 ### Alternative Usage
 
