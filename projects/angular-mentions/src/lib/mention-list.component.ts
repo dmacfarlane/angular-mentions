@@ -19,8 +19,8 @@ import { getCaretCoordinates } from './caret-coords';
       {{item[labelKey]}}
     </ng-template>
     <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu"
-    [class.mention-menu]="!styleOff" [class.mention-dropdown]="!styleOff && dropUp">
-      <li *ngFor="let item of items; let i = index" 
+      [class.mention-menu]="!styleOff" [class.mention-dropdown]="!styleOff && dropUp">
+      <li *ngFor="let item of items; let i = index"
         [class.active]="activeIndex==i" [class.mention-active]="!styleOff && activeIndex==i">
         <a class="dropdown-item" [class.mention-item]="!styleOff"
           (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
@@ -129,8 +129,8 @@ export class MentionListComponent implements OnInit {
     let left = this.coords.left, top = this.coords.top, dropUp = this.dropUp;
     const bounds: ClientRect = this.list.nativeElement.getBoundingClientRect();
     // if off right of page, align right
-    if (bounds.left+bounds.width>window.innerWidth) {
-      left = (window.innerWidth - bounds.width - 10);
+    if (bounds.left + bounds.width > window.innerWidth) {
+      left -= bounds.left + bounds.width - window.innerWidth + 10;
     }
     // if more than half off the bottom of the page, force dropUp
     // if ((bounds.top+bounds.height/2)>window.innerHeight) {
