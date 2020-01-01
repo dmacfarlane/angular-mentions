@@ -284,7 +284,7 @@ export class MentionDirective implements OnChanges {
           }
           this.searchString = mention;
           if (this.activeConfig.returnTrigger) {
-            const triggerChar = (this.searchString || event.keyCode === KEY_BACKSPACE) ? val.substring(this.startPos, 1) : '';
+            const triggerChar = (this.searchString || event.keyCode === KEY_BACKSPACE) ? val.substring(this.startPos, this.startPos + 1) : '';
             this.searchTerm.emit(triggerChar + this.searchString);
           } else {
             this.searchTerm.emit(this.searchString);
