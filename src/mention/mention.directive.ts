@@ -16,7 +16,6 @@ const KEY_UP = 38;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
 const KEY_2 = 50;
-const KEY_BUFFERED = 229;
 
 /**
  * Angular 2 Mentions.
@@ -28,7 +27,6 @@ const KEY_BUFFERED = 229;
   selector: '[mentions]',
   host: {
     '(keypress)': 'keyHandler($event)',
-    '(input)': 'inputHandler($event)',
     '(blur)': 'blurHandler($event)'
   }
 })
