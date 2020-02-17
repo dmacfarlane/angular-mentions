@@ -1,6 +1,6 @@
 {
   "name": "fvi-angular-mentions",
-  "version": "0.10.4",
+  "version": "1.2.1",
   "description": "Angular mentions from Dmacfarlane - angular-mentions and devel branch of Dessalines. Modified version of angular-mentions that has an optional function to format the selected item before inserting the text.",
   "keywords": [
     "angular",
