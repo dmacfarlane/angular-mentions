@@ -16,6 +16,7 @@ const KEY_UP = 38;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
 const KEY_2 = 50;
+const KEY_BUFFERED = 229;
 
 /**
  * Angular 2 Mentions.
@@ -26,7 +27,8 @@ const KEY_2 = 50;
 @Directive({
   selector: '[mentions]',
   host: {
-    '(keydown)': 'keyHandler($event)',
+    '(keypress)': 'keyHandler($event)',
+    '(input)': 'inputHandler($event)',
     '(blur)': 'blurHandler($event)'
   }
 })
@@ -38,6 +40,10 @@ export class MentionDirective implements OnInit, OnChanges {
 
   @Input() set isEmptyTrigger(isEmptyTrigger: boolean) {
     this.withEmptyTrigger = isEmptyTrigger;
+  }
+
+  @Input() set allowSpaceWhileMention(allowSpaceWhileMentioning: boolean) {
+    this.allowSpaceWhileMentioning = allowSpaceWhileMentioning;
   }
 
   // event emitted whenever the search term changes
@@ -80,6 +86,7 @@ export class MentionDirective implements OnInit, OnChanges {
   keyCodeSpecified: boolean;
   lastMentionItem: MentionItem;
   withEmptyTrigger: boolean;
+  allowSpaceWhileMentioning: boolean;
 
   constructor(
     private _element: ElementRef,
@@ -159,7 +166,7 @@ export class MentionDirective implements OnInit, OnChanges {
     }
   }
 
-  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) { 
     let val: string = getValue(nativeElement);
     let pos = getCaretPosition(nativeElement, this.iframe);
 
@@ -238,7 +245,7 @@ export class MentionDirective implements OnInit, OnChanges {
         !event.ctrlKey &&
         (pos > this.startPos || this.withEmptyTrigger)
       ) {
-        if (event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
+        if (!this.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
           this.startPos = -1;
         }
         else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
@@ -375,7 +382,7 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.searchList.labelKey = mentionItem.labelKey;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
-        let fakeKeydown = { "keyCode": KEY_ENTER, "wasClick": true };
+        let fakeKeydown = {"keyCode":KEY_ENTER, "wasClick": true };
         this.keyHandler(fakeKeydown, nativeElement);
       });
       this.triggeredChar.emit(mentionItem.triggerChar);
