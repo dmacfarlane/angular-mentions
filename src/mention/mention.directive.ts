@@ -16,6 +16,7 @@ const KEY_UP = 38;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
 const KEY_2 = 50;
+const KEY_BUFFERED = 229;
 
 /**
  * Angular 2 Mentions.
@@ -26,7 +27,8 @@ const KEY_2 = 50;
 @Directive({
   selector: '[mentions]',
   host: {
-    '(keypress)': 'keyHandler($event)',
+    '(keydown)': 'keyHandler($event)',
+    '(keyup)': 'androidHandler($event)',
     '(blur)': 'blurHandler($event)'
   }
 })
@@ -100,7 +102,7 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.disableSearch = mentionItem.disableSearch || this.defaultDisableSearch;
       mentionItem.maxItems = mentionItem.maxItems || this.defaultMaxItems;
       //v0.10.2
-     // mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
+      // mentionItem.mentionSelect = mentionItem.mentionSelect || this.mentionSelect;
     }
   }
 
@@ -164,177 +166,343 @@ export class MentionDirective implements OnInit, OnChanges {
     }
   }
 
-  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) { 
-    let val: string = getValue(nativeElement);
-    let pos = getCaretPosition(nativeElement, this.iframe);
-
-    if (navigator.userAgent.match(/Android/i)) {
-      var inputValue = val;
-      var charKeyCode = event.keyCode || event.which;
-      if (charKeyCode == 0 || charKeyCode == 229) {
-        event.keyCode = inputValue.charCodeAt(inputValue.length);
+  androidHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    if (/Android/i.test(navigator.userAgent)) {
+      let keyCode = event.keyCode ? event.keyCode : (event.data ? event.data.charCodeAt(0) : KEY_BUFFERED);
+      if (keyCode === KEY_BUFFERED) {
+        keyCode = event.target.value.charAt(event.target.selectionStart - 1).charCodeAt();
       }
-    }
 
-    let charPressed = this.keyCodeSpecified ? event.keyCode : event.key;
-    if (!charPressed) {
-      let charCode = event.which || event.keyCode;
-      if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
-        charPressed = String.fromCharCode(charCode + 32);
-      }
-      // TODO wut?
-      // else if (event.shiftKey && charCode === KEY_2) {
-      //   charPressed = this.triggerChar;
-      // }
-      else {
-        // TODO (dmacfarlane) fix this for non-alpha keys
-        // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
-        charPressed = String.fromCharCode(event.which || event.keyCode);
-      }
-    }
-    if ((event.keyCode == KEY_TAB || (event.keyCode == KEY_ENTER && event.wasClick)) && pos < this.startPos) {
-      // put caret back in position prior to contenteditable menu click
-      pos = this.startNode.length;
-      setCaretPosition(this.startNode, pos, this.iframe);
-    }
-    // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
+      let val: string = getValue(nativeElement);
+      let pos = getCaretPosition(nativeElement, this.iframe);
 
-    let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
-
-    if (!mentionItem && charPressed !== " " && charPressed !== null && this.withEmptyTrigger && !nativeElement.value
-      && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB
-      && event.keyCode !== KEY_DOWN && event.keyCode !== KEY_UP) {
-      mentionItem = this.getMentionItemFromCharPressed("");
-    }
-
-    if ((mentionItem && charPressed !== " ") || (mentionItem && charPressed === " " &&
-      (nativeElement.value.endsWith(",") || nativeElement.value.endsWith("+")))) {
-      this.lastMentionItem = mentionItem;
-
-      if (charPressed !== " " && charPressed !== null && this.withEmptyTrigger && !nativeElement.value) {
-        this.stopSearch = false;
-        this.searchString = charPressed;
-      } else {
-        this.stopSearch = false;
-        this.searchString = null;
-      }
-      // if (charPressed == this.triggerChar) {
-      this.startPos = pos;
-      this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
-
-      this.showSearchList(mentionItem, nativeElement);
-      this.updateSearchList(mentionItem);
-    }
-    else if ((this.startPos >= 0 && !this.stopSearch) ||
-      this.withEmptyTrigger) {
-
-      if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
-        && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN
-        && event.keyCode !== KEY_UP && !event.wasClick) {
-        this.searchString = nativeElement.value + charPressed;
-        this.setEmptyTrigger();
-      } else if (pos <= this.startPos && !this.withEmptyTrigger) {
-        this.lastMentionItem.searchList.hidden = true;
-      }
-      // ignore shift when pressed alone, but not when used with another key
-      else if (event.keyCode !== KEY_SHIFT &&
-        !event.metaKey &&
-        !event.altKey &&
-        !event.ctrlKey &&
-        (pos > this.startPos || this.withEmptyTrigger)
-      ) {
-        if (!this.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
-          this.startPos = -1;
-        }
-        else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
-          pos--;
-          if (pos == 0) {
-            this.stopSearch = true;
-          }
-          this.lastMentionItem.searchList.hidden = this.stopSearch;
-        }
-        else if (this.lastMentionItem && !this.lastMentionItem.searchList.hidden) {
-          if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
-            this.stopEvent(event);
-            this.lastMentionItem.searchList.hidden = true;
-            // value is inserted without a trailing space for consistency
-            // between element types (div and iframe do not preserve the space)
-
-            // if (nativeElement.value && this.lastMentionItem.triggerChar === "") {
-            //   this.startPos = nativeElement.value.lastIndexOf(charPressed.trim());
-            //   pos = nativeElement.value.lastIndexOf(charPressed.trim());
-            // }
-            // if mentionSelect is overridden
-            if (!this.iframe && (this.startPos < 0 || this.startPos === undefined)) {
-              this.startPos = 0;
-              pos = this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey] ?
-                this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey].length + 1
-                : 0;
-            }
-
-            if (this.lastMentionItem.mentionSelect) {
-              insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
-            } else {
-              // default method
-              insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
-            }
-            //v0.9.3
-            //insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
-            //v0.10.0
-            //insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
-
-            this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
-            // fire input event so angular bindings are updated
-            if ("createEvent" in document) {
-              var evt = document.createEvent("HTMLEvents");
-              evt.initEvent("input", false, true);
-              nativeElement.dispatchEvent(evt);
-            }
-            this.startPos = -1;
-
-            // if (this.withEmptyTrigger) {
-            //   this.setEmptyTrigger();
-            // }
-            return false;
-          }
-          else if (event.keyCode === KEY_ESCAPE) {
-            this.stopEvent(event);
-            this.lastMentionItem.searchList.hidden = true;
-            this.stopSearch = true;
-            return false;
-          }
-          else if (event.keyCode === KEY_DOWN) {
-            this.stopEvent(event);
-            this.lastMentionItem.searchList.activateNextItem();
-            return false;
-          }
-          else if (event.keyCode === KEY_UP) {
-            this.stopEvent(event);
-            this.lastMentionItem.searchList.activatePreviousItem();
-            return false;
-          }
-        }
-
-        if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
-          this.stopEvent(event);
-          return false;
+      let charPressed = null;
+      if (!charPressed) {
+        let charCode = event.which || event.keyCode;
+        if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
+          charPressed = String.fromCharCode(charCode + 32);
         }
         else {
-          let mention = val.substring(this.startPos + 1, pos);
-          if (event.keyCode !== KEY_BACKSPACE) {
-            mention += charPressed;
+          // TODO (dmacfarlane) fix this for non-alpha keys
+          // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
+          charPressed = String.fromCharCode(event.which || event.keyCode);
+        }
+      }
+      if ((event.keyCode == KEY_TAB || (event.keyCode == KEY_ENTER && event.wasClick)) && pos < this.startPos) {
+        // put caret back in position prior to contenteditable menu click
+        pos = this.startNode.length;
+        setCaretPosition(this.startNode, pos, this.iframe);
+      }
+      // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
+
+      let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
+
+      if (!mentionItem && charPressed !== " " && charPressed !== null && this.withEmptyTrigger
+        && (!nativeElement.value || (nativeElement.value && nativeElement.value.length === 1))
+        && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB
+        && event.keyCode !== KEY_DOWN && event.keyCode !== KEY_UP) {
+        mentionItem = this.getMentionItemFromCharPressed("");
+      }
+
+      if ((mentionItem && charPressed !== " ") || (mentionItem && charPressed === " " &&
+        (nativeElement.value.endsWith(", ") || nativeElement.value.endsWith("+ ")))) {
+        this.lastMentionItem = mentionItem;
+
+        if (charPressed !== " " && charPressed !== null && this.withEmptyTrigger
+          && (!nativeElement.value || (nativeElement.value && nativeElement.value.length === 1))) {
+          this.stopSearch = false;
+          this.searchString = charPressed;
+        } else {
+          this.stopSearch = false;
+          this.searchString = null;
+        }
+        // if (charPressed == this.triggerChar) {
+        this.startPos = pos;
+        this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
+
+        this.showSearchList(mentionItem, nativeElement);
+        this.updateSearchList(mentionItem);
+      }
+      else if ((this.startPos >= 0 && !this.stopSearch) ||
+        this.withEmptyTrigger) {
+
+        if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
+          && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN
+          && event.keyCode !== KEY_UP && !event.wasClick) {
+          this.searchString = nativeElement.value + charPressed;
+          this.setEmptyTrigger();
+        } else if (pos <= this.startPos && !this.withEmptyTrigger) {
+          this.lastMentionItem.searchList.hidden = true;
+        }
+        // ignore shift when pressed alone, but not when used with another key
+        else if (event.keyCode !== KEY_SHIFT &&
+          !event.metaKey &&
+          !event.altKey &&
+          !event.ctrlKey &&
+          (pos > this.startPos || this.withEmptyTrigger)
+        ) {
+          if (!this.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
+            this.startPos = -1;
+          }
+          else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
+            pos--;
+            if (pos == 0) {
+              this.stopSearch = true;
+            }
+            this.lastMentionItem.searchList.hidden = this.stopSearch;
+          }
+          else if (this.lastMentionItem && this.lastMentionItem.searchList && !this.lastMentionItem.searchList.hidden) {
+            if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.hidden = true;
+              // value is inserted without a trailing space for consistency
+              // between element types (div and iframe do not preserve the space)
+
+              // if (nativeElement.value && this.lastMentionItem.triggerChar === "") {
+              //   this.startPos = nativeElement.value.lastIndexOf(charPressed.trim());
+              //   pos = nativeElement.value.lastIndexOf(charPressed.trim());
+              // }
+              // if mentionSelect is overridden
+              this.startPos = this.lastMentionItem.triggerChar !== "" && this.lastMentionItem.triggerChar !== " " ? pos - 2 : pos - 1;
+              if (!this.iframe && (this.startPos < 0 || this.startPos === undefined)) {
+                this.startPos = 0;
+                pos = this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey] ?
+                  this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey].length + 1
+                  : 0;
+              }
+
+              if (this.lastMentionItem.mentionSelect) {
+                insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              } else {
+                // default method
+                insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              }
+              //v0.9.3
+              //insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              //v0.10.0
+              //insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+
+              this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
+              // fire input event so angular bindings are updated
+              if ("createEvent" in document) {
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("input", false, true);
+                nativeElement.dispatchEvent(evt);
+              }
+              this.startPos = -1;
+
+              // if (this.withEmptyTrigger) {
+              //   this.setEmptyTrigger();
+              // }
+              return false;
+            }
+            else if (event.keyCode === KEY_ESCAPE) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.hidden = true;
+              this.stopSearch = true;
+              return false;
+            }
+            else if (event.keyCode === KEY_DOWN) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.activateNextItem();
+              return false;
+            }
+            else if (event.keyCode === KEY_UP) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.activatePreviousItem();
+              return false;
+            }
           }
 
-          this.searchString = mention;
-          this.searchTerm.emit(this.searchString);
+          if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+            this.stopEvent(event);
+            return false;
+          }
+          else {
+            let mention = val.substring(this.startPos + 1, pos);
+            if (event.keyCode !== KEY_BACKSPACE) {
+              mention += charPressed;
+            }
 
-          if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
-            (nativeElement.value.endsWith(" ") || nativeElement.value.endsWith(","))) {
-            this.setEmptyTrigger();
+            this.searchString = mention;
+            this.searchTerm.emit(this.searchString);
+
+            if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
+              (nativeElement.value.endsWith(" ") || nativeElement.value.endsWith(", "))) {
+              this.setEmptyTrigger();
+            }
+
+            this.showSearchList(this.lastMentionItem, this._element.nativeElement);
+            this.updateSearchList(this.lastMentionItem);
+          }
+        }
+      }
+    }
+  }
+
+  keyHandler(event: any, nativeElement: HTMLInputElement = this._element.nativeElement) {
+    if (/Android/i.test(navigator.userAgent)) {
+      this.androidHandler(event, nativeElement);
+    } else {
+      let val: string = getValue(nativeElement);
+      let pos = getCaretPosition(nativeElement, this.iframe);
+
+      let charPressed = this.keyCodeSpecified ? event.keyCode : event.key;
+      if (!charPressed) {
+        let charCode = event.which || event.keyCode;
+        if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
+          charPressed = String.fromCharCode(charCode + 32);
+        }
+        else {
+          // TODO (dmacfarlane) fix this for non-alpha keys
+          // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
+          charPressed = String.fromCharCode(event.which || event.keyCode);
+        }
+      }
+      if ((event.keyCode == KEY_TAB || (event.keyCode == KEY_ENTER && event.wasClick)) && pos < this.startPos) {
+        // put caret back in position prior to contenteditable menu click
+        pos = this.startNode.length;
+        setCaretPosition(this.startNode, pos, this.iframe);
+      }
+      // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
+
+      let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
+
+      if (!mentionItem && charPressed !== " " && charPressed !== null && this.withEmptyTrigger && !nativeElement.value
+        && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB
+        && event.keyCode !== KEY_DOWN && event.keyCode !== KEY_UP) {
+        mentionItem = this.getMentionItemFromCharPressed("");
+      }
+
+      if ((mentionItem && charPressed !== " ") || (mentionItem && charPressed === " " &&
+        (nativeElement.value.endsWith(",") || nativeElement.value.endsWith("+")))) {
+        this.lastMentionItem = mentionItem;
+
+        if (charPressed !== " " && charPressed !== null && this.withEmptyTrigger && !nativeElement.value) {
+          this.stopSearch = false;
+          this.searchString = charPressed;
+        } else {
+          this.stopSearch = false;
+          this.searchString = null;
+        }
+        // if (charPressed == this.triggerChar) {
+        this.startPos = pos;
+        this.startNode = (this.iframe ? this.iframe.contentWindow.getSelection() : window.getSelection()).anchorNode;
+
+        this.showSearchList(mentionItem, nativeElement);
+        this.updateSearchList(mentionItem);
+      }
+      else if ((this.startPos >= 0 && !this.stopSearch) ||
+        this.withEmptyTrigger) {
+
+        if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
+          && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN
+          && event.keyCode !== KEY_UP && !event.wasClick) {
+          this.searchString = nativeElement.value + charPressed;
+          this.setEmptyTrigger();
+        } else if (pos <= this.startPos && !this.withEmptyTrigger) {
+          this.lastMentionItem.searchList.hidden = true;
+        }
+        // ignore shift when pressed alone, but not when used with another key
+        else if (event.keyCode !== KEY_SHIFT &&
+          !event.metaKey &&
+          !event.altKey &&
+          !event.ctrlKey &&
+          (pos > this.startPos || this.withEmptyTrigger)
+        ) {
+          if (!this.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
+            this.startPos = -1;
+          }
+          else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
+            pos--;
+            if (pos == 0) {
+              this.stopSearch = true;
+            }
+            this.lastMentionItem.searchList.hidden = this.stopSearch;
+          }
+          else if (this.lastMentionItem && this.lastMentionItem.searchList && !this.lastMentionItem.searchList.hidden) {
+            if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.hidden = true;
+              // value is inserted without a trailing space for consistency
+              // between element types (div and iframe do not preserve the space)
+
+              // if (nativeElement.value && this.lastMentionItem.triggerChar === "") {
+              //   this.startPos = nativeElement.value.lastIndexOf(charPressed.trim());
+              //   pos = nativeElement.value.lastIndexOf(charPressed.trim());
+              // }
+              // if mentionSelect is overridden
+              if (!this.iframe && (this.startPos < 0 || this.startPos === undefined)) {
+                this.startPos = 0;
+                pos = this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey] ?
+                  this.lastMentionItem.searchList.activeItem[this.lastMentionItem.searchList.labelKey].length + 1
+                  : 0;
+              }
+
+              if (this.lastMentionItem.mentionSelect) {
+                insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              } else {
+                // default method
+                insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              }
+              //v0.9.3
+              //insertValue(nativeElement, this.startPos, pos, this.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+              //v0.10.0
+              //insertValue(nativeElement, this.startPos, pos, this.lastMentionItem.mentionSelect(this.lastMentionItem.searchList.activeItem), this.iframe);
+
+              this.selectedTerm.emit(this.lastMentionItem.searchList.activeItem);
+              // fire input event so angular bindings are updated
+              if ("createEvent" in document) {
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("input", false, true);
+                nativeElement.dispatchEvent(evt);
+              }
+              this.startPos = -1;
+
+              // if (this.withEmptyTrigger) {
+              //   this.setEmptyTrigger();
+              // }
+              return false;
+            }
+            else if (event.keyCode === KEY_ESCAPE) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.hidden = true;
+              this.stopSearch = true;
+              return false;
+            }
+            else if (event.keyCode === KEY_DOWN) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.activateNextItem();
+              return false;
+            }
+            else if (event.keyCode === KEY_UP) {
+              this.stopEvent(event);
+              this.lastMentionItem.searchList.activatePreviousItem();
+              return false;
+            }
           }
 
-          this.showSearchList(this.lastMentionItem, this._element.nativeElement);
-          this.updateSearchList(this.lastMentionItem);
+          if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+            this.stopEvent(event);
+            return false;
+          }
+          else {
+            let mention = val.substring(this.startPos + 1, pos);
+            if (event.keyCode !== KEY_BACKSPACE) {
+              mention += charPressed;
+            }
+
+            this.searchString = mention;
+            this.searchTerm.emit(this.searchString);
+
+            if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
+              (nativeElement.value.endsWith(" ") || nativeElement.value.endsWith(","))) {
+              this.setEmptyTrigger();
+            }
+
+            this.showSearchList(this.lastMentionItem, this._element.nativeElement);
+            this.updateSearchList(this.lastMentionItem);
+          }
         }
       }
     }
@@ -380,7 +548,7 @@ export class MentionDirective implements OnInit, OnChanges {
       mentionItem.searchList.labelKey = mentionItem.labelKey;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
-        let fakeKeydown = {"keyCode":KEY_ENTER, "wasClick": true };
+        let fakeKeydown = { "keyCode": KEY_ENTER, "wasClick": true };
         this.keyHandler(fakeKeydown, nativeElement);
       });
       this.triggeredChar.emit(mentionItem.triggerChar);
