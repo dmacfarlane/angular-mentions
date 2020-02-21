@@ -178,29 +178,28 @@ export class MentionDirective implements OnInit, OnChanges {
 
       let charPressed = null;
       if (!charPressed) {
-        let charCode = event.which || event.keyCode;
+        let charCode = keyCode;
         if (!event.shiftKey && (charCode >= 65 && charCode <= 90)) {
           charPressed = String.fromCharCode(charCode + 32);
         }
         else {
           // TODO (dmacfarlane) fix this for non-alpha keys
           // http://stackoverflow.com/questions/2220196/how-to-decode-character-pressed-from-jquerys-keydowns-event-handler?lq=1
-          charPressed = String.fromCharCode(event.which || event.keyCode);
+          charPressed = String.fromCharCode(keyCode);
         }
       }
-      if ((event.keyCode == KEY_TAB || (event.keyCode == KEY_ENTER && event.wasClick)) && pos < this.startPos) {
+      if ((keyCode == KEY_TAB || (keyCode == KEY_ENTER && event.wasClick)) && pos < this.startPos) {
         // put caret back in position prior to contenteditable menu click
         pos = this.startNode.length;
         setCaretPosition(this.startNode, pos, this.iframe);
       }
       // console.log("keyHandler", this.startPos, pos, val, charPressed, event);
-
       let mentionItem: MentionItem = this.getMentionItemFromCharPressed(charPressed);
 
       if (!mentionItem && charPressed !== " " && charPressed !== null && this.withEmptyTrigger
         && (!nativeElement.value || (nativeElement.value && nativeElement.value.length === 1))
-        && event.keyCode !== KEY_ENTER && !event.wasClick && event.keyCode !== KEY_TAB
-        && event.keyCode !== KEY_DOWN && event.keyCode !== KEY_UP) {
+        && keyCode !== KEY_ENTER && !event.wasClick && keyCode !== KEY_TAB
+        && keyCode !== KEY_DOWN && keyCode !== KEY_UP) {
         mentionItem = this.getMentionItemFromCharPressed("");
       }
 
@@ -227,24 +226,24 @@ export class MentionDirective implements OnInit, OnChanges {
         this.withEmptyTrigger) {
 
         if (this.startPos === 0 && this.withEmptyTrigger && this.lastMentionItem.triggerChar === ""
-          && event.keyCode !== KEY_ENTER && event.keyCode !== KEY_TAB && event.keyCode !== KEY_DOWN
-          && event.keyCode !== KEY_UP && !event.wasClick) {
+          && keyCode !== KEY_ENTER && keyCode !== KEY_TAB && keyCode !== KEY_DOWN
+          && keyCode !== KEY_UP && !event.wasClick) {
           this.searchString = nativeElement.value + charPressed;
           this.setEmptyTrigger();
         } else if (pos <= this.startPos && !this.withEmptyTrigger) {
           this.lastMentionItem.searchList.hidden = true;
         }
         // ignore shift when pressed alone, but not when used with another key
-        else if (event.keyCode !== KEY_SHIFT &&
+        else if (keyCode !== KEY_SHIFT &&
           !event.metaKey &&
           !event.altKey &&
           !event.ctrlKey &&
           (pos > this.startPos || this.withEmptyTrigger)
         ) {
-          if (!this.allowSpaceWhileMentioning && event.keyCode === KEY_SPACE && !this.withEmptyTrigger) {
+          if (!this.allowSpaceWhileMentioning && keyCode === KEY_SPACE && !this.withEmptyTrigger) {
             this.startPos = -1;
           }
-          else if (event.keyCode === KEY_BACKSPACE && pos > 0) {
+          else if (keyCode === KEY_BACKSPACE && pos > 0) {
             pos--;
             if (pos == 0) {
               this.stopSearch = true;
@@ -252,7 +251,7 @@ export class MentionDirective implements OnInit, OnChanges {
             this.lastMentionItem.searchList.hidden = this.stopSearch;
           }
           else if (this.lastMentionItem && this.lastMentionItem.searchList && !this.lastMentionItem.searchList.hidden) {
-            if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
+            if (keyCode === KEY_TAB || keyCode === KEY_ENTER) {
               this.stopEvent(event);
               this.lastMentionItem.searchList.hidden = true;
               // value is inserted without a trailing space for consistency
@@ -296,38 +295,38 @@ export class MentionDirective implements OnInit, OnChanges {
               // }
               return false;
             }
-            else if (event.keyCode === KEY_ESCAPE) {
+            else if (keyCode === KEY_ESCAPE) {
               this.stopEvent(event);
               this.lastMentionItem.searchList.hidden = true;
               this.stopSearch = true;
               return false;
             }
-            else if (event.keyCode === KEY_DOWN) {
+            else if (keyCode === KEY_DOWN) {
               this.stopEvent(event);
               this.lastMentionItem.searchList.activateNextItem();
               return false;
             }
-            else if (event.keyCode === KEY_UP) {
+            else if (keyCode === KEY_UP) {
               this.stopEvent(event);
               this.lastMentionItem.searchList.activatePreviousItem();
               return false;
             }
           }
 
-          if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+          if (keyCode === KEY_LEFT || keyCode === KEY_RIGHT) {
             this.stopEvent(event);
             return false;
           }
           else {
             let mention = val.substring(this.startPos + 1, pos);
-            if (event.keyCode !== KEY_BACKSPACE) {
+            if (keyCode !== KEY_BACKSPACE) {
               mention += charPressed;
             }
 
             this.searchString = mention;
             this.searchTerm.emit(this.searchString);
 
-            if (event.keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
+            if (keyCode === KEY_BACKSPACE && this.withEmptyTrigger && (pos === 0 || mention === "") &&
               (nativeElement.value.endsWith(" ") || nativeElement.value.endsWith(", "))) {
               this.setEmptyTrigger();
             }
