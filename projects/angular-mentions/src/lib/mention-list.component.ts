@@ -1,5 +1,5 @@
 import {
-  Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef, OnInit
+  Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef, AfterViewInit
 } from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
@@ -30,7 +30,7 @@ import { getCaretCoordinates } from './caret-coords';
     </ul>
     `
 })
-export class MentionListComponent implements OnInit {
+export class MentionListComponent implements AfterViewInit {
   @Input() labelKey: string = 'label';
   @Input() itemTemplate: TemplateRef<any>;
   @Output() itemClick = new EventEmitter();
@@ -45,7 +45,7 @@ export class MentionListComponent implements OnInit {
   private offset: number = 0;
   constructor(private element: ElementRef) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     if (!this.itemTemplate) {
       this.itemTemplate = this.defaultItemTemplate;
     }
