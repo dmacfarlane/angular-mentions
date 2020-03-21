@@ -1,5 +1,5 @@
 import {
-  Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef, AfterContentInit
+  Component, ElementRef, Output, EventEmitter, ViewChild, Input, TemplateRef, AfterContentChecked
 } from '@angular/core';
 
 import { isInputOrTextAreaElement, getContentEditableCaretCoords } from './mention-utils';
@@ -30,7 +30,7 @@ import { getCaretCoordinates } from './caret-coords';
     </ul>
     `
 })
-export class MentionListComponent implements AfterContentInit {
+export class MentionListComponent implements AfterContentChecked {
   @Input() labelKey: string = 'label';
   @Input() itemTemplate: TemplateRef<any>;
   @Output() itemClick = new EventEmitter();
@@ -45,7 +45,7 @@ export class MentionListComponent implements AfterContentInit {
   private offset: number = 0;
   constructor(private element: ElementRef) {}
 
-  ngAfterContentInit() {
+  ngAfterContentChecked() {
     if (!this.itemTemplate) {
       this.itemTemplate = this.defaultItemTemplate;
     }
