@@ -29,7 +29,8 @@ const KEY_BUFFERED = 229;
   host: {
     '(keydown)': 'keyHandler($event)',
     '(keyup)': 'androidHandler($event)',
-    '(blur)': 'blurHandler($event)'
+    '(blur)': 'blurHandler($event)',
+    'autocomplete': 'off'
   }
 })
 export class MentionDirective implements OnInit, OnChanges {
@@ -556,7 +557,7 @@ export class MentionDirective implements OnInit, OnChanges {
     else {
       mentionItem.searchList.activeIndex = 0;
       mentionItem.searchList.position(nativeElement, this.iframe);
-      window.setTimeout(() => mentionItem.searchList.resetScroll());
+      window.setTimeout(() => mentionItem.searchList.reset());
       this.triggeredChar.emit(mentionItem.triggerChar);
     }
   }
