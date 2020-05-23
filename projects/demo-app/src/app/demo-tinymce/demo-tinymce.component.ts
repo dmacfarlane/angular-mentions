@@ -23,7 +23,7 @@ declare var tinymce: any;
 })
 export class DemoTinymceComponent {
   @Input() htmlContent:string;
-  @ViewChild(MentionDirective) mention: MentionDirective;
+  @ViewChild(MentionDirective, { static: true }) mention: MentionDirective;
   public items:string[] = COMMON_NAMES;
   constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
   ngAfterViewInit() {
