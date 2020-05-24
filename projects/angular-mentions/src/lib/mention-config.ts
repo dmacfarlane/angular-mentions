@@ -34,9 +34,9 @@ export interface Mentions {
   // whether to allow space while mentioning or not
   allowSpace?: boolean;
 
-  // whether to return trigger char in output or not
+  // option to include the trigger char in the serachTerm event
   returnTrigger?: boolean;
 
   // optional function to format the selected item before inserting the text
-  mentionSelect?:(item: any) => (string);
+  mentionSelect?:(item: any, triggerChar?:string) => (string);
 }

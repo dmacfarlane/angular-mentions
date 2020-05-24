@@ -53,7 +53,7 @@ export class MentionDirective implements OnChanges {
     maxItems: -1,
     allowSpace: false,
     returnTrigger: false,
-    mentionSelect: (item: any) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
+    mentionSelect: (item: any, triggerChar?:string) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
   }
 
   // template to use for rendering list items
@@ -234,7 +234,8 @@ export class MentionDirective implements OnChanges {
         else if (!this.searchList.hidden) {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
-            const text = this.activeConfig.mentionSelect(this.searchList.activeItem);
+            // optional function to format the selected item before inserting the text
+            const text = this.activeConfig.mentionSelect(this.searchList.activeItem, this.activeConfig.triggerChar);
             // value is inserted without a trailing space for consistency
             // between element types (div and iframe do not preserve the space)
             insertValue(nativeElement, this.startPos, pos, text, this.iframe);
@@ -286,7 +287,8 @@ export class MentionDirective implements OnChanges {
           if (this.activeConfig.returnTrigger) {
             const triggerChar = (this.searchString || event.keyCode === KEY_BACKSPACE) ? val.substring(this.startPos, this.startPos + 1) : '';
             this.searchTerm.emit(triggerChar + this.searchString);
-          } else {
+          } 
+          else {
             this.searchTerm.emit(this.searchString);
           }
           this.updateSearchList();
