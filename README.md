@@ -73,9 +73,10 @@ The following output events can be used.
 
 | Output        | Description |
 | ---           | ---         |
-| `@Output() searchTerm EventEmitter<string>` | Event that is emitted whenever the search term changes. Can be used to trigger async search.
-| `@Output() opened EventEmitter<void>`  | Event that is emitted when the mentions panel is opened.
-| `@Output() closed EventEmitter<void>`  | Event that is emitted when the mentions panel is closed.
+| `@Output() searchTerm EventEmitter<string>` | Emitted whenever the search term changes. Can be used to trigger async search.
+| `@Output() itemSelected EventEmitter<any>` | Emitted when an item is selected.
+| `@Output() opened EventEmitter<void>`  | Emitted when the mentions panel is opened.
+| `@Output() closed EventEmitter<void>`  | Emitted when the mentions panel is closed.
 
 ### Alternative Usage
 

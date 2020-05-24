@@ -62,6 +62,9 @@ export class MentionDirective implements OnChanges {
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter<string>();
 
+  // event emitted when an item is selected
+  @Output() itemSelected = new EventEmitter<any>();
+
   // event emitted whenever the mention list is opened or closed
   @Output() opened = new EventEmitter();
   @Output() closed = new EventEmitter();
@@ -234,6 +237,8 @@ export class MentionDirective implements OnChanges {
         else if (!this.searchList.hidden) {
           if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
             this.stopEvent(event);
+            // emit the selected list item
+            this.itemSelected.emit(this.searchList.activeItem);
             // optional function to format the selected item before inserting the text
             const text = this.activeConfig.mentionSelect(this.searchList.activeItem, this.activeConfig.triggerChar);
             // value is inserted without a trailing space for consistency
