@@ -279,7 +279,7 @@ export class MentionDirective implements OnChanges {
           }
         }
 
-        if (event.keyCode === KEY_LEFT || event.keyCode === KEY_RIGHT) {
+        if (charPressed.length!=1 && event.keyCode!=KEY_BACKSPACE) {
           this.stopEvent(event);
           return false;
         }
@@ -311,10 +311,9 @@ export class MentionDirective implements OnChanges {
   }
 
   stopSearch() {
-    this.closed.emit();
-
-    if (this.searchList) {
+    if (this.searchList && !this.searchList.hidden) {
       this.searchList.hidden = true;
+      this.closed.emit();
     }
     this.activeConfig = null;
     this.searching = false;
@@ -351,7 +350,7 @@ export class MentionDirective implements OnChanges {
       this.searchList.itemTemplate = this.mentionListTemplate;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
-        let fakeKeydown = { keyCode: KEY_ENTER, wasClick: true };
+        let fakeKeydown = { key: 'Enter', keyCode: KEY_ENTER, wasClick: true };
         this.keyHandler(fakeKeydown, nativeElement);
       });
     }
