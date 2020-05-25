@@ -1,0 +1,18 @@
+<h3>Events</h3>
+<p>Example showing event handlers.</p>
+<input class="form-control" type="text"
+      [mention]="complexItems"
+      [mentionConfig]="mentionConfig"
+      (searchTerm)="log('searchTerm', $event)"
+      (itemSelected)="log('itemSelected', $event)"
+      (opened)="log('opened')"
+      (closed)="log('closed')">
+<br>
+<label for="returnTrigger">
+  <input type="checkbox" (change)="updateConfig($event)"> return trigger in searchTerm event
+</label>
+<br>
+<br>
+<pre id="eventOutput">{{output}}</pre>
+<button (click)="output=''">Clear</button>
+<br>

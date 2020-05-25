@@ -4,6 +4,13 @@
 <p style="color:grey">Supports auto-complete for mentions in text input fields, text areas,
 and content editable fields. Try entering some @names below.</p>
 
+<!-- <nav>
+    <a (click)="test=null" href="#" [class.selected]="test==null">home</a>
+    <span *ngFor="let path of ['config', 'events', 'templates']">
+        | <a (click)="test=path" href="#" [class.selected]="test==path">{{path}}</a>
+    </span>
+</nav> -->
+
 <ng-container *ngIf="!test">
 
     <h3>Minimal</h3>
@@ -23,8 +30,9 @@ and content editable fields. Try entering some @names below.</p>
 <!-- other functionaity demos -->
 <app-demo-async *ngIf="test=='async'"></app-demo-async>
 <app-demo-config *ngIf="test=='config'"></app-demo-config>
+<app-demo-events *ngIf="test=='events'"></app-demo-events>
 <app-demo-options *ngIf="test=='options'"></app-demo-options>
-<app-demo-template *ngIf="test=='template'"></app-demo-template>
+<app-demo-template *ngIf="test=='templates'"></app-demo-template>
 <!-- other tests -->
 <app-test-position *ngIf="test=='pos'"></app-test-position>
 

@@ -1,11 +1,12 @@
-<h3>Template</h3>
+<h3>Templates</h3>
 <p>Example showing how an Angular template can be used to customize the appearance of the mention list.</p>
 
-<ng-template #mentionListTemplate let-item="item">
-  {{item.label}} <strong>({{item.username}})</strong>
-</ng-template>
+<input class="form-control" type="text" 
+      [mentionConfig]="{items:items, labelKey:'name'}" 
+      [mentionListTemplate]="avatarTemplate">
 
-<h3>Input</h3>
-<input [mention]="complexItems" class="form-control" type="text"
-       [mentionConfig]="{mentionSelect: format}" 
-       [mentionListTemplate]="mentionListTemplate">
+<ng-template #avatarTemplate let-item="item">
+  <img class="mr-3" src="https://avatars1.githubusercontent.com/u/{{item.img}}?s=180&v=4" alt="" width="30" height="30">
+  &nbsp;
+  <span>{{item.name}}</span>
+</ng-template>

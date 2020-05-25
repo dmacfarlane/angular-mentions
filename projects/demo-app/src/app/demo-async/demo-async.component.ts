@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/Subject';
 
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -29,6 +30,10 @@ export class DemoAsyncComponent implements OnInit {
   constructor(private http: HttpClient) { }
   getItems(term):Observable<any[]> {
     console.log('getItems:', term);
+    if (!term) {
+      // if the search term is empty, return an empty array
+      return Observable.of([]);
+    }
     // return this.http.get('api/names') // get all names
     return this.http.get<any[]>('api/objects?label='+term); // get filtered names
   }
