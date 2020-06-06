@@ -359,6 +359,6 @@ export class MentionDirective implements OnChanges {
     this.searchList.styleOff = this.mentionConfig.disableStyle;
     this.searchList.activeIndex = 0;
     this.searchList.position(nativeElement, this.iframe);
-    window.setTimeout(() => this.searchList.reset());
+    window.requestAnimationFrame(() => this.searchList.reset());
   }
 }
