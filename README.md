@@ -108,8 +108,8 @@ let mentionConfig = {
         {
             items: [ "Red", "Yellow", "Green", ... ],
             triggerChar: '#'
-        },
-    }]
+        }
+    ]
 }
 ```
 This allows different lists and trigger characters to be configured.
