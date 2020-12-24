@@ -24,19 +24,22 @@ export interface Mentions {
   // option to disable sorting
   disableSort?:boolean;
 
-  // option to diable internal filtering. can be used to show the full list returned
-  // from an async operation (or allows a custom filter function to be used - in future)
+  // option to disable internal filtering. can be used to show the full list returned
+  // from an async operation
   disableSearch?:boolean;
 
   // display menu above text instead of below
   dropUp?:boolean;
 
   // whether to allow space while mentioning or not
-  allowSpace?: boolean;
+  allowSpace?:boolean;
 
-  // option to include the trigger char in the serachTerm event
-  returnTrigger?: boolean;
+  // option to include the trigger char in the searchTerm event
+  returnTrigger?:boolean;
 
   // optional function to format the selected item before inserting the text
-  mentionSelect?:(item: any, triggerChar?:string) => (string);
+  mentionSelect?:(item:any, triggerChar?:string) => (string);
+
+  // optional function to customize the search implementation
+  mentionFilter?:(searchString:string, items?:any) => (any[]);
 }

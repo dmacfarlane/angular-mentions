@@ -53,7 +53,13 @@ export class MentionDirective implements OnChanges {
     maxItems: -1,
     allowSpace: false,
     returnTrigger: false,
-    mentionSelect: (item: any, triggerChar?:string) => this.activeConfig.triggerChar + item[this.activeConfig.labelKey]
+    mentionSelect: (item: any, triggerChar?: string) => {
+      return this.activeConfig.triggerChar + item[this.activeConfig.labelKey];
+    },
+    mentionFilter: (searchString: string, items: any[]) => {
+      const searchStringLowerCase = searchString.toLowerCase();
+      return items.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+    }
   }
 
   // template to use for rendering list items
@@ -325,8 +331,9 @@ export class MentionDirective implements OnChanges {
       let objects = this.activeConfig.items;
       // disabling the search relies on the async operation to do the filtering
       if (!this.activeConfig.disableSearch && this.searchString && this.activeConfig.labelKey) {
-        let searchStringLowerCase = this.searchString.toLowerCase();
-        objects = objects.filter(e => e[this.activeConfig.labelKey].toLowerCase().startsWith(searchStringLowerCase));
+        if (this.activeConfig.mentionFilter) {
+          objects = this.activeConfig.mentionFilter(this.searchString, objects);
+        }
       }
       matches = objects;
       if (this.activeConfig.maxItems > 0) {

@@ -12,22 +12,26 @@ export class DemoConfigComponent {
     {
       "value" : "user1",
       "email": "user1@domain.com",
-      "name": "User 1"
+      "name": "User One"
     },
     {
       "value" : "user2",
       "email": "user2@domain.com",
-      "name": "User 2"
+      "name": "User Two"
     },
     {
       "value" : "user3",
       "email": "user3@domain.com",
-      "name": "User 3"
+      "name": "User Three"
     }
   ];
 
   format(item:any) {
     return item['value'].toUpperCase();
+  }
+
+  filter(searchString: string, items: any[]): any[] {
+    return items.filter(item => item.name.toLowerCase().includes(searchString));
   }
 
   mentionConfig:MentionConfig = {
@@ -36,7 +40,8 @@ export class DemoConfigComponent {
         items: this.complexItems,
         labelKey: 'name',
         triggerChar: '#',
-        mentionSelect: this.format
+        mentionSelect: this.format,
+        mentionFilter: this.filter
       },
       {
         items: COMMON_NAMES,

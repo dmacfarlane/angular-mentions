@@ -58,6 +58,7 @@ The following optional configuration items can be used.
 | dropUp        | false    | Show the menu above the cursor instead of below. |
 | maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
 | mentionSelect |          | A function to format the selected item before inserting the text. |
+| mentionFilter |          | A function that returns the items to display. |
 | allowSpace    | false    | Allow spaces while mentioning. |
 | returnTrigger | false    | Include the trigger char in the searchTerm event. |
 
