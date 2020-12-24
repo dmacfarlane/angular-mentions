@@ -114,4 +114,4 @@ let mentionConfig = {
 ```
 This allows different lists and trigger characters to be configured.
 
-Note that becuase objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
+Note that because objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
