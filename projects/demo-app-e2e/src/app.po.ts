@@ -1,6 +1,9 @@
 import { browser, element, by } from 'protractor';
 
+export type TagName = 'input'|'textarea'|'tinymce'|'div';
+
 export class AngularMentionsPage {
+  
   navigateTo() {
     return browser.get('/');
   }
@@ -13,12 +16,12 @@ export class AngularMentionsPage {
     return element(by.css('app-root h3')).getText();
   }
 
-  getValue(el, tagName) {
-    if (tagName=="input" || tagName=="textarea") {    
+  getValue(el, tagName: TagName) {
+    if (tagName=='input' || tagName=='textarea') {    
       return el.getAttribute('value');
     }
-    else if (tagName.length>0 && tagName[0]=='iframe') {
-      let iframe = browser.findElement(by.tagName("iframe"));
+    else if (tagName=='tinymce') {
+      let iframe = browser.findElement(by.tagName('iframe'));
       return browser.switchTo().frame(iframe).then( () => {
         let el = browser.driver.findElement(by.id('tinymce'));
         let text = el.getText();
@@ -29,6 +32,6 @@ export class AngularMentionsPage {
     }
     else {
       return el.getText();
-    }    
+    }
   }  
 }

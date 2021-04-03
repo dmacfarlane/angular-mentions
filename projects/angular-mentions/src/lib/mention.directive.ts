@@ -218,7 +218,6 @@ export class MentionDirective implements OnChanges {
       if (config.returnTrigger) {
         this.searchTerm.emit(config.triggerChar);
       }
-
     }
     else if (this.startPos >= 0 && this.searching) {
       if (pos <= this.startPos) {
@@ -238,6 +237,12 @@ export class MentionDirective implements OnChanges {
           pos--;
           if (pos == this.startPos) {
             this.stopSearch();
+          }
+        }
+        else if (this.searchList.hidden) {
+          if (event.keyCode === KEY_TAB || event.keyCode === KEY_ENTER) {
+            this.stopSearch();
+            return;
           }
         }
         else if (!this.searchList.hidden) {
