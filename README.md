@@ -4,8 +4,10 @@ Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/me
 
 [Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
 
-Provides auto-complete suggestions for @mentions in text input fields, text areas,
+This package provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields.
+
+[Click here to experiment on StackBlitz](https://stackblitz.com/edit/angular-mentions)
 
 To install and start the demo application:
 
@@ -79,9 +81,18 @@ The following output events can be used.
 | `@Output() opened EventEmitter<void>`  | Emitted when the mentions panel is opened.
 | `@Output() closed EventEmitter<void>`  | Emitted when the mentions panel is closed.
 
+
+### Item Templates
+
+The appearance of the items displayed in the mention list menu can be customized using the 
+`[mentionListTemplate]` directive as shown in this example:
+
+https://stackblitz.com/edit/angular-mentions-avatar
+
 ### Alternative Usage
 
-The component can also be used by only specifying the mentionConfig object:
+Instead of using the `[mentions]` directive, the component can also be used by only specifying
+`[mentionConfig]`, for example:
 
 ```html
 <input type="text" [mentionConfig]="mentionConfig">
