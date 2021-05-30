@@ -19,11 +19,13 @@
     "@angular/platform-browser": "~12.0.2",
     "@angular/platform-browser-dynamic": "~12.0.2",
     "@angular/router": "~12.0.2",
+    "@tinymce/tinymce-angular": "^4.2.3",
     "angular-in-memory-web-api": "^0.11.0",
     "codelyzer": "^6.0.0",
     "core-js": "^3.6.5",
     "rxjs": "~6.5.5",
     "rxjs-compat": "^6.5.5",
+    "tinymce": "^5.8.1",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
   },

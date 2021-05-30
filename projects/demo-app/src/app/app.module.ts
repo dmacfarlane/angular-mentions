@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
+import { EditorModule } from '@tinymce/tinymce-angular';
+
 // Imports for loading & configuring the in-memory web api
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './demo-async/in-memory-data.service';
@@ -19,6 +21,7 @@ import { TestPositionComponent } from './test-position/test-position.component';
 @NgModule({
   imports: [
     BrowserModule,
+    EditorModule,
     HttpClientModule,
     InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
     MentionModule

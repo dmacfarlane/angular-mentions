@@ -1,9 +1,7 @@
-import { Component, ElementRef, NgZone, Input, ViewChild } from '@angular/core';
+import { Component, NgZone, Input, ViewChild } from '@angular/core';
 
 import { MentionDirective } from 'angular-mentions';
 import { COMMON_NAMES } from '../common-names';
-
-declare var tinymce: any;
 
 /**
  * Angular 2 Mentions.
@@ -19,29 +17,31 @@ declare var tinymce: any;
       <div>
         <textarea class="hidden" cols="60" rows="4" id="tmce">{{htmlContent}}</textarea>
       </div>
-    </div>`
+    </div>
+    <editor [init]="CONFIG"></editor>    
+    `
 })
 export class DemoTinymceComponent {
   @Input() htmlContent:string;
   @ViewChild(MentionDirective, { static: true }) mention: MentionDirective;
   public items:string[] = COMMON_NAMES;
-  constructor(private _elementRef: ElementRef, private _zone: NgZone) {}
-  ngAfterViewInit() {
-    tinymce.init({
-      mode: 'exact',
-      height: 100,
-      theme: 'modern',
-      plugins: [
-        'advlist autolink lists link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table contextmenu paste code'
-      ],
-      toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-      elements: "tmce",
-      setup: this.tinySetup.bind(this)
-    }
-    );
-  }
+  public CONFIG = {
+    base_url: '/tinymce',
+    suffix: '.min',
+    height: 200,
+    menubar: false,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help wordcount'
+    ],
+    toolbar:
+      'undo redo | formatselect | bold italic backcolor | \
+      alignleft aligncenter alignright alignjustify | \
+      bullist numlist outdent indent | removeformat | help',
+    setup: this.tinySetup.bind(this)
+  };
+  constructor(private _zone: NgZone) {}
   tinySetup(ed) {
     ed.on('init', (args) => {
       this.mention.setIframe(ed.iframeElement);

@@ -34,7 +34,7 @@ describe('angular-mentions app', function() {
   it('test mentions iframe', () => {
     page.navigateTo();
     expect(page.getHeadingText()).toEqual('Angular Mentions');
-    let el = element.all(by.id('tmce_ifr'));
+    let el = element.all(by.css('editor iframe'));
     // iframe testing workaround - sendKeys is not working unless menu is opened first
     // this wasn't needed in previous versions of angular/protractor
     // el.click();
