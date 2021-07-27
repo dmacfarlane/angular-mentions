@@ -84,6 +84,10 @@ export class MentionDirective implements OnChanges {
   private searching: boolean;
   private iframe: any; // optional
   private lastKeyCode: number;
+  
+  get hidden(): boolean {
+    return this.searchList?.hidden;
+  }
 
   constructor(
     private _element: ElementRef,
