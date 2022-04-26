@@ -26,6 +26,7 @@ npm-debug.log
 testem.log
 /typings
 /ignore
+.angular
 
 # e2e
 /e2e/*.js
