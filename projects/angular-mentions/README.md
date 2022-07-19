@@ -4,8 +4,10 @@ Simple Angular mentions inspired by [Ment.io](https://github.com/jeff-collins/me
 
 [Click here for a Demo](http://dmacfarlane.github.io/angular-mentions/)
 
-Provides auto-complete suggestions for @mentions in text input fields, text areas,
+This package provides auto-complete suggestions for @mentions in text input fields, text areas,
 and content editable fields.
+
+[Click here to experiment on StackBlitz](https://stackblitz.com/edit/angular-mentions)
 
 To install and start the demo application:
 
@@ -58,6 +60,7 @@ The following optional configuration items can be used.
 | dropUp        | false    | Show the menu above the cursor instead of below. |
 | maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
 | mentionSelect |          | A function to format the selected item before inserting the text. |
+| mentionFilter |          | A function that returns the items to display. |
 | allowSpace    | false    | Allow spaces while mentioning. |
 | returnTrigger | false    | Include the trigger char in the searchTerm event. |
 
@@ -73,13 +76,23 @@ The following output events can be used.
 
 | Output        | Description |
 | ---           | ---         |
-| `@Output() serchTerm EventEmitter<string>` | Event that is emitted whenever the search term changes. Can be used to trigger async search.
-| `@Output() opened EventEmitter<void>`  | Event that is emitted when the mentions panel is opened.
-| `@Output() closed EventEmitter<void>`  | Event that is emitted when the mentions panel is closed.
+| `@Output() searchTerm EventEmitter<string>` | Emitted whenever the search term changes. Can be used to trigger async search.
+| `@Output() itemSelected EventEmitter<any>` | Emitted when an item is selected.
+| `@Output() opened EventEmitter<void>`  | Emitted when the mentions panel is opened.
+| `@Output() closed EventEmitter<void>`  | Emitted when the mentions panel is closed.
+
+
+### Item Templates
+
+The appearance of the items displayed in the mention list menu can be customized using the 
+`[mentionListTemplate]` directive as shown in this example:
+
+https://stackblitz.com/edit/angular-mentions-avatar
 
 ### Alternative Usage
 
-The component can also be used by only specifying the mentionConfig object:
+Instead of using the `[mentions]` directive, the component can also be used by only specifying
+`[mentionConfig]`, for example:
 
 ```html
 <input type="text" [mentionConfig]="mentionConfig">
@@ -107,10 +120,10 @@ let mentionConfig = {
         {
             items: [ "Red", "Yellow", "Green", ... ],
             triggerChar: '#'
-        },
-    }]
+        }
+    ]
 }
 ```
 This allows different lists and trigger characters to be configured.
 
-Note that becuase objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
+Note that because objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
