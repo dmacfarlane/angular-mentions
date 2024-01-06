@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/switchMap';
+import { Observable, Subject, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-demo-async',
@@ -17,10 +11,11 @@ export class DemoAsyncComponent implements OnInit {
   httpItems: Observable<any[]>;
   private searchTermStream = new Subject();
   ngOnInit() {
-    this.httpItems = this.searchTermStream
-      .debounceTime(500)
-      .distinctUntilChanged()
-      .switchMap((term: string) => this.getItems(term));
+    this.httpItems = this.searchTermStream.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((term: string) => this.getItems(term))
+    );
   }
   search(term: string) {
     this.searchTermStream.next(term);
@@ -32,7 +27,7 @@ export class DemoAsyncComponent implements OnInit {
     console.log('getItems:', term);
     if (!term) {
       // if the search term is empty, return an empty array
-      return Observable.of([]);
+      return of([]);
     }
     // return this.http.get('api/names') // get all names
     return this.http.get<any[]>('api/objects?label='+term); // get filtered names
