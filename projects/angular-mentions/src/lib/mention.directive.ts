@@ -350,6 +350,12 @@ export class MentionDirective implements OnChanges {
       this.searchList.items = matches;
       this.searchList.hidden = matches.length == 0;
     }
+    
+    // fixes close event not triggering when the search term doesn't match but the ui closes
+    if (matches.length == 0) {
+      this.searchList.hidden = false; // Forcing the search list hidden attribute as this isn't fiered when the ui closes
+      this.stopSearch();
+    }
   }
 
   showSearchList(nativeElement: HTMLInputElement) {
