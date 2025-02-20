@@ -20,7 +20,7 @@
     "@angular/platform-browser-dynamic": "^18.2.13",
     "@angular/router": "^18.2.13",
     "@tinymce/tinymce-angular": "^7.0.0",
-    "angular-in-memory-web-api": "^0.17.0",
+    "angular-in-memory-web-api": "^0.19.0",
     "codelyzer": "^6.0.2",
     "core-js": "^3.35.0",
     "rxjs": "^7.8.1",
