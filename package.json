@@ -7,7 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "protractor projects/demo-app-e2e/protractor.conf.js"
   },
   "private": true,
   "dependencies": {
