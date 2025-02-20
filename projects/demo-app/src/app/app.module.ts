@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { EditorModule } from '@tinymce/tinymce-angular';
@@ -19,24 +19,23 @@ import { DemoTinymceComponent } from './demo-tinymce/demo-tinymce.component';
 import { TestPositionComponent } from './test-position/test-position.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    EditorModule,
-    HttpClientModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
-    MentionModule
-  ],
-  declarations: [
-    AppComponent,
-    DemoAsyncComponent,
-    DemoConfigComponent,
-    DemoEventsComponent,
-    DemoOptionsComponent,
-    DemoTemplateComponent,
-    DemoTinymceComponent,
-    TestPositionComponent
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        EditorModule,
+        InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
+        MentionModule
+    ],
+    declarations: [
+        AppComponent,
+        DemoAsyncComponent,
+        DemoConfigComponent,
+        DemoEventsComponent,
+        DemoOptionsComponent,
+        DemoTemplateComponent,
+        DemoTinymceComponent,
+        TestPositionComponent
+    ],
+    providers: [provideHttpClient(withInterceptorsFromDi())],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
