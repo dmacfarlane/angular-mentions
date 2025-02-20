@@ -9,6 +9,7 @@ import { COMMON_NAMES } from './common-names';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  standalone: false
 })
 export class AppComponent {
   items: string[] = COMMON_NAMES;

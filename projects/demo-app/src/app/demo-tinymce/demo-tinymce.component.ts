@@ -19,7 +19,8 @@ import { COMMON_NAMES } from '../common-names';
       </div>
     </div>
     <editor [init]="CONFIG"></editor>    
-    `
+  `,
+  standalone: false
 })
 export class DemoTinymceComponent {
   @Input() htmlContent:string;

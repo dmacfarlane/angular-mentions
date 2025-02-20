@@ -4,7 +4,8 @@ import { COMMON_NAMES } from '../common-names';
 
 @Component({
   selector: 'app-test-position',
-  templateUrl: './test-position.component.html'
+  templateUrl: './test-position.component.html',
+  standalone: false
 })
 export class TestPositionComponent {
   items: string[] = COMMON_NAMES;

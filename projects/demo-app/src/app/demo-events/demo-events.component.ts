@@ -4,7 +4,8 @@ import { MentionConfig } from 'projects/angular-mentions/src/public-api';
 
 @Component({
   selector: 'app-demo-events',
-  templateUrl: './demo-events.component.html'
+  templateUrl: './demo-events.component.html',
+  standalone: false
 })
 export class DemoEventsComponent {
   mentionConfig:MentionConfig = {returnTrigger:false};

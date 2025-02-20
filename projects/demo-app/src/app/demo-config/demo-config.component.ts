@@ -4,7 +4,8 @@ import { MentionConfig } from 'angular-mentions';
 
 @Component({
   selector: 'app-demo-config',
-  templateUrl: './demo-config.component.html'
+  templateUrl: './demo-config.component.html',
+  standalone: false
 })
 export class DemoConfigComponent {
 

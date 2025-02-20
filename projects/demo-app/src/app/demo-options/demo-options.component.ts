@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-demo-options',
-  templateUrl: './demo-options.component.html'
+  templateUrl: './demo-options.component.html',
+  standalone: false
 })
 export class DemoOptionsComponent {
 

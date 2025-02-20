@@ -5,7 +5,8 @@ import { Observable, Subject, debounceTime, distinctUntilChanged, of, switchMap 
 
 @Component({
   selector: 'app-demo-async',
-  templateUrl: './demo-async.component.html'
+  templateUrl: './demo-async.component.html',
+  standalone: false
 })
 export class DemoAsyncComponent implements OnInit {
   httpItems: Observable<any[]>;

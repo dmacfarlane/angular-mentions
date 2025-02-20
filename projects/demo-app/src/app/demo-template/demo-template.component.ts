@@ -4,7 +4,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-demo-template',
-  templateUrl: './demo-template.component.html'
+  templateUrl: './demo-template.component.html',
+  standalone: false
 })
 export class DemoTemplateComponent {
   items: any[] =  [

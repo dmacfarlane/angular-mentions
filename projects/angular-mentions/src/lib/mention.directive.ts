@@ -30,7 +30,8 @@ const KEY_BUFFERED = 229;
     '(input)': 'inputHandler($event)',
     '(blur)': 'blurHandler($event)',
     'autocomplete': 'off'
-  }
+  },
+  standalone: false
 })
 export class MentionDirective implements OnChanges {
 
