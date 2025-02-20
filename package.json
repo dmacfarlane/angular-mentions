@@ -37,7 +37,7 @@
     "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "^2.0.13",
     "@types/node": "^20.10.6",
-    "chromedriver": "^120.0.1",
+    "chromedriver": "^133.0.2",
     "jasmine-core": "^5.1.1",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "^6.4.2",
