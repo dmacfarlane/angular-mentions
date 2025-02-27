@@ -16,6 +16,14 @@ To install and start the demo application:
     npm install
     ng serve
 
+To build the project
+
+`npm run build angular-mentions`
+
+To run the demo project
+
+`npm run start demo-app`
+
 ### Usage
 
 Add the package as a dependency to your project using:
@@ -37,7 +45,7 @@ import { MentionModule } from 'angular-mentions';
 Add the `[mention]` directive to your input element:
 
 ```html
-<input type="text" [mention]="items">
+<input type="text" [mention]="items" />
 ```
 
 Where `items` is a string array of the items to suggest. For example:
@@ -50,41 +58,44 @@ items: string[] = ["Noah", "Liam", "Mason", "Jacob", ...
 
 The following optional configuration items can be used.
 
-| Option        | Default  | Description |
-| ---           | ---      | ---         |
-| items         |          | An array of strings or objects to suggest. |
-| triggerChar   | @        | The character that will trigger the menu behavior. |
-| labelKey      | label    | The field to be used as the item label (when the items are objects). |
-| disableSort   | false    | Disable sorting of suggested items. |
-| disableSearch | false    | Disable internal filtering (only useful if async search is used). |
-| dropUp        | false    | Show the menu above the cursor instead of below. |
-| maxItems      | ∞        | Limit the number of items shown in the text. The default is no limit. |
-| mentionSelect |          | A function to format the selected item before inserting the text. |
-| mentionFilter |          | A function that returns the items to display. |
-| allowSpace    | false    | Allow spaces while mentioning. |
-| returnTrigger | false    | Include the trigger char in the searchTerm event. |
+| Option        | Default | Description                                                           |
+| ------------- | ------- | --------------------------------------------------------------------- |
+| items         |         | An array of strings or objects to suggest.                            |
+| triggerChar   | @       | The character that will trigger the menu behavior.                    |
+| labelKey      | label   | The field to be used as the item label (when the items are objects).  |
+| disableSort   | false   | Disable sorting of suggested items.                                   |
+| disableSearch | false   | Disable internal filtering (only useful if async search is used).     |
+| dropUp        | false   | Show the menu above the cursor instead of below.                      |
+| maxItems      | ∞       | Limit the number of items shown in the text. The default is no limit. |
+| mentionSelect |         | A function to format the selected item before inserting the text.     |
+| mentionFilter |         | A function that returns the items to display.                         |
+| allowSpace    | false   | Allow spaces while mentioning.                                        |
+| returnTrigger | false   | Include the trigger char in the searchTerm event.                     |
 
-For Example: 
+For Example:
 
 ```html
-<input type="text" [mention]="items" [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}">
+<input
+  type="text"
+  [mention]="items"
+  [mentionConfig]="{triggerChar:'#',maxItems:10,labelKey:'name'}"
+/>
 ```
 
 #### Output Events
 
 The following output events can be used.
 
-| Output        | Description |
-| ---           | ---         |
-| `@Output() searchTerm EventEmitter<string>` | Emitted whenever the search term changes. Can be used to trigger async search.
-| `@Output() itemSelected EventEmitter<any>` | Emitted when an item is selected.
-| `@Output() opened EventEmitter<void>`  | Emitted when the mentions panel is opened.
-| `@Output() closed EventEmitter<void>`  | Emitted when the mentions panel is closed.
-
+| Output                                      | Description                                                                    |
+| ------------------------------------------- | ------------------------------------------------------------------------------ |
+| `@Output() searchTerm EventEmitter<string>` | Emitted whenever the search term changes. Can be used to trigger async search. |
+| `@Output() itemSelected EventEmitter<any>`  | Emitted when an item is selected.                                              |
+| `@Output() opened EventEmitter<void>`       | Emitted when the mentions panel is opened.                                     |
+| `@Output() closed EventEmitter<void>`       | Emitted when the mentions panel is closed.                                     |
 
 ### Item Templates
 
-The appearance of the items displayed in the mention list menu can be customized using the 
+The appearance of the items displayed in the mention list menu can be customized using the
 `[mentionListTemplate]` directive as shown in this example:
 
 https://stackblitz.com/edit/angular-mentions-avatar
@@ -95,7 +106,7 @@ Instead of using the `[mentions]` directive, the component can also be used by o
 `[mentionConfig]`, for example:
 
 ```html
-<input type="text" [mentionConfig]="mentionConfig">
+<input type="text" [mentionConfig]="mentionConfig" />
 ```
 
 With the following structure:
@@ -124,6 +135,7 @@ let mentionConfig = {
     ]
 }
 ```
+
 This allows different lists and trigger characters to be configured.
 
 Note that because objects are mutable, changes to the items within the config will not be picked up unless a new mentionConfig object is created.
