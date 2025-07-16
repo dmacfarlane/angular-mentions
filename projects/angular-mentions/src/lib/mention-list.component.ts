@@ -18,15 +18,15 @@ import { getCaretCoordinates } from './caret-coords';
     <ng-template #defaultItemTemplate let-item="item">
       {{item[labelKey]}}
     </ng-template>
-    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu"
+    <ul #list [hidden]="hidden" class="dropdown-menu scrollable-menu" role="listbox" [attr.aria-label]="listAriaLabel"
       [class.mention-menu]="!styleOff" [class.mention-dropdown]="!styleOff && dropUp">
-      <li *ngFor="let item of items; let i = index"
-        [class.active]="activeIndex==i" [class.mention-active]="!styleOff && activeIndex==i">
-        <a class="dropdown-item" [class.mention-item]="!styleOff"
+      <li *ngFor="let item of items; let i = index" role="option" tabindex="-1"
+        [class.active]="activeIndex==i" [class.mention-active]="!styleOff && activeIndex==i" [attr.aria-selected]="activeIndex==i">
+        <span class="dropdown-item" [class.mention-item]="!styleOff"
           (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
           <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{'item':item}"></ng-template>
-        </a>
-      </li>s
+        </span>
+      </li>
     </ul>
   `,
   standalone: false
@@ -34,7 +34,9 @@ import { getCaretCoordinates } from './caret-coords';
 export class MentionListComponent implements AfterContentChecked {
   @Input() labelKey: string = 'label';
   @Input() itemTemplate: TemplateRef<any>;
+  @Input() listAriaLabel: string;
   @Output() itemClick = new EventEmitter();
+  @Output() itemActivated = new EventEmitter(true);
   @ViewChild('list', { static: true }) list: ElementRef;
   @ViewChild('defaultItemTemplate', { static: true }) defaultItemTemplate: TemplateRef<any>;
   items = [];
@@ -85,6 +87,7 @@ export class MentionListComponent implements AfterContentChecked {
   }
 
   activateNextItem() {
+    this.itemActivated.emit();
     // adjust scrollable-menu offset if the next item is out of view
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);
@@ -102,6 +105,7 @@ export class MentionListComponent implements AfterContentChecked {
   }
 
   activatePreviousItem() {
+    this.itemActivated.emit();
     // adjust the scrollable-menu offset if the previous item is out of view
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);

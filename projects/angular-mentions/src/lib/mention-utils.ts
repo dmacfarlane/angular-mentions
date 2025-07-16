@@ -176,3 +176,7 @@ function localToRelativeCoordinates(
     }
   }
 }
+
+export function setAriaActiveDescendant(nativeElement: any, list: HTMLElement) {
+    nativeElement.ariaActiveDescendantElement = list.querySelector('[aria-selected="true"]');
+}

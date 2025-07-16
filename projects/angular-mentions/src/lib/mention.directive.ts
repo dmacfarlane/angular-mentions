@@ -1,6 +1,6 @@
-import { ComponentFactoryResolver, Directive, ElementRef, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, ElementRef, TemplateRef, ViewContainerRef } from "@angular/core";
 import { EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { getCaretPosition, getValue, insertValue, setCaretPosition } from './mention-utils';
+import { getCaretPosition, getValue, insertValue, setAriaActiveDescendant, setCaretPosition } from './mention-utils';
 
 import { MentionConfig } from "./mention-config";
 import { MentionListComponent } from './mention-list.component';
@@ -66,6 +66,8 @@ export class MentionDirective implements OnChanges {
   // template to use for rendering list items
   @Input() mentionListTemplate: TemplateRef<any>;
 
+  @Input() listAriaLabel = 'Suggestions';
+
   // event emitted whenever the search term changes
   @Output() searchTerm = new EventEmitter<string>();
 
@@ -88,7 +90,6 @@ export class MentionDirective implements OnChanges {
 
   constructor(
     private _element: ElementRef,
-    private _componentResolver: ComponentFactoryResolver,
     private _viewContainerRef: ViewContainerRef
   ) { }
 
@@ -350,6 +351,9 @@ export class MentionDirective implements OnChanges {
     if (this.searchList) {
       this.searchList.items = matches;
       this.searchList.hidden = matches.length == 0;
+      setTimeout(() => {
+          setAriaActiveDescendant(this._element.nativeElement, this.searchList.list.nativeElement);
+      }, 50);
     }
   }
 
@@ -357,14 +361,17 @@ export class MentionDirective implements OnChanges {
     this.opened.emit();
 
     if (this.searchList == null) {
-      let componentFactory = this._componentResolver.resolveComponentFactory(MentionListComponent);
-      let componentRef = this._viewContainerRef.createComponent(componentFactory);
+      let componentRef = this._viewContainerRef.createComponent(MentionListComponent);
       this.searchList = componentRef.instance;
       this.searchList.itemTemplate = this.mentionListTemplate;
+      this.searchList.listAriaLabel = this.listAriaLabel;
       componentRef.instance['itemClick'].subscribe(() => {
         nativeElement.focus();
         let fakeKeydown = { key: 'Enter', keyCode: KEY_ENTER, wasClick: true };
         this.keyHandler(fakeKeydown, nativeElement);
+      });
+      componentRef.instance['itemActivated'].subscribe(() => {
+        setAriaActiveDescendant(nativeElement, this.searchList.list.nativeElement);
       });
     }
     this.searchList.labelKey = this.activeConfig.labelKey;
