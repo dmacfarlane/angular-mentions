@@ -26,7 +26,7 @@ import { getCaretCoordinates } from './caret-coords';
           (mousedown)="activeIndex=i;itemClick.emit();$event.preventDefault()">
           <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{'item':item}"></ng-template>
         </a>
-      </li>s
+      </li>
     </ul>
   `,
   standalone: false
